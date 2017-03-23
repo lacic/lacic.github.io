@@ -31,7 +31,7 @@ a:focus {
 }
 /*-- header_top --*/
 .sidebar{
-  background:#6ecadc;
+  background: #3398da; /* #6ecadc; */
   top: 0px;
   padding:2em 30px;
 }
@@ -45,7 +45,6 @@ a:focus {
 }
 .sidebar img{
 	border:1px solid #fff;
-	padding:1em;
 	width:100%;
 }
 .details{
@@ -178,7 +177,7 @@ address span{
   display: inline-block;
 }
 h3.clr1{
-	background:#6ecadc;
+	background: #3398da; /* #6ecadc; */
 }
 h3.clr2{
 	background:#e9a820;
