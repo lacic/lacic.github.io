@@ -1,0 +1,13 @@
+# Real-time Recommender Systems in Multi-Domain Settings
+
+This cumulative dissertation addresses the challenge of providing effective real-time recommendations in multi-domain environments where diverse data sources and requirements collide. Most recommender system research tackles a single domain with one or two information sources—think movies with ratings, or e-commerce with purchase logs. In practice, however, platforms collect a wide variety of user signals (social, location, group membership, implicit and explicit preferences), and may serve different types of content. That complexity upends traditional architectures and raises problems of scalability, performance, and recommendation quality.
+
+The thesis investigates four key research questions: (1) how combining heterogeneous data sources impacts robustness of recommendations; (2) how to achieve scalability and customization in real-time multi-domain settings; (3) how to balance the trade-off between algorithmic accuracy and system runtime under real-time constraints; (4) how to move beyond accuracy as the sole measure of recommender utility, accounting for user value and session-based effects.
+
+The main contributions are several empirical studies and system-level frameworks. Results show that including social and location data substantially helps with cold-start users, a persistent pain point for collaborative filtering. By designing hybrid recommenders that draw on multiple data types, the system delivers more robust and widely applicable results, especially under sparse or evolving user profiles. The thesis also details architectural principles for scalable, real-time frameworks that integrate with heterogeneous data sources—tested in production-like multi-domain deployments. For performance, adopting greedy neighbor-search techniques and leveraging search engine backends with latent item embeddings grant major speedups without unacceptable loss in accuracy.
+
+Finally, an online user study demonstrates that focusing purely on accuracy in offline experiments confers only a partial view; real utility for users often demands optimizing other factors. The work further proposes a neural autoencoder approach that improves recommendations for anonymous session users, showing that richer session-aware modeling shifts the performance ceiling (especially relevant for web-scale anonymous traffic).
+
+Overall, the dissertation argues for flexible, scalable approaches that handle multi-domain complexity, combine diverse signals, and optimize for both users and runtime. There’s no silver bullet—algorithmic advances are necessary, but practical frameworks and realistic evaluations are equally important for real-world impact.
+
+[Download PDF](2022_phd_cummulative_elacic.pdf)

@@ -1,0 +1,11 @@
+# Using autoencoders for session-based job recommendations
+
+Session-based job recommendations pose a particularly tricky challenge: users often browse job sites anonymously, providing only fleeting clues about their interests within a single session. Traditional recommender approaches, which depend on long-term user history, are ineffective in this scenario. Our work proposes using autoencoders to learn compact, expressive representations of these short-lived sessions and leveraging these representations to recommend jobs in real time.
+
+We evaluated three autoencoder architectures—classic, denoising, and variational—each designed to map each session into a latent space where similar sessions are closer together. This representation then feeds into a k-nearest neighbor (KNN) approach for the actual recommendation ranking within ongoing sessions. In practice, adding input noise (denoising autoencoder) or employing a variational latent space didn't yield dramatic improvements in accuracy over a classic autoencoder, but the variational autoencoder did show an edge in session novelty, making recommendations less predictable.
+
+Our study analyzed three datasets: student job searches on Studo Jobs (Austria), the XING RecSys Challenge 2017 data, and public CareerBuilder application logs. We trained models not only on interaction data but also with content features from job postings. Across datasets, the autoencoder-based methods offered competitive accuracy and significantly higher recommendation novelty compared to established baselines like KNN and RNN-based recommenders. This is more than a technical curiosity; recommending less popular jobs increases the odds that users won't face excessive competition for the same roles.
+
+The architecture is practical for production—simple feedforward networks, moderate latent dimensionality, and, most crucially, no reliance on user IDs. Our implementation and parameterizations are openly available to support reproducibility. While state-of-the-art deep models can sometimes overfit or require heavy computational resources, this approach remains lightweight while delivering benefits on both accuracy and coverage metrics. If there's a catch, it's that boosting novelty sometimes comes at a small cost to accuracy, but in the job domain, that is a trade-off worth making.
+
+[Download PDF](2020umuai_job.pdf)

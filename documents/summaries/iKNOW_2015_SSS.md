@@ -1,0 +1,13 @@
+# The Social Semantic Server: A Flexible Framework to Support Informal Learning at the Workplace
+
+The push for scalable, effective informal learning at the workplace has always frustrated those of us working in learning technologies. Formal training tools tend to miss the mark: they're rigid, teacher-centric, and disconnected from real problem-solving moments. Meanwhile, genuine learning at work is messy, contextual, and—crucially—social: it’s forged in conversations, quick knowledge-shares, and the artifacts we leave for each other. The big question: how do you support and grow that organic, social learning—without oversimplifying it into a clunky digital course?
+
+This was the core motivation for the Social Semantic Server (SSS). Early on, we embraced theories like Distributed Cognition and Meaning Making, which emphasize that knowledge and meaning emerge through collaborative creation and shared artifacts—not isolated individuals. That meant we needed a flexible backbone capable of tracking not just who learned what, but who changed what resource, in what context, and how others built upon it.
+
+The SSS grew out of a repeated recognition: people learn best from each other, and from artifacts co-constructed and refined over time. So, we built it as a modular, service-oriented system. Services like activity tracking, rich metadata, recommendations, group workspaces, and discussion forums aren't just features—they're levers for representing and supporting how meaning is made in real collaborative contexts. Tag recommendations and topic modeling help align emergent vocabularies inside teams, making shared understanding less accidental and more reproducible.
+
+We didn't stop at theory and design. Real workplace pilots—especially in healthcare and construction—shaped the SSS in unpredictable ways. "Bits & Pieces," a web tool for healthcare staff to organize and revisit informal learning episodes, is one vivid example. During a two-month pilot in a UK general practice, staff used the system to collectively remember, organize, and share what they'd learned—far beyond what note-taking apps alone could achieve. User study results were promising, particularly regarding reflection and collaborative sensemaking. Other applications, with their own twists on the SSS framework, confirmed its flexibility in adapting to different domains.
+
+The SSS remains open-source and actively developed. What excites me most isn’t just the technical novelty, but the evidence that when you model learning as dynamic, participatory, and context-rich, you actually start supporting how workforces grow smarter together.
+
+[Download PDF](iKNOW_2015_SSS.pdf)

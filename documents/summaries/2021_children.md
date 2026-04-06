@@ -1,0 +1,11 @@
+# Predicting Treatment Outcomes Using Explainable Machine Learning in Children with Asthma
+
+Asthma in children is unpredictable. Some respond to standard treatments, others don’t, and the clinical reasons for this are usually muddy at best. This turns routine asthma management into a guessing game—physicians try controller medications, step up, step down, but reliably predicting if a child will actually improve remains difficult. That’s the problem we tackled in this work: Could explainable machine learning actually forecast which kids will do well on therapy? And just as importantly, could it reveal what clinical features matter most to those predictions?
+
+We worked with a real-world pediatric asthma cohort—365 young patients with mild to severe asthma seen in an outpatient clinic. For each child, we collected a deep dataset: demographics, comorbidities, allergy test results, biomarkers (IgE, eosinophils, FENO), genetics, and physiologic measures (FEV1, MEF50) before and after six months of standard controller medication. We used Random Forest and AdaBoost models to classify kids as treatment responders or non-responders across four outcome definitions: symptom control, FENO, FEV1, and MEF50 changes.
+
+The upshot? Accuracy was highest for predicting symptom control (LOAC) and FENO response—both metrics closely tied to patient symptoms and airway inflammation rather than pure lung mechanics. Classifying by FEV1 or MEF50 (lung function tests) lagged behind, which matches the reality that spirometry is often a blunt tool in children. Notably, markers like asthma severity, total IgE, and hsCRP rose to the top as key predictive variables—suggesting mechanistic clues about T2-high inflammation dominance in responsive patients.
+
+The clinical implications are practical. If machine learning can reliably sort responders from non-responders (especially in younger children), treatment can be tailored earlier, possibly with less trial and error. It also supports shifting pediatric asthma management towards symptom and inflammation-driven monitoring, with less reliance on FEV1 shifts alone. There’s still plenty of noise—these models aren’t perfect—but the promise is real: Data-driven medicine could finally deliver on the old hope of personalized asthma care for kids.
+
+[Download PDF](2021_children.pdf)
