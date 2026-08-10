@@ -1,0 +1,183 @@
+---
+/**
+ * Career grouped by organisation.
+ *
+ * The problem this solves: several roles at the same employer. A flat
+ * chronological list makes seven continuous years at Know-Center look like two
+ * unrelated short jobs, and buries the promotion. Grouping puts the organisation
+ * and its full span on one line — the fact a reader retains — with the roles
+ * indented underneath as detail.
+ *
+ * A concurrent engagement (the UCLA visiting stay, which ran during the
+ * Know-Center years) sits inside its group, marked and dashed, rather than
+ * interrupting the sequence as if the job had ended.
+ */
+import { career } from '../data/profile';
+
+interface Props {
+  /** Hide pre-2013 roles entirely. Used where space is tight. */
+  recentOnly?: boolean;
+}
+
+const { recentOnly = false } = Astro.props;
+const entries = recentOnly ? career.filter((entry) => !entry.early) : career;
+---
+
+<ul class="career">
+  {
+    entries.map((entry) => (
+      <li class:list={['org', { early: entry.early }]}>
+        <div class="orgline">
+          <h3>
+            {entry.url ? <a href={entry.url}>{entry.org}</a> : entry.org}
+            <span class="place">{entry.place}</span>
+          </h3>
+          <span class="span">
+            {entry.span}
+            {entry.current && <span class="now" aria-label="current role"></span>}
+          </span>
+        </div>
+        <ul class="roles">
+          {entry.roles.map((role) => (
+            <li class:list={{ aside: role.concurrent }}>
+              <span class="ryears">{role.years}</span>
+              <span class="rbody">
+                <span class="rtitle">
+                  {role.title}
+                  {role.tag && <span class="pill">{role.tag}</span>}
+                </span>
+                {role.detail && <span class="rdetail">{role.detail}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .career {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .org + .org {
+    border-top: 1px dotted var(--rule);
+    margin-top: 1.1rem;
+    padding-top: 1.1rem;
+  }
+  .orgline {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .orgline h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .orgline h3 a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .orgline h3 a:hover,
+  .orgline h3 a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .place {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    font-weight: 400;
+  }
+  .span {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--pencil);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .now {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .roles {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+  }
+  .roles > li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0 1rem;
+    padding: 0.3rem 0;
+  }
+  /* A parallel engagement, not the next step: indented and dashed. */
+  .roles > li.aside {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 1px dashed var(--rule);
+  }
+  .ryears {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.15rem;
+  }
+  .rtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .rdetail {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    color: var(--ink-70);
+    line-height: 1.55;
+    max-width: 62ch;
+  }
+
+  /* Older roles stay in the record but stop competing for attention. */
+  .org.early .orgline h3 {
+    font-size: 0.93rem;
+    font-weight: 500;
+  }
+  .org.early {
+    color: var(--pencil);
+  }
+  .org.early .rdetail {
+    color: var(--pencil);
+  }
+
+  @media (max-width: 620px) {
+    .roles > li {
+      grid-template-columns: 1fr;
+    }
+    .ryears {
+      padding: 0;
+    }
+    .orgline {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+  }
+</style>

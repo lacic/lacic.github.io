@@ -1,0 +1,29 @@
+{
+  "name": "elacic-me",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "elacic.me — personal site of Dr. Emanuel Lacic",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "image": "node tools/render-air-image.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.14",
+    "@astrojs/sitemap": "^3.7.0",
+    "astro": "^7.2.0",
+    "js-yaml": "^4.1.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^6.0.3"
+  }
+}

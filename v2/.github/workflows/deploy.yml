@@ -1,0 +1,64 @@
+##
+# Build and deploy to GitHub Pages.
+#
+# v1 was served as raw files from the default branch, which meant the repository
+# had to contain the deployable output. This site has a build step, so the
+# repository holds the source and Pages serves the artifact instead.
+#
+# Requires: Settings -> Pages -> Source = "GitHub Actions".
+# Note the path: while the site lives in v2/ this workflow file must be copied to
+# the repository root at .github/workflows/deploy.yml to run at all.
+##
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-deploy without an empty commit, e.g. after changing a Pages setting.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race. In-progress runs finish rather than being cancelled,
+# so a deploy cannot be interrupted half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      # `npm ci` rather than `npm install`: the lockfile decides the versions, so
+      # a build here matches the build that was tested locally.
+      - run: npm ci
+
+      # Content schemas are checked as part of the build, so an invalid paper
+      # reference or a malformed date fails here rather than reaching the site.
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

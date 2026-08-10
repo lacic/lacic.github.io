@@ -1,0 +1,54 @@
+---
+import { profile } from '../data/profile';
+
+const links = [
+  { href: profile.links.scholar, label: 'Scholar' },
+  { href: profile.links.linkedin, label: 'LinkedIn' },
+  { href: profile.links.researchgate, label: 'ResearchGate' },
+  { href: profile.links.infobipResearch, label: 'research.infobip.com' },
+  { href: '/feed.xml', label: 'RSS' },
+];
+---
+
+<footer>
+  <span>{profile.name} · {profile.location}</span>
+  <span class="set">
+    {
+      links.map((l) => (
+        <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
+          {l.label}
+        </a>
+      ))
+    }
+  </span>
+</footer>
+
+<style>
+  footer {
+    padding: 1.6rem var(--gutter);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--pencil);
+    background: var(--grid);
+    border-top: 1px solid var(--rule);
+  }
+  footer a {
+    color: var(--pencil);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  footer a:hover,
+  footer a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .set {
+    display: flex;
+    gap: 1.3rem;
+    flex-wrap: wrap;
+  }
+</style>

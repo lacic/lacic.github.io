@@ -1,0 +1,199 @@
+---
+/**
+ * The full publication list.
+ *
+ * v1 kept this as hand-written HTML, which is why it had drifted: adding a paper
+ * meant editing markup in two places. Everything here is generated from
+ * src/data/publications.yml, so the list, the citations and the counts cannot
+ * disagree with each other.
+ *
+ * The area filter is progressive enhancement: without JavaScript the full list
+ * is present and complete, and the filter bar simply does nothing.
+ */
+import Base from '../../layouts/Base.astro';
+import PaperList from '../../components/PaperList.astro';
+import { profile } from '../../data/profile';
+import { getNoteMap, getPublications } from '../../lib/content';
+
+const papers = await getPublications();
+const noteFor = await getNoteMap();
+
+const years = [...new Set(papers.map((paper) => paper.data.year))].sort((a, b) => b - a);
+
+const AREA_LABELS: Record<string, string> = {
+  'recommender-systems': 'recommender systems',
+  'information-retrieval': 'information retrieval',
+  'fairness-bias': 'fairness & bias',
+  'real-time': 'real-time',
+  'social-networks': 'social networks',
+  'learning-analytics': 'learning analytics',
+  evaluation: 'evaluation',
+  health: 'health',
+  'generative-ai': 'generative AI',
+};
+
+const areaCounts = new Map<string, number>();
+for (const paper of papers) {
+  for (const area of paper.data.areas) {
+    areaCounts.set(area, (areaCounts.get(area) ?? 0) + 1);
+  }
+}
+const areas = [...areaCounts.entries()].sort((a, b) => b[1] - a[1]);
+const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
+---
+
+<Base
+  title="Publications"
+  description={`${papers.length} peer-reviewed publications on recommender systems, information retrieval, fairness and real-time personalization.`}
+>
+  <section class="block">
+    <h1 class="page-title">Publications</h1>
+    <p class="page-lede">
+      {papers.length} peer-reviewed papers. {withNotes} have a plain-language note, so you can find out what a paper
+      says before deciding whether to read it. Every entry has its PDF and a citation you can copy.
+    </p>
+    <p class="meta">
+      <a href={profile.links.scholar}>Google Scholar</a> · <a href={profile.links.researchgate}>ResearchGate</a> ·
+      <a href={profile.links.cv}>CV (PDF)</a>
+    </p>
+  </section>
+
+  <section class="block block--tight filterbar">
+    <div class="filters" id="filters" data-total={papers.length}>
+      <span class="stamp">Filter</span>
+      <button class="tag is-on" type="button" data-area="all" aria-pressed="true">all {papers.length}</button>
+      {
+        areas.map(([area, count]) => (
+          <button class="tag" type="button" data-area={area} aria-pressed="false">
+            {AREA_LABELS[area] ?? area} {count}
+          </button>
+        ))
+      }
+    </div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+  </section>
+
+  {
+    years.map((year) => (
+      <section class="block block--tight yearblock" data-year={year}>
+        <h2 class="year">{year}</h2>
+        <PaperList papers={papers.filter((paper) => paper.data.year === year)} noteFor={noteFor} />
+      </section>
+    ))
+  }
+</Base>
+
+<script>
+  const filters = document.getElementById('filters');
+  const count = document.getElementById('count');
+
+  if (filters && count) {
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-area]')];
+    const papers = [...document.querySelectorAll<HTMLElement>('.paper')];
+    const blocks = [...document.querySelectorAll<HTMLElement>('.yearblock')];
+
+    const apply = (area: string) => {
+      let shown = 0;
+      for (const paper of papers) {
+        const areas = (paper.dataset.areas ?? '').split(' ').filter(Boolean);
+        const match = area === 'all' || areas.includes(area);
+        paper.hidden = !match;
+        if (match) shown += 1;
+      }
+
+      // Hide a year heading once nothing is left under it, so the page does not
+      // fill with empty years.
+      for (const block of blocks) {
+        block.hidden = !block.querySelector('.paper:not([hidden])');
+      }
+
+      for (const button of buttons) {
+        const on = button.dataset.area === area;
+        button.classList.toggle('is-on', on);
+        button.setAttribute('aria-pressed', String(on));
+      }
+
+      count.textContent = area === 'all' ? '' : `${shown} of ${papers.length} papers`;
+      history.replaceState(null, '', area === 'all' ? location.pathname : `#${area}`);
+    };
+
+    filters.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-area]');
+      if (button?.dataset.area) apply(button.dataset.area);
+    });
+
+    // Deep-linkable: /publications#fairness-bias arrives pre-filtered.
+    const initial = location.hash.slice(1);
+    if (initial && buttons.some((button) => button.dataset.area === initial)) apply(initial);
+  }
+</script>
+
+<style>
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    margin: 1.4rem 0 0;
+  }
+  .meta a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .filterbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .filters {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin-right: 0.3rem;
+  }
+  .filters button {
+    cursor: pointer;
+    background: none;
+    font-family: var(--mono);
+  }
+  .filters button.is-on {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .count {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--pencil);
+    margin: 0;
+  }
+
+  .year {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.11em;
+    color: var(--pencil);
+    margin: 0 0 1.2rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .yearblock + .yearblock {
+    border-top: 0;
+  }
+</style>

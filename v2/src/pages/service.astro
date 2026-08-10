@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { getService } from '../lib/content';
+
+const service = await getService();
+
+const GROUPS = [
+  { key: 'editorial', label: 'Editorial' },
+  { key: 'organising', label: 'Organising' },
+  { key: 'programme-committee', label: 'Programme committees' },
+  { key: 'reviewing', label: 'Reviewing' },
+  { key: 'chairing', label: 'Session chairing' },
+  { key: 'supervision', label: 'Supervision' },
+] as const;
+
+const groups = GROUPS.map((group, i) => ({
+  ...group,
+  n: String(i + 1).padStart(2, '0'),
+  items: service.filter((entry) => entry.data.category === group.key),
+})).filter((group) => group.items.length > 0);
+---
+
+<Base
+  title="Academic service"
+  description="Editorial roles, programme committees, reviewing, workshop organisation and thesis supervision."
+>
+  <section class="block">
+    <h1 class="page-title">Academic service</h1>
+    <p class="page-lede">
+      Reviewing, programme committees, workshop organisation and supervision — the part of research that keeps the
+      field working and rarely appears on a CV in any useful detail.
+    </p>
+  </section>
+
+  {
+    groups.map((group) => (
+      <section class="block block--tight">
+        <SectionHeader n={group.n} label={group.label} />
+        <ul class="svc">
+          {group.items.map((entry) => (
+            <li>
+              <span class="years">{entry.data.years ?? ''}</span>
+              <span class="body">
+                <span class="role">
+                  {entry.data.url && entry.data.venue ? (
+                    <a href={entry.data.url}>{entry.data.venue}</a>
+                  ) : (
+                    entry.data.venue
+                  )}
+                  {entry.data.venue && <span class="sep">—</span>}
+                  <span class="what">{entry.data.role}</span>
+                </span>
+                {entry.data.detail && <span class="detail">{entry.data.detail}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .svc {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .svc li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0 1.25rem;
+    padding: 0.55rem 0;
+  }
+  .svc li + li {
+    border-top: 1px dotted var(--rule);
+  }
+  .years {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.15rem;
+    white-space: nowrap;
+  }
+  .role {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .role a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .role a:hover,
+  .role a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .sep {
+    color: var(--pencil);
+    font-weight: 400;
+  }
+  .what {
+    font-weight: 400;
+    color: var(--ink-70);
+  }
+  .detail {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--pencil);
+    line-height: 1.55;
+    max-width: 66ch;
+  }
+  @media (max-width: 620px) {
+    .svc li {
+      grid-template-columns: 1fr;
+    }
+    .years {
+      padding: 0;
+    }
+  }
+</style>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AIR research areas — image source</title>
+<!--
+  Build source for air-areas.png. Renders the eight Infobip research areas
+  using the real icons from research.infobip.com and the real Infobip
+  dark/bright colour pairs.
+
+  Render:
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+    --headless=new --disable-gpu --hide-scrollbars \
+    --default-background-color=00000000 --force-device-scale-factor=2 \
+    --window-size=1240,620 --virtual-time-budget=6000 \
+    --screenshot=v2/mockups/air-areas.png \
+    http://localhost:8391/air/compose.html
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:transparent}
+  body{width:1240px;height:620px;font-family:"IBM Plex Sans",system-ui,sans-serif}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4,260px);
+    grid-template-rows:repeat(2,260px);
+    gap:46px;
+    padding:27px 31px;
+  }
+
+  .tile{
+    border-radius:30%;
+    corner-shape:squircle;
+    padding:22px 22px 20px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    overflow:hidden;
+  }
+  .ic{
+    width:96px;height:88px;
+    background-color:currentColor;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:left center;mask-position:left center;
+    -webkit-mask-size:contain;mask-size:contain;
+  }
+  .nm{
+    font-size:19px;font-weight:600;line-height:1.14;letter-spacing:-.012em;
+    margin:0;text-wrap:balance;
+  }
+
+  .p-pink {background:#32232F;color:#FFA8EB}
+  .p-green{background:#053133;color:#CBEA99}
+  .p-blue {background:#17283A;color:#9EB2FF}
+  .p-brand{background:#2D2C2B;color:#FC6423}
+
+  .i-human {-webkit-mask-image:url(icons/human-ai-collaboration.svg);mask-image:url(icons/human-ai-collaboration.svg)}
+  .i-trust {-webkit-mask-image:url(icons/trustworthy-ai.svg);mask-image:url(icons/trustworthy-ai.svg)}
+  .i-conv  {-webkit-mask-image:url(icons/conversational-ai.svg);mask-image:url(icons/conversational-ai.svg)}
+  .i-comm  {-webkit-mask-image:url(icons/ai-powered-communication.svg);mask-image:url(icons/ai-powered-communication.svg)}
+  .i-fraud {-webkit-mask-image:url(icons/fraud-detection.svg);mask-image:url(icons/fraud-detection.svg)}
+  .i-spam  {-webkit-mask-image:url(icons/spam-filtering.svg);mask-image:url(icons/spam-filtering.svg)}
+  .i-voice {-webkit-mask-image:url(icons/voice-ai.svg);mask-image:url(icons/voice-ai.svg)}
+  .i-gen   {-webkit-mask-image:url(icons/special-generative-models.svg);mask-image:url(icons/special-generative-models.svg)}
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="tile p-pink"><span class="ic i-human"></span><p class="nm">Human-AI Collaboration</p></div>
+    <div class="tile p-green"><span class="ic i-trust"></span><p class="nm">Trustworthy AI</p></div>
+    <div class="tile p-blue"><span class="ic i-conv"></span><p class="nm">Conversational AI</p></div>
+    <div class="tile p-brand"><span class="ic i-comm"></span><p class="nm">AI-powered Communication</p></div>
+
+    <div class="tile p-green"><span class="ic i-fraud"></span><p class="nm">Fraud Detection</p></div>
+    <div class="tile p-blue"><span class="ic i-spam"></span><p class="nm">Spam Filtering</p></div>
+    <div class="tile p-brand"><span class="ic i-voice"></span><p class="nm">Voice AI</p></div>
+    <div class="tile p-pink"><span class="ic i-gen"></span><p class="nm">Generative Models</p></div>
+  </div>
+</body>
+</html>

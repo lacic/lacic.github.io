@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatMonth } from '../lib/format';
+
+interface Props {
+  talks: CollectionEntry<'talks'>[];
+  showDescription?: boolean;
+}
+
+const { talks, showDescription = false } = Astro.props;
+---
+
+<ul class="talks">
+  {
+    talks.map((talk) => (
+      <li>
+        <span class="when">{formatMonth(talk.data.date)}</span>
+        <span class="body">
+          <span class="head">
+            {talk.data.kind !== 'talk' && <span class="kind">{talk.data.kind}</span>}
+            <span class="title">{talk.data.title}</span>
+          </span>
+          <span class="where">
+            {talk.data.event}
+            {talk.data.location && ` · ${talk.data.location}`}
+          </span>
+          {showDescription && talk.data.description && <span class="detail">{talk.data.description}</span>}
+          <span class="acts">
+            {talk.data.slides && <a class="act" href={talk.data.slides}>slides</a>}
+            {talk.data.video && <a class="act" href={talk.data.video}>video</a>}
+            {talk.data.url && <a class="act" href={talk.data.url}>event</a>}
+          </span>
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .talks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .talks li {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0 1.5rem;
+    padding: 1rem 0;
+  }
+  .talks li + li {
+    border-top: 1px dotted var(--rule);
+  }
+  .talks li:first-child {
+    padding-top: 0;
+  }
+  .when {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--pencil);
+    padding-top: 0.2rem;
+    white-space: nowrap;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+  }
+  .kind {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .title {
+    font-size: 1.01rem;
+    font-weight: 500;
+    line-height: 1.34;
+    max-width: 52ch;
+  }
+  .where {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--pencil);
+    margin-top: 0.25rem;
+  }
+  .detail {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    color: var(--ink-70);
+    line-height: 1.6;
+    margin-top: 0.45rem;
+    max-width: 62ch;
+  }
+  .acts {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.6rem;
+  }
+  .acts:empty {
+    display: none;
+  }
+  @media (max-width: 620px) {
+    .talks li {
+      grid-template-columns: 1fr;
+    }
+    .when {
+      padding: 0 0 0.3rem;
+    }
+  }
+</style>

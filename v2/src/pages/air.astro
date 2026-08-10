@@ -1,0 +1,228 @@
+---
+/**
+ * The AIR page.
+ *
+ * This is the section v1 had no answer for, and the reason for the rebuild. It
+ * has to work for two readers at once: a peer deciding whether the team does
+ * real research, and a candidate deciding whether to apply. Both want the same
+ * thing first — what the team actually works on — so the areas lead, and the
+ * institutional framing comes after.
+ *
+ * research.infobip.com stays the canonical home for team-authored posts. This
+ * page is the personal account of leading it, and links out rather than
+ * duplicating.
+ */
+import Base from '../layouts/Base.astro';
+import AirFigure from '../components/AirFigure.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PostList from '../components/PostList.astro';
+import { profile, researchAreas } from '../data/profile';
+import { getPosts } from '../lib/content';
+
+const posts = (await getPosts()).filter((post) => post.data.tags.includes('air')).slice(0, 4);
+const description =
+  'Team AI Research (AIR) is the R&D team inside Infobip: applied research on messaging, voice and customer engagement across eight areas, from conversational AI to fraud detection and voice quality.';
+---
+
+<Base title="Team AI Research (AIR)" description={description}>
+  <section class="block">
+    <p class="eyebrow"><span class="dot"></span> Team AI Research · Infobip</p>
+    <h1 class="page-title">Applied research on a platform that carries a large share of the world's business communication.</h1>
+    <p class="page-lede">
+      AIR is the R&amp;D team I founded and lead at Infobip. We work on messaging, voice and customer engagement —
+      and on the gap between a result that holds in a paper and one that holds on live traffic.
+    </p>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="01" label="What we work on" />
+    <AirFigure link={false} />
+    <ol class="areas">
+      {
+        researchAreas.map((area) => (
+          <li>
+            <h3>{area.name}</h3>
+            <p>{area.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="note">
+      The team publishes its own work at <a href={profile.links.infobipResearch}>research.infobip.com</a>, which is
+      the canonical source for anything team-authored.
+    </p>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="02" label="How the team works" />
+    <div class="two">
+      <div class="prose">
+        <p>
+          Industrial research fails in two predictable ways. It either drifts far enough from the product that
+          nothing ships, or it collapses into feature work with a research label. The team is organised to avoid
+          both: every area has a live question a peer would recognise as research, and a route to production where
+          the answer gets tested against traffic.
+        </p>
+        <p>
+          That constraint shapes what counts as a result. An offline metric is a hypothesis. The finding is what
+          happens when real users, real latency budgets and real distribution shift get a say — and often the
+          interesting part is <em>why</em> the two disagreed.
+        </p>
+        <p>
+          We publish either way. A negative result that saves another team six months is worth more than a
+          benchmark win nobody can reproduce, and writing it down is how a research team compounds instead of
+          repeating itself.
+        </p>
+      </div>
+      <aside class="rail">
+        <p class="stamp">In practice</p>
+        <ul>
+          <li>Peer-reviewed publication alongside shipped systems</li>
+          <li>Evaluation that includes online behaviour, not only offline metrics</li>
+          <li>Student theses and academic collaborations as first-class work</li>
+          <li>Privacy, fairness and cost treated as constraints, not afterthoughts</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="block">
+        <SectionHeader n="03" label="Notes from the team" more={{ href: '/updates', label: 'all updates' }} />
+        <PostList posts={posts} />
+      </section>
+    )
+  }
+
+  <section class="block">
+    <div class="collab">
+      <SectionHeader label="Work with us" />
+      <h2>Joint agendas, pilots, theses</h2>
+      <p>
+        If you are working on something adjacent — a paper that needs an industrial testbed, a student thesis with
+        real data behind it, or a joint agenda — that is the conversation worth having.
+      </p>
+      <a class="cta" href={`mailto:${profile.email}`}>Get in touch</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin: 0 0 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .areas {
+    list-style: none;
+    counter-reset: area;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem 2.5rem;
+  }
+  .areas li {
+    counter-increment: area;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+  }
+  .areas h3 {
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+  .areas h3::before {
+    content: counter(area, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--accent-ink);
+  }
+  .areas p {
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-70);
+    margin: 0;
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  .two .prose p:first-child {
+    margin-top: 0;
+  }
+  .rail {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1rem, 2vw, 1.75rem);
+  }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.8rem;
+  }
+  .rail ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  .rail li {
+    padding: 0.55rem 0;
+    border-top: 1px dotted var(--rule);
+    color: var(--ink-70);
+  }
+  .rail li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .collab {
+    max-width: 52ch;
+  }
+  .collab h2 {
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    font-weight: 500;
+    margin: 0 0 0.6rem;
+  }
+  .collab p {
+    font-family: var(--serif);
+    color: var(--ink-70);
+    margin: 0 0 1.4rem;
+  }
+
+  @media (max-width: 880px) {
+    .two {
+      grid-template-columns: 1fr;
+    }
+    .rail {
+      border-left: 0;
+      border-top: 1px solid var(--rule);
+      padding-left: 0;
+      padding-top: 1.25rem;
+    }
+  }
+</style>

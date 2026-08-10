@@ -1,0 +1,113 @@
+---
+/**
+ * Behaviour for every `cite` button on the page.
+ *
+ * Kept separate from PaperList because the paper detail page has a cite button
+ * without a list around it. Rendering this component more than once is safe:
+ * Astro bundles the script once, and the listener is delegated from document.
+ */
+---
+
+<script>
+  const popover = document.createElement('div');
+  popover.className = 'cite-pop';
+  popover.hidden = true;
+  popover.innerHTML = `
+    <button type="button" data-format="bibtex">BibTeX</button>
+    <button type="button" data-format="apa">APA</button>`;
+  document.body.append(popover);
+
+  let anchor: HTMLButtonElement | null = null;
+
+  const close = () => {
+    popover.hidden = true;
+    anchor?.setAttribute('aria-expanded', 'false');
+    anchor = null;
+  };
+
+  const place = (button: HTMLButtonElement) => {
+    const box = button.getBoundingClientRect();
+    popover.hidden = false;
+    const width = popover.offsetWidth;
+    const room = document.documentElement.clientWidth - width - 12;
+    popover.style.top = `${box.bottom + window.scrollY + 6}px`;
+    popover.style.left = `${Math.max(12, Math.min(box.left + window.scrollX, room + window.scrollX))}px`;
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    const button = target.closest<HTMLButtonElement>('button.cite');
+
+    if (button) {
+      if (anchor === button) return close();
+      close();
+      anchor = button;
+      button.setAttribute('aria-expanded', 'true');
+      place(button);
+      return;
+    }
+
+    const choice = target.closest<HTMLButtonElement>('.cite-pop button');
+    if (choice && anchor) {
+      const format = choice.dataset.format === 'apa' ? 'apa' : 'bibtex';
+      const text = anchor.dataset[format] ?? '';
+      const source = anchor;
+      navigator.clipboard.writeText(text).then(
+        () => {
+          const original = source.textContent;
+          source.textContent = 'copied ✓';
+          window.setTimeout(() => {
+            source.textContent = original;
+          }, 1400);
+        },
+        () => {
+          // Clipboard access can be blocked by permissions policy. Show the text
+          // so the reader can still select it rather than getting nothing.
+          window.prompt('Copy the citation:', text);
+        },
+      );
+      return close();
+    }
+
+    if (!popover.contains(target)) close();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') close();
+  });
+  window.addEventListener('resize', close);
+</script>
+
+<style is:global>
+  .cite-pop {
+    position: absolute;
+    z-index: 60;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 3px 3px 0 rgba(27, 26, 25, 0.12);
+    display: flex;
+  }
+  /* Author styles beat the UA rule for [hidden], so this has to be explicit or
+     the popover sits visible at the bottom of every page. */
+  .cite-pop[hidden] {
+    display: none;
+  }
+  .cite-pop button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    background: none;
+    border: 0;
+    padding: 0.5em 0.8em;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .cite-pop button + button {
+    border-left: 1px solid var(--rule);
+  }
+  .cite-pop button:hover,
+  .cite-pop button:focus-visible {
+    background: var(--ink);
+    color: var(--paper);
+  }
+</style>

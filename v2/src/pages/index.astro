@@ -1,0 +1,168 @@
+---
+/**
+ * The landing page.
+ *
+ * Reading order is the whole design. A visitor is deciding whether you are
+ * worth their attention, and the old page answered that with a CV. This one
+ * answers it with what you are doing now (the log), who you do it with (AIR),
+ * and only then the record — because the record is what they check second.
+ */
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PostList from '../components/PostList.astro';
+import AirFigure from '../components/AirFigure.astro';
+import PaperList from '../components/PaperList.astro';
+import CareerList from '../components/CareerList.astro';
+import EducationList from '../components/EducationList.astro';
+import FundingList from '../components/FundingList.astro';
+import TalkList from '../components/TalkList.astro';
+import { profile } from '../data/profile';
+import { getNoteMap, getPosts, getPublications, getSelectedPublications, getTalks } from '../lib/content';
+
+const posts = (await getPosts()).slice(0, 3);
+const selected = await getSelectedPublications();
+const allPublications = await getPublications();
+const talks = (await getTalks()).slice(0, 3);
+const noteFor = await getNoteMap();
+
+const description = `${profile.role} at ${profile.employer}, leading ${profile.team}. Applied research on recommender systems, generative AI and what survives production.`;
+
+// The section numbers are counted rather than written in, so that a section
+// which has nothing to show yet (no posts, no talks) does not leave a hole in
+// the sequence.
+let section = 0;
+const n = () => String(++section).padStart(2, '0');
+---
+
+<Base description={description}>
+  <Hero />
+
+  {
+    posts.length > 0 && (
+      <section class="block" id="now">
+        <SectionHeader n={n()} label="Log" more={{ href: '/updates', label: 'all updates' }} />
+        <PostList posts={posts} />
+      </section>
+    )
+  }
+
+  <section class="block" id="air">
+    <SectionHeader n={n()} label="Team AI Research (AIR)" more={{ href: '/air', label: 'about the team' }} />
+    <div class="air-grid">
+      <div>
+        <p class="lede">
+          AIR is the R&amp;D team inside Infobip — applied research on messaging, voice and customer engagement,
+          running on a platform that carries a large share of the world's business communication.
+        </p>
+        <p class="hand">
+          The distance between a result that holds in a paper and one that holds on live traffic is the whole job.
+          Closing it is what the team is for.
+        </p>
+        <a class="cta" href="/air">Read what AI Research is working on</a>
+      </div>
+      <AirFigure />
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <SectionHeader
+      n={n()}
+      label="Selected work"
+      more={{ href: '/publications', label: `all ${allPublications.length} papers` }}
+    />
+    <PaperList papers={selected} noteFor={noteFor} />
+  </section>
+
+  {
+    talks.length > 0 && (
+      <section class="block" id="talks">
+        <SectionHeader n={n()} label="Talks" more={{ href: '/talks', label: 'all talks' }} />
+        <TalkList talks={talks} />
+      </section>
+    )
+  }
+
+  <section class="block" id="cv">
+    <div class="close">
+      <div>
+        <SectionHeader n={n()} label="Career in brief" more={{ href: '/cv', label: 'full cv' }} />
+        <CareerList />
+      </div>
+      <div>
+        <SectionHeader n={n()} label="Education" more={{ href: '/cv', label: 'cv' }} />
+        <EducationList />
+        <SectionHeader n={n()} label="Funding & fellowships" stacked more={{ href: '/cv', label: 'all' }} />
+        <FundingList />
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="collab">
+      <SectionHeader n={n()} label="Collaborate" />
+      <h2>Working on something adjacent?</h2>
+      <p>
+        Joint agendas, pilots, student theses, or a paper that needs an industrial testbed — those are the
+        conversations worth having.
+      </p>
+      <a class="cta" href={`mailto:${profile.email}`}>Get in touch</a>
+      <p class="note">
+        {profile.emailDisplay} · or find me on <a href={profile.links.linkedin}>LinkedIn</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .air-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(1.5rem, 3.5vw, 3rem);
+    align-items: start;
+  }
+  .lede {
+    font-family: var(--serif);
+    font-size: 1.06rem;
+    line-height: 1.62;
+    margin: 0 0 1rem;
+  }
+  .hand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--pencil);
+    border-left: 2px solid var(--accent);
+    padding-left: 0.9rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .close {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .collab {
+    max-width: 52ch;
+  }
+  .collab h2 {
+    font-size: clamp(1.3rem, 2.6vw, 1.75rem);
+    font-weight: 500;
+    margin: 0 0 0.6rem;
+  }
+  .collab p {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--ink-70);
+    margin: 0 0 1.4rem;
+  }
+
+  @media (max-width: 880px) {
+    .air-grid,
+    .close {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

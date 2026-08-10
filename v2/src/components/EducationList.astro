@@ -1,0 +1,82 @@
+---
+import { education } from '../data/profile';
+---
+
+<ul class="edu">
+  {
+    education.map((item) => (
+      <li>
+        <span class="year">{item.year}</span>
+        <span class="body">
+          <span class="degree">
+            {item.degree}
+            {'distinction' in item && item.distinction && <span class="pill pill--accent">{item.distinction}</span>}
+          </span>
+          <span class="where">
+            {item.institution} · {item.place}
+          </span>
+          {item.links.length > 0 && (
+            <span class="acts">
+              {item.links.map((link) => (
+                <a class="act" href={link.href}>
+                  {link.label}
+                </a>
+              ))}
+            </span>
+          )}
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .edu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .edu li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0 1rem;
+    padding: 0.6rem 0;
+  }
+  .edu li + li {
+    border-top: 1px dotted var(--rule);
+  }
+  .year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.15rem;
+  }
+  .degree {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .where {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--ink-70);
+  }
+  .acts {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.45rem;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 620px) {
+    .edu li {
+      grid-template-columns: 1fr;
+    }
+    .year {
+      padding: 0;
+    }
+  }
+</style>

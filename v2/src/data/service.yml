@@ -1,0 +1,218 @@
+# Academic service: programme committees, reviewing, workshop organisation,
+# session chairing, editorial roles and co-supervised theses.
+# Migrated from v1 services.html, plus the Frontiers special issue editorship
+# from the About text and the three co-supervised theses from index.html.
+# Repeated programme committee service at the same venue in consecutive years
+# is collapsed into a single entry with a year range.
+
+# ---------------------------------------------------------------------------
+# Editorial
+# ---------------------------------------------------------------------------
+
+- id: frontiers-big-data-recsys
+  category: editorial
+  role: Special issue editor
+  venue: Frontiers in Big Data - Recommender Systems
+  years: "2022"
+  detail: 'Research topic: "Reviews in Recommender Systems 2022".'
+  url: "https://www.frontiersin.org/research-topics/49532/reviews-in-recommender-systems-2022"
+
+# ---------------------------------------------------------------------------
+# Organising
+# ---------------------------------------------------------------------------
+
+- id: dih-sued-2022
+  category: organising
+  role: Co-organiser
+  venue: DIH-Sued workshop on recommender systems
+  years: "2022"
+  detail: Graz, Austria.
+  url: "https://www.dihsued.at/veranstaltung.php?event=441"
+
+- id: know-center-summer-academy-2020
+  category: organising
+  role: Co-organiser
+  venue: Know-Center Summer Academy on Recommender Systems
+  years: "2020"
+  detail: Graz, Austria.
+  url: "https://www.know-center.tugraz.at/academy-sessions/recommender-systems/"
+
+- id: rs-sna-2017
+  category: organising
+  role: Organiser and workshop chair
+  venue: "RS-SNA - Workshop on Recommender Systems and Social Network Analysis"
+  years: "2017"
+  detail: "Co-located with i-KNOW'17 in Graz, Austria (October 2017)."
+  url: "http://socialcomputing.know-center.tugraz.at/rsbda17"
+
+- id: rs-bda-2016
+  category: organising
+  role: Organiser and workshop chair
+  venue: "RS-BDA - Workshop on Recommender Systems and Big Data Analytics"
+  years: "2016"
+  detail: "Co-located with i-KNOW'16 in Graz, Austria (October 2016)."
+  url: "http://socialcomputing.know-center.tugraz.at/rs-bda/#program"
+
+- id: wissensmanagement-forum-board
+  category: organising
+  role: Executive board member
+  venue: Wissensmanagement (Knowledge Management) Forum
+  years: 2014-present
+  detail: Member of the executive board since September 2014.
+  url: "http://wm-forum.org/"
+
+# ---------------------------------------------------------------------------
+# Chairing
+# ---------------------------------------------------------------------------
+
+- id: cikm-2018-session-chair
+  category: chairing
+  role: "Session chair, Neural Recommendation track"
+  venue: ACM CIKM
+  years: "2018"
+  detail: >-
+    ACM Conference on Information and Knowledge Management, Turin, Italy
+    (October 2018).
+  url: "http://www.cikm2018.units.it/index.html"
+
+- id: i-know-2015-session-chair
+  category: chairing
+  role: Session chair
+  venue: i-KNOW
+  years: "2015"
+  detail: >-
+    15th International Conference on Knowledge Technologies and Data-driven
+    Business, Graz, Austria (October 2015).
+  url: "http://i-know2015.know-center.tugraz.at/"
+
+# ---------------------------------------------------------------------------
+# Programme committees
+# ---------------------------------------------------------------------------
+
+- id: umap-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: UMAP
+  years: 2021-2022
+  detail: >-
+    29th and 30th ACM Conference on User Modeling, Adaptation and
+    Personalization. Received the best reviewer award in 2021.
+  url: "https://www.um.org/umap2022/"
+
+- id: acm-hypertext-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: ACM Hypertext
+  years: 2020-2022
+  detail: >-
+    31st, 32nd and 33rd ACM Conference on Hypertext and Social Media.
+  url: "http://ht.acm.org/ht2022/"
+
+- id: thewebconf-2022-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: The Web Conference
+  years: "2022"
+  detail: >-
+    31st conference in the International World Wide Web Conference series.
+  url: "https://www2022.thewebconf.org/"
+
+- id: msm-2019-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: "MSM - Workshop on Modeling Social Media"
+  years: "2019"
+  detail: >-
+    10th International Workshop on Modeling Social Media: Mining, Modeling and
+    Learning from Social Media, co-located with TheWebConf 2019 in San
+    Francisco, USA (January 2019).
+  url: "https://msmworkshop.github.io/2019/index.html"
+
+- id: opensym-2017-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: OpenSym
+  years: "2017"
+  detail: International Symposium on Open Collaboration (May 2017).
+  url: "http://www.opensym.org/category/opensym-2017/"
+
+- id: msm-2015-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: "MSM - Workshop on Modeling Social Media"
+  years: "2015"
+  detail: >-
+    6th International Workshop on Modeling Social Media: Behavioral Analytics in
+    Social Media, Big Data and the Web, co-located with WWW 2015 in Florence,
+    Italy (February 2015).
+  url: "https://www.kde.cs.uni-kassel.de/wp-content/uploads/ws/msm2015/"
+
+- id: ectel-2014-pc
+  category: programme-committee
+  role: Programme Committee member
+  venue: EC-TEL
+  years: "2014"
+  detail: >-
+    9th European Conference on Technology Enhanced Learning (May 2014).
+  url: "http://ectel2014.httc.de/index.php?id=727"
+
+# ---------------------------------------------------------------------------
+# Journal reviewing
+# ---------------------------------------------------------------------------
+
+- id: kais-reviewer
+  category: reviewing
+  role: Reviewer
+  venue: Knowledge and Information Systems (KAIS)
+  years: "2019"
+  detail: Springer journal (September 2019).
+  url: "https://link.springer.com/journal/10115"
+
+- id: mdpi-information-reviewer
+  category: reviewing
+  role: Reviewer
+  venue: Information (MDPI)
+  years: "2019"
+  detail: MDPI's Information open access journal (January 2019).
+  url: "https://www.mdpi.com/journal/information"
+
+- id: journal-of-computers-reviewer
+  category: reviewing
+  role: Reviewer
+  venue: Journal of Computers
+  years: "2014"
+  detail: Journal of Computers, Academy Publisher (November 2014).
+  url: "https://publons.com/journal/12566/journal-of-computers"
+
+# ---------------------------------------------------------------------------
+# Supervision
+# ---------------------------------------------------------------------------
+
+- id: thesis-reiter-haas-2020
+  category: supervision
+  role: Master thesis co-supervisor
+  venue: Graz University of Technology
+  years: "2020"
+  detail: >-
+    Reiter-Haas, M. (2020) Evaluation of Job Recommendations for the Studo Jobs
+    Platform. Master thesis, Graz University of Technology.
+
+- id: thesis-fadljevic-2017
+  category: supervision
+  role: Master thesis co-supervisor
+  venue: "University of Zagreb, Faculty of Electrical Engineering and Computing"
+  years: "2017"
+  detail: >-
+    Fadljevic, L. (2017) Analysis and Prediction of Movie Preferences. Master
+    thesis, University of Zagreb, Faculty of Electrical Engineering and
+    Computing, in cooperation with the Know-Center in Graz, Austria.
+
+- id: thesis-duricic-2015
+  category: supervision
+  role: Master thesis co-supervisor
+  venue: "University of Zagreb, Faculty of Electrical Engineering and Computing"
+  years: "2015"
+  detail: >-
+    Duricic, T. (2015) Real-time recommendations based on social trust. Master
+    thesis, University of Zagreb, Faculty of Electrical Engineering and
+    Computing, in cooperation with the Know-Center in Graz, Austria.

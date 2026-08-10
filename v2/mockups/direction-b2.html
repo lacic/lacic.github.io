@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B2 — Lab notebook, adapted — elacic.me v2 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* notebook neutrals — the site's own voice */
+  --grid:#EDF1F4;
+  --ink:#1B1A19;          /* Infobip --color-black */
+  --pencil:#6D6C6C;       /* Infobip grey-600 */
+  --paper:#FBFCFD;
+  --accent:#FC6423;       /* Infobip --color-brand */
+
+  --rule:rgba(27,26,25,.16);
+  --rule-soft:rgba(27,26,25,.09);
+  --ink-70:rgba(27,26,25,.74);
+
+  /* Infobip brand pairs — used only in the AIR research-areas image */
+  --ib-dkblue:#17283A;  --ib-blue:#9EB2FF;
+  --ib-dkgreen:#053133; --ib-green:#CBEA99;
+  --ib-dkpink:#32232F;  --ib-pink:#FFA8EB;
+  --ib-dkbrand:#2D2C2B; --ib-brand:#FC6423;
+  --ib-lightblue:#EEF2FC;
+
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,serif;
+
+  --gutter:clamp(1.25rem,4.5vw,3.5rem);
+  --cell:26px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;color:var(--ink);font-family:var(--sans);
+  font-size:17.5px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  background-color:var(--grid);
+  background-image:
+    linear-gradient(to right,rgba(27,26,25,.055) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(27,26,25,.055) 1px,transparent 1px);
+  background-size:var(--cell) var(--cell);
+}
+a{color:inherit}
+.shell{max-width:1140px;margin:0 auto;padding:0 var(--gutter)}
+
+.flag{
+  position:fixed;top:0;left:0;right:0;z-index:99;background:var(--ink);color:var(--grid);
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  padding:7px var(--gutter);display:flex;justify-content:space-between;gap:1rem;
+}
+.flag b{color:var(--accent);font-weight:500}
+
+.sheet{background:var(--paper);border:1px solid var(--rule);margin:31px auto 3rem;max-width:1140px}
+.sheet > * + *{border-top:1px solid var(--rule-soft)}
+
+.masthead{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:.9rem var(--gutter);border-bottom:1px solid var(--rule)!important}
+.wordmark{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+.wordmark s{text-decoration:none;color:var(--accent)}
+.masthead nav{display:flex;gap:1.4rem;font-family:var(--mono);font-size:12px}
+.masthead nav a{color:var(--pencil);text-decoration:none;border-bottom:1px dotted var(--rule)}
+.masthead nav a:hover{color:var(--accent);border-bottom-style:solid;border-bottom-color:var(--accent)}
+
+.block{padding:clamp(2.25rem,5vw,3.5rem) var(--gutter)}
+.hdr{display:flex;align-items:baseline;gap:1rem;justify-content:space-between;font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--pencil);margin:0 0 1.9rem}
+.hdr .n{color:var(--accent)}
+.hdr a{color:var(--pencil);text-decoration:none;border-bottom:1px solid var(--rule)}
+.hdr a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 15rem;gap:clamp(1.5rem,4vw,3rem)}
+.statement{font-family:var(--sans);font-weight:500;font-size:clamp(1.85rem,4.2vw,3.1rem);line-height:1.14;letter-spacing:-.021em;margin:0;max-width:24ch;text-wrap:balance}
+.statement u{text-decoration:none;background:linear-gradient(transparent 62%,rgba(252,100,35,.26) 62%);padding:0 .06em}
+.annot{font-family:var(--mono);font-size:11.5px;line-height:1.62;color:var(--pencil);border-left:2px solid var(--accent);padding-left:.85rem;align-self:end}
+.annot b{color:var(--ink);font-weight:500;display:block;margin-bottom:.35rem}
+.hero-foot{margin-top:2.4rem;display:flex;flex-wrap:wrap;gap:1.15rem 2rem;align-items:center}
+/* research keywords, set like the keyword line of a paper */
+.keywords{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem}
+.kwlabel{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--pencil);margin-right:.2rem}
+.kw{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink-70);border:1px solid var(--rule);padding:.3em .55em;white-space:nowrap}
+.cta{font-family:var(--mono);font-size:12.5px;text-decoration:none;color:var(--paper);background:var(--ink);padding:.68em 1.05em;display:inline-flex;gap:.6em;align-items:center;transition:background .18s ease;border:0;cursor:pointer}
+.cta::after{content:"→";color:var(--accent)}
+.cta:hover{background:var(--accent)}
+.cta:hover::after{color:var(--ink)}
+
+/* log */
+.log{list-style:none;margin:0;padding:0;font-family:var(--mono)}
+.log li + li{border-top:1px dotted var(--rule)}
+.log a{display:grid;grid-template-columns:6.8rem 1fr auto;gap:1.4rem;align-items:baseline;padding:.95rem 0;text-decoration:none}
+.log .stamp{font-size:11.5px;color:var(--pencil);white-space:nowrap;font-variant-numeric:tabular-nums}
+.log .t{font-family:var(--sans);font-size:1.02rem;line-height:1.38;max-width:46ch}
+.log a:hover .t{color:var(--accent)}
+.log .meta{font-size:11px;color:var(--pencil);white-space:nowrap}
+.log .rev{color:var(--accent)}
+
+/* ============ AIR: single research-areas image ============ */
+.air-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(1.75rem,4vw,3.25rem);align-items:center}
+.lede{font-family:var(--serif);font-size:1.12rem;line-height:1.58;margin:0 0 1.1rem}
+.hand{font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--pencil);margin:0 0 1.3rem;padding-left:.85rem;border-left:2px solid var(--rule)}
+
+.air-figure{margin:0}
+.air-figure img{display:block;width:100%;height:auto;max-width:640px;margin-inline:auto}
+.air-figure figcaption{margin:1rem 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--pencil);text-align:center}
+
+/* ============ papers: pdf / poster / cite ============ */
+.tbl{width:100%;border-collapse:collapse;font-size:.99rem}
+.tbl th{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--pencil);font-weight:500;text-align:left;padding:0 .8rem .6rem 0;border-bottom:1px solid var(--rule)}
+.tbl td{padding:.9rem .8rem .9rem 0;border-bottom:1px dotted var(--rule);vertical-align:baseline}
+.tbl .idx{font-family:var(--mono);font-size:11.5px;color:var(--pencil);width:2.4rem}
+.tbl .ttl a{text-decoration:none;line-height:1.35;display:block;max-width:46ch}
+.tbl .ttl a:hover{color:var(--accent)}
+.tbl .vn{font-family:var(--mono);font-size:11.5px;color:var(--ink-70);white-space:nowrap;width:8.5rem;line-height:1.45}
+.tbl .vn .kind{display:block;font-size:10px;color:var(--pencil);letter-spacing:.04em}
+
+.acts{width:13.5rem;white-space:nowrap;text-align:right}
+.act{
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--pencil);
+  text-decoration:none;background:none;border:1px solid var(--rule);cursor:pointer;
+  padding:.34em .58em;margin-left:.3rem;display:inline-block;line-height:1.3;
+  transition:border-color .16s ease,color .16s ease;
+}
+.act:hover,.act:focus-visible{color:var(--accent);border-color:var(--accent)}
+.act[disabled]{opacity:.4;cursor:default}
+.act[disabled]:hover{color:var(--pencil);border-color:var(--rule)}
+
+.citewrap{position:relative;display:inline-block}
+.pop{
+  position:absolute;right:0;top:calc(100% + .35rem);z-index:30;
+  background:var(--ink);border:1px solid var(--ink);padding:.3rem;
+  display:flex;gap:.25rem;box-shadow:0 8px 22px rgba(27,26,25,.22);
+}
+.pop[hidden]{display:none}
+.pop button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;
+  background:none;border:0;color:var(--grid);padding:.42em .7em;cursor:pointer;white-space:nowrap;
+}
+.pop button:hover,.pop button:focus-visible{background:var(--accent);color:var(--ink)}
+.note{margin-top:1rem;font-family:var(--mono);font-size:10.5px;color:var(--pencil);letter-spacing:.05em}
+.live{position:fixed;bottom:1.1rem;left:50%;transform:translateX(-50%) translateY(1rem);z-index:120;background:var(--ink);color:var(--grid);font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;padding:.6em 1em;opacity:0;transition:opacity .2s ease,transform .2s ease;pointer-events:none}
+.live.on{opacity:1;transform:translateX(-50%)}
+
+/* ============ career: grouped by organisation ============ */
+.roles{list-style:none;margin:0;padding:0;position:relative}
+.org{display:grid;grid-template-columns:5.6rem 1fr;gap:1rem;padding:.85rem 0;border-bottom:1px dotted var(--rule);position:relative}
+.org > .yr{font-family:var(--mono);font-size:11.5px;color:var(--pencil);padding-top:.25em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.org .who{font-weight:600;font-size1:1rem;display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+.org .place{font-family:var(--mono);font-size:10.5px;color:var(--pencil);letter-spacing:.04em;font-weight:400;text-transform:uppercase}
+.org .inner{list-style:none;margin:.35rem 0 0;padding:0}
+.org .inner li{display:grid;grid-template-columns:4.6rem 1fr;gap:.8rem;padding:.18rem 0;font-size:.94rem;color:var(--ink-70)}
+.org .inner .ry{font-family:var(--mono);font-size:11px;color:var(--pencil);font-variant-numeric:tabular-nums;padding-top:.28em}
+/* concurrent engagement: indented and marked, so it reads as parallel not sequential */
+.org .inner li.aside{margin-top:.3rem;padding-left:.9rem;border-left:1px dashed var(--rule);grid-template-columns:3.7rem 1fr;font-size:.89rem}
+.vmark{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--pencil);border:1px solid var(--rule);padding:.1em .35em;margin-right:.35rem;white-space:nowrap}
+
+/* education */
+.edu{list-style:none;margin:0;padding:0}
+.edu li{padding:.7rem 0;border-bottom:1px dotted var(--rule)}
+.edu .top{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem}
+.edu .what{font-size:.95rem;font-weight:500;max-width:30ch}
+.edu .what em{font-style:normal;color:var(--accent);font-weight:400;font-family:var(--mono);font-size:11px;letter-spacing:.03em;white-space:nowrap}
+.edu .when{font-family:var(--mono);font-size:12px;color:var(--pencil);font-variant-numeric:tabular-nums}
+.edu .sub{font-family:var(--mono);font-size:10.5px;color:var(--pencil);letter-spacing:.03em;margin:.15rem 0 0}
+.edu .eacts{margin:.5rem 0 .1rem;display:flex;gap:.3rem}
+.edu .eacts .act{margin-left:0}
+.hdr.stacked{margin-top:2.25rem}
+
+/* funding */
+.fund{list-style:none;margin:0;padding:0}
+.fund li{padding:.7rem 0;border-bottom:1px dotted var(--rule)}
+.fund .top{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem}
+.fund .what{font-size:.95rem;font-weight:500}
+.fund .amt{font-family:var(--mono);font-size:12px;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.fund .amt.na{color:var(--pencil)}
+.fund .sub{font-family:var(--mono);font-size:10.5px;color:var(--pencil);letter-spacing:.03em;margin:.15rem 0 0}
+.org.cur > .yr{color:var(--accent)}
+.org.cur .who{color:var(--ink)}
+.org .single{font-size:.94rem;color:var(--ink-70);margin:.15rem 0 0}
+
+/* early career: same structure, quieter, so the recent roles still lead */
+.org.early{padding:.55rem 0}
+.org.early .who{font-weight:500;font-size:.95rem}
+.org.early .single{font-size:.88rem;color:var(--pencil)}
+
+.close{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(1.75rem,4.5vw,3.5rem)}
+.collab h2{font-family:var(--sans);font-weight:500;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.15;letter-spacing:-.018em;margin:0 0 .85rem;max-width:20ch}
+.collab p{font-family:var(--serif);color:var(--ink-70);margin:0 0 1.4rem;max-width:40ch;font-size:1rem}
+
+footer{padding:1.6rem var(--gutter);display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--pencil);background:var(--grid);border-top:1px solid var(--rule)!important}
+footer a{color:var(--pencil);text-decoration:none;border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+footer .set{display:flex;gap:1.3rem;flex-wrap:wrap}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+@media (max-width:880px){
+  .hero,.air-grid,.close{grid-template-columns:1fr}
+  .annot{border-left:none;border-top:2px solid var(--accent);padding:.8rem 0 0}
+  .log a{grid-template-columns:1fr;gap:.3rem}
+  .log .stamp{order:-1}
+  .masthead nav{display:none}
+  .tbl .vn{display:none}
+  .acts{width:auto}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="flag">
+  <span>Direction B2 — <b>Lab notebook, adapted</b></span>
+  <span>8 research areas, real Infobip icons · cite → clipboard works</span>
+</div>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <a class="wordmark" href="#">E<s>.</s>LACIĆ — NOTEBOOK</a>
+    <nav>
+      <a href="#now">updates</a><a href="#air">air</a><a href="#work">papers</a>
+      <a href="#talks">talks</a><a href="#cv">cv</a>
+    </nav>
+  </header>
+
+  <section class="block">
+    <div class="hero">
+      <h1 class="statement">I lead <u>Team AI Research</u> at Infobip. We do applied AI for communication at global scale.</h1>
+      <p class="annot"><b>Working note</b>Most of what we try does not work. This site is where I write down which parts did, and why the difference was rarely the model.</p>
+    </div>
+    <div class="hero-foot">
+      <a class="cta" href="#now">Read the latest</a>
+      <div class="keywords">
+        <span class="kwlabel">Keywords</span>
+        <span class="kw">Recommender systems</span>
+        <span class="kw">Generative AI &amp; LLMs</span>
+        <span class="kw">Fairness &amp; bias</span>
+        <span class="kw">Real-time personalization</span>
+        <span class="kw">Information retrieval</span>
+        <span class="kw">Evaluation &amp; reproducibility</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="now">
+    <p class="hdr"><span><span class="n">01</span> &nbsp;Log</span> <a href="#">all updates →</a></p>
+    <ul class="log">
+      <li><a href="#"><span class="stamp">2026-08-10</span><span class="t">The phone codec behind most calls favors male voices by a full standard deviation</span><span class="meta">field note · 6 min</span></a></li>
+      <li><a href="#"><span class="stamp">2026-07-21</span><span class="t">Semantic Scholar MCP, part 3: replacing the MCP with a skill?</span><span class="meta"><span class="rev">series 3/3</span> · 11 min</span></a></li>
+      <li><a href="#"><span class="stamp">2026-07-01</span><span class="t">Semantic Scholar MCP, part 2: benchmarking what the agent actually retrieves</span><span class="meta"><span class="rev">series 2/3</span> · 9 min</span></a></li>
+    </ul>
+  </section>
+
+  <section class="block" id="air">
+    <p class="hdr"><span><span class="n">02</span> &nbsp;Team AI Research (AIR)</span> <a href="#">about the team →</a></p>
+    <div class="air-grid">
+      <div>
+        <p class="lede">AIR is the R&amp;D team inside Infobip — applied research on messaging, voice and customer engagement, running on a platform that carries a large share of the world's business communication.</p>
+        <p class="hand">The distance between a result that holds in a paper and one that holds on live traffic is the whole job. Closing it is what the team is for.</p>
+        <a class="cta" href="#">Read what AI Research is working on</a>
+      </div>
+      <figure class="air-figure">
+        <img src="air-areas.png" width="1240" height="620"
+             alt="The eight AIR research areas: Human-AI Collaboration, Trustworthy AI, Conversational AI, AI-powered Communication, Fraud Detection, Spam Filtering, Voice AI, and Generative Models.">
+        <figcaption>Eight research areas</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <p class="hdr"><span><span class="n">03</span> &nbsp;Selected work</span> <a href="#">all 33 papers →</a></p>
+    <table class="tbl">
+      <thead><tr><th></th><th>Title</th><th>Published in</th><th class="acts">Get</th></tr></thead>
+      <tbody>
+        <tr
+          data-bibtex="@inproceedings{lacic2023uptrendz,
+  title     = {Uptrendz: API-Centric Real-Time Recommendations in Multi-Domain Settings},
+  author    = {Laci{'c}, Emanuel and Duricic, Tomislav and Fadljevic, Leon and Theiler, Dieter and Kowald, Dominik},
+  booktitle = {Proceedings of the 45th European Conference on Information Retrieval (ECIR'23)},
+  year      = {2023},
+  publisher = {Springer}
+}"
+          data-apa="Lacić, E., Duricic, T., Fadljevic, L., Theiler, D., & Kowald, D. (2023). Uptrendz: API-Centric Real-Time Recommendations in Multi-Domain Settings. In Proceedings of the 45th European Conference on Information Retrieval (ECIR'23). Springer.">
+          <td class="idx">01</td>
+          <td class="ttl"><a href="#">Uptrendz: API-Centric Real-Time Recommendations in Multi-Domain Settings</a></td>
+          <td class="vn">ECIR 2023<span class="kind">conference · Springer</span></td>
+          <td class="acts">
+            <a class="act" href="#">pdf</a><a class="act" href="#">poster</a>
+            <span class="citewrap">
+              <button class="act cite" aria-expanded="false" aria-haspopup="true">cite</button>
+              <span class="pop" hidden><button data-copy="bibtex">BibTeX</button><button data-copy="apa">APA</button></span>
+            </span>
+          </td>
+        </tr>
+        <tr
+          data-bibtex="@inproceedings{lacic2022readership,
+  title     = {What Drives Readership? An Online Study on User Interface Types and Popularity Bias Mitigation in News Article Recommendations},
+  author    = {Laci{'c}, Emanuel and Fadljevic, Leon and Weissenb{\o}ck, Franz and Lindstaedt, Stefanie and Kowald, Dominik},
+  booktitle = {Proceedings of the 44th European Conference on Information Retrieval (ECIR'22)},
+  year      = {2022},
+  publisher = {Springer}
+}"
+          data-apa="Lacić, E., Fadljevic, L., Weissenböck, F., Lindstaedt, S., & Kowald, D. (2022). What Drives Readership? An Online Study on User Interface Types and Popularity Bias Mitigation in News Article Recommendations. In Proceedings of the 44th European Conference on Information Retrieval (ECIR'22). Springer.">
+          <td class="idx">02</td>
+          <td class="ttl"><a href="#">What Drives Readership? User Interface Types and Popularity Bias Mitigation in News Recommendation</a></td>
+          <td class="vn">ECIR 2022<span class="kind">conference · Springer</span></td>
+          <td class="acts">
+            <a class="act" href="#">pdf</a><a class="act" href="#">poster</a>
+            <span class="citewrap">
+              <button class="act cite" aria-expanded="false" aria-haspopup="true">cite</button>
+              <span class="pop" hidden><button data-copy="bibtex">BibTeX</button><button data-copy="apa">APA</button></span>
+            </span>
+          </td>
+        </tr>
+        <tr
+          data-bibtex="@article{lacic2020autoencoders,
+  title   = {Using Autoencoders for Session-based Job Recommendations},
+  author  = {Laci{'c}, Emanuel and Reiter-Haas, Markus and Kowald, Dominik and Dareddy, Manoj and Cho, Junghoo and Lex, Elisabeth},
+  journal = {User Modeling and User-Adapted Interaction (UMUAI)},
+  year    = {2020},
+  publisher = {Springer}
+}"
+          data-apa="Lacić, E., Reiter-Haas, M., Kowald, D., Dareddy, M., Cho, J., & Lex, E. (2020). Using Autoencoders for Session-based Job Recommendations. User Modeling and User-Adapted Interaction (UMUAI). Springer.">
+          <td class="idx">03</td>
+          <td class="ttl"><a href="#">Using Autoencoders for Session-based Job Recommendations</a></td>
+          <td class="vn">UMUAI 2020<span class="kind">journal · Springer</span></td>
+          <td class="acts">
+            <a class="act" href="#">pdf</a><button class="act" disabled title="No poster">poster</button>
+            <span class="citewrap">
+              <button class="act cite" aria-expanded="false" aria-haspopup="true">cite</button>
+              <span class="pop" hidden><button data-copy="bibtex">BibTeX</button><button data-copy="apa">APA</button></span>
+            </span>
+          </td>
+        </tr>
+        <tr
+          data-bibtex="@inproceedings{lacic2019embed,
+  title     = {Should we Embed? A Study on the Online Performance of Utilizing Embeddings for Real-Time Job Recommendations},
+  author    = {Laci{'c}, Emanuel and Reiter-Haas, Markus and Duricic, Tomislav and Slawicek, Valentin and Lex, Elisabeth},
+  booktitle = {Proceedings of the 13th ACM Conference on Recommender Systems (RecSys'19)},
+  year      = {2019},
+  publisher = {ACM}
+}"
+          data-apa="Lacić, E., Reiter-Haas, M., Duricic, T., Slawicek, V., & Lex, E. (2019). Should we Embed? A Study on the Online Performance of Utilizing Embeddings for Real-Time Job Recommendations. In Proceedings of the 13th ACM Conference on Recommender Systems (RecSys'19). ACM.">
+          <td class="idx">04</td>
+          <td class="ttl"><a href="#">Should we Embed? Online Performance of Embeddings for Real-Time Job Recommendations</a></td>
+          <td class="vn">RecSys 2019<span class="kind">conference · ACM</span></td>
+          <td class="acts">
+            <a class="act" href="#">pdf</a><a class="act" href="#">poster</a>
+            <span class="citewrap">
+              <button class="act cite" aria-expanded="false" aria-haspopup="true">cite</button>
+              <span class="pop" hidden><button data-copy="bibtex">BibTeX</button><button data-copy="apa">APA</button></span>
+            </span>
+          </td>
+        </tr>
+        <tr
+          data-bibtex="@incollection{lacic2015marketplaces,
+  title     = {Utilizing Online Social Network and Location-Based Data to Recommend Products and Categories in Online Marketplaces},
+  author    = {Laci{'c}, Emanuel and Kowald, Dominik and Eberhard, Lukas and Trattner, Christoph and Parra, Denis and Marinho, Leandro Balby},
+  booktitle = {Mining, Modeling, and Recommending 'Things' in Social Media},
+  pages     = {96--115},
+  year      = {2015},
+  publisher = {Springer International Publishing}
+}"
+          data-apa="Lacić, E., Kowald, D., Eberhard, L., Trattner, C., Parra, D., & Marinho, L. B. (2015). Utilizing online social network and location-based data to recommend products and categories in online marketplaces. In Mining, Modeling, and Recommending 'Things' in Social Media (pp. 96–115). Springer International Publishing.">
+          <td class="idx">05</td>
+          <td class="ttl"><a href="#">Utilizing Online Social Network and Location-Based Data to Recommend Products in Online Marketplaces</a></td>
+          <td class="vn">MMSM 2015<span class="kind">book chapter · Springer</span></td>
+          <td class="acts">
+            <a class="act" href="#">pdf</a><button class="act" disabled title="No poster">poster</button>
+            <span class="citewrap">
+              <button class="act cite" aria-expanded="false" aria-haspopup="true">cite</button>
+              <span class="pop" hidden><button data-copy="bibtex">BibTeX</button><button data-copy="apa">APA</button></span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">Five of 33, newest first. &nbsp;·&nbsp; <a href="#" style="color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)">15 deployed systems live in the project portfolio →</a></p>
+  </section>
+
+  <section class="block" id="talks">
+    <p class="hdr"><span><span class="n">04</span> &nbsp;Talks</span> <a href="#">all talks →</a></p>
+    <ul class="log">
+      <li><a href="#"><span class="stamp">2024-09</span><span class="t">Shift'24 Zadar — building with LLMs when the answer has to be right</span><span class="meta">slides pdf</span></a></li>
+      <li><a href="#"><span class="stamp">2024-04</span><span class="t">Shift'24 Miami — the copilot nobody asked for, and the one they did</span><span class="meta">slides pdf</span></a></li>
+    </ul>
+  </section>
+
+  <section class="block" id="cv">
+    <div class="close">
+      <div>
+        <p class="hdr"><span><span class="n">05</span> &nbsp;Career in brief</span> <a href="#">full cv →</a></p>
+        <ul class="roles">
+          <li class="org cur">
+            <span class="yr">2023 —</span>
+            <div>
+              <div class="who">Infobip <span class="place">Zagreb</span></div>
+              <p class="single">Principal Engineer — founded and lead Team AI Research</p>
+            </div>
+          </li>
+          <li class="org">
+            <span class="yr">2016—2023</span>
+            <div>
+              <div class="who">Know-Center <span class="place">Graz · 7 years, 2 roles</span></div>
+              <ul class="inner">
+                <li><span class="ry">2021—23</span><span>Operations Area Manager, Fair-AI division</span></li>
+                <li><span class="ry">2016—20</span><span>Senior Researcher &amp; Recommender Systems Architect</span></li>
+                <li class="aside"><span class="ry">2018</span><span><span class="vmark">visiting</span> Visiting researcher, <b>UCLA</b> Computer Science — Marshall Plan Fellowship</span></li>
+              </ul>
+            </div>
+          </li>
+          <li class="org">
+            <span class="yr">2013—2016</span>
+            <div>
+              <div class="who">TU Graz <span class="place">Graz</span></div>
+              <p class="single">University &amp; Project Assistant — EU project Learning Layers</p>
+            </div>
+          </li>
+          <li class="org early">
+            <span class="yr">2013</span>
+            <div>
+              <div class="who">1&amp;1 Internet AG <span class="place">Karlsruhe</span></div>
+              <p class="single">Junior Software Developer — Ruby, data-centre management tooling</p>
+            </div>
+          </li>
+          <li class="org early">
+            <span class="yr">2012</span>
+            <div>
+              <div class="who">FZI Forschungszentrum Informatik <span class="place">Karlsruhe</span></div>
+              <p class="single">Java Developer — EU FP7 project Mirror</p>
+            </div>
+          </li>
+          <li class="org early">
+            <span class="yr">2011—2012</span>
+            <div>
+              <div class="who">Infobip <span class="place">Zagreb</span></div>
+              <p class="single">Software Engineer — mobile cloud services (SMS, HLR, USSD)</p>
+            </div>
+          </li>
+          <li class="org early">
+            <span class="yr">2010</span>
+            <div>
+              <div class="who">Ericsson <span class="place">Zagreb</span></div>
+              <p class="single">Java Developer — primary healthcare information system</p>
+            </div>
+          </li>
+        </ul>
+        <p class="note">Grouped by organisation; roles nested where a tenure covers more than one.</p>
+      </div>
+      <div>
+        <p class="hdr"><span><span class="n">06</span> &nbsp;Education</span> <a href="#">cv →</a></p>
+        <ul class="edu">
+          <li>
+            <div class="top"><span class="what">PhD, Computer Science <em>with distinction</em></span> <span class="when">2022</span></div>
+            <p class="sub">Graz University of Technology · Graz</p>
+            <p class="eacts"><a class="act" href="#">thesis</a><a class="act" href="#">defence slides</a></p>
+          </li>
+          <li>
+            <div class="top"><span class="what">M.Sc., Software Engineering &amp; Information Systems</span> <span class="when">2012</span></div>
+            <p class="sub">University of Zagreb, FER · final year at Karlsruhe Institute of Technology</p>
+          </li>
+          <li>
+            <div class="top"><span class="what">B.Sc., Software Engineering &amp; Information Systems</span> <span class="when">2010</span></div>
+            <p class="sub">University of Zagreb, FER · Zagreb</p>
+          </li>
+        </ul>
+
+        <p class="hdr stacked"><span><span class="n">07</span> &nbsp;Funding &amp; fellowships</span> <a href="#">all →</a></p>
+        <ul class="fund">
+          <li>
+            <div class="top"><span class="what">IPCEI-CIS</span> <span class="amt na">EU programme</span></div>
+            <p class="sub">2026— · Multi-country EU research project · Infobip research lead</p>
+          </li>
+          <li>
+            <div class="top"><span class="what">EDIH Adria</span> <span class="amt na">EU programme</span></div>
+            <p class="sub">2023— · European Digital Innovation Hub · partner</p>
+          </li>
+          <li>
+            <div class="top"><span class="what">Data Market Austria</span> <span class="amt">€286,000</span></div>
+            <p class="sub">2015 · IKT der Zukunft · secured for Know-Center as technology contributor</p>
+          </li>
+          <li>
+            <div class="top"><span class="what">Marshall Plan Fellowship</span> <span class="amt na">fellowship</span></div>
+            <p class="sub">2018 · Individual research grant · UCLA, Los Angeles</p>
+          </li>
+        </ul>
+        <p class="note">Amounts shown where public. Awards and honours live on the CV.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="collab">
+      <p class="hdr"><span><span class="n">08</span> &nbsp;Collaborate</span></p>
+      <h2>Working on something adjacent?</h2>
+      <p>Joint agendas, pilots, student theses, or a paper that needs an industrial testbed — those are the conversations worth having.</p>
+      <a class="cta" href="#">Get in touch</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dr. Emanuel Lacić · Zagreb</span>
+    <span class="set">
+      <a href="#">Scholar</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
+      <a href="#">research.infobip.com</a><a href="#">RSS</a>
+    </span>
+  </footer>
+
+</div>
+
+<div class="live" id="live" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var open = null;
+  var live = document.getElementById('live');
+  var timer;
+
+  function shout(msg){
+    live.textContent = msg;
+    live.classList.add('on');
+    clearTimeout(timer);
+    timer = setTimeout(function(){ live.classList.remove('on'); }, 1900);
+  }
+
+  function close(){
+    if(!open) return;
+    open.pop.hidden = true;
+    open.btn.setAttribute('aria-expanded','false');
+    open = null;
+  }
+
+  document.querySelectorAll('.citewrap').forEach(function(wrap){
+    var btn = wrap.querySelector('.cite');
+    var pop = wrap.querySelector('.pop');
+    var row = wrap.closest('tr');
+
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var wasOpen = open && open.pop === pop;
+      close();
+      if(wasOpen) return;
+      pop.hidden = false;
+      btn.setAttribute('aria-expanded','true');
+      open = {pop:pop, btn:btn};
+    });
+
+    pop.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        var fmt = b.dataset.copy;
+        var text = row.dataset[fmt] || '';
+        navigator.clipboard.writeText(text).then(function(){
+          shout(fmt === 'bibtex' ? 'BibTeX copied' : 'APA citation copied');
+        }, function(){
+          shout('Copy failed — select and copy manually');
+        });
+        close();
+      });
+    });
+  });
+
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
+</script>
+
+</body>
+</html>

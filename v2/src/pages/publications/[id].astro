@@ -1,0 +1,298 @@
+---
+/**
+ * One page per paper that has a plain-language note.
+ *
+ * This is the part v1 hid: 33 papers behind 33 PDFs, with no way to find out
+ * what any of them says without downloading it. The note answers "is this worth
+ * my time" in a couple of minutes, and gives the paper a linkable home that is
+ * not a PDF — which is also what makes it findable.
+ *
+ * Papers without a note deliberately get no page. An empty page is worse than
+ * a row in the list that links straight to the PDF.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CiteScript from '../../components/CiteScript.astro';
+import { isSelf, toApa, toBibtex, venueLine } from '../../lib/citation';
+import { getPosts } from '../../lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const notes = await getCollection('paperNotes');
+  return notes.map((note) => ({ params: { id: note.data.paper.id }, props: { note } }));
+};
+
+interface Props {
+  note: CollectionEntry<'paperNotes'>;
+}
+
+const { note } = Astro.props;
+const paper = await getEntry(note.data.paper);
+if (!paper) throw new Error(`Paper note "${note.id}" references a publication that does not exist.`);
+
+const { Content } = await render(note);
+const p = paper.data;
+
+// Posts that discuss this paper, so the note and the commentary find each other.
+const related = (await getPosts()).filter((post) => post.data.paper?.id === paper.id);
+
+const authors = p.authors;
+const apa = toApa(p);
+const bibtex = toBibtex(p);
+---
+
+<Base title={p.title} description={`${venueLine(p)} — plain-language summary of "${p.title}" by ${authors.join(', ')}.`}>
+  <article class="block">
+    <p class="stamps">
+      <a href="/publications">Publications</a>
+      <span>/</span>
+      <span>{venueLine(p)}</span>
+    </p>
+
+    <h1>{p.title}</h1>
+
+    <p class="authors">
+      {
+        authors.map((author, i) => (
+          <>
+            {i > 0 && ', '}
+            {isSelf(author) ? <b>{author}</b> : author}
+          </>
+        ))
+      }
+    </p>
+
+    <div class="meta">
+      <dl>
+        <div>
+          <dt>Published in</dt>
+          <dd>{p.venue.full ?? p.venue.name}</dd>
+        </div>
+        <div>
+          <dt>Year</dt>
+          <dd>{p.year}</dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd>{p.venue.kind.replace('-', ' ')}{p.venue.colocatedWith && ` · co-located with ${p.venue.colocatedWith}`}</dd>
+        </div>
+        {p.venue.publisher && (
+          <div>
+            <dt>Publisher</dt>
+            <dd>{p.venue.publisher}</dd>
+          </div>
+        )}
+        {p.doi && (
+          <div>
+            <dt>DOI</dt>
+            <dd><a href={`https://doi.org/${p.doi}`}>{p.doi}</a></dd>
+          </div>
+        )}
+      </dl>
+      <p class="acts">
+        {p.pdf && <a class="act" href={p.pdf}>PDF</a>}
+        {p.poster && <a class="act" href={p.poster}>poster</a>}
+        {p.slides && <a class="act" href={p.slides}>slides</a>}
+        <button class="act cite" type="button" aria-haspopup="true" aria-expanded="false" data-bibtex={bibtex} data-apa={apa}>
+          cite
+        </button>
+      </p>
+    </div>
+
+    <p class="lede">In plain language</p>
+    <div class="prose">
+      <Content />
+    </div>
+
+    <details class="cites">
+      <summary>Citation</summary>
+      <h2>APA</h2>
+      <p class="apa">{apa}</p>
+      <h2>BibTeX</h2>
+      <pre>{bibtex}</pre>
+    </details>
+
+    {
+      related.length > 0 && (
+        <section class="related">
+          <h2>Written about</h2>
+          <ul>
+            {related.map((post) => (
+              <li>
+                <a href={`/updates/${post.id}`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <p class="back"><a href="/publications">← All publications</a></p>
+  </article>
+
+  <CiteScript />
+</Base>
+
+<style>
+  .stamps {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    color: var(--pencil);
+    margin: 0 0 1.3rem;
+  }
+  .stamps a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  h1 {
+    font-size: clamp(1.45rem, 3.2vw, 2.1rem);
+    font-weight: 500;
+    margin: 0 0 0.7rem;
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+  .authors {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--ink-70);
+    margin: 0 0 1.75rem;
+    max-width: 60ch;
+  }
+  .authors b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .meta {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 1.1rem 0;
+    margin-bottom: 2.25rem;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem 1.75rem;
+    margin: 0 0 1rem;
+  }
+  dt {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin-bottom: 0.2rem;
+  }
+  dd {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  dd a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .acts {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  .lede {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.6rem;
+  }
+  /* The note's own H1 repeats the paper title, which is already the page H1. */
+  .prose :global(h1) {
+    display: none;
+  }
+
+  .cites {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+    max-width: var(--measure);
+  }
+  .cites summary {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    cursor: pointer;
+  }
+  .cites h2 {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin: 1.25rem 0 0.4rem;
+  }
+  .apa {
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .cites pre {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    background: var(--grid);
+    border: 1px solid var(--rule-soft);
+    padding: 0.9rem;
+    overflow-x: auto;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .related {
+    margin-top: 2.25rem;
+  }
+  .related h2 {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin: 0 0 0.5rem;
+  }
+  .related ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .back {
+    margin: 2.25rem 0 0;
+    font-family: var(--mono);
+    font-size: 11.5px;
+  }
+  .back a {
+    color: var(--pencil);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .back a:hover,
+  .back a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+</style>
