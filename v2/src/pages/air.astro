@@ -13,10 +13,10 @@
  * duplicating.
  */
 import Base from '../layouts/Base.astro';
-import AirFigure from '../components/AirFigure.astro';
+import AirCarousel from '../components/AirCarousel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import PostList from '../components/PostList.astro';
-import { profile, researchAreas } from '../data/profile';
+import { profile } from '../data/profile';
 import { getPosts } from '../lib/content';
 
 const posts = (await getPosts()).filter((post) => post.data.tags.includes('air')).slice(0, 4);
@@ -36,17 +36,7 @@ const description =
 
   <section class="block">
     <SectionHeader n="01" label="What we work on" />
-    <AirFigure link={false} />
-    <ol class="areas">
-      {
-        researchAreas.map((area) => (
-          <li>
-            <h3>{area.name}</h3>
-            <p>{area.summary}</p>
-          </li>
-        ))
-      }
-    </ol>
+    <AirCarousel />
     <p class="note">
       The team publishes its own work at <a href={profile.links.infobipResearch}>research.infobip.com</a>, which is
       the canonical source for anything team-authored.
@@ -126,43 +116,6 @@ const description =
     border-radius: 50%;
     background: var(--accent);
   }
-  .areas {
-    list-style: none;
-    counter-reset: area;
-    margin: 2.25rem 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem 2.5rem;
-  }
-  .areas li {
-    counter-increment: area;
-    border-top: 1px solid var(--rule);
-    padding-top: 0.9rem;
-  }
-  .areas h3 {
-    font-size: 0.98rem;
-    font-weight: 600;
-    margin: 0 0 0.35rem;
-    display: flex;
-    gap: 0.6rem;
-    align-items: baseline;
-  }
-  .areas h3::before {
-    content: counter(area, decimal-leading-zero);
-    font-family: var(--mono);
-    font-size: 10.5px;
-    font-weight: 400;
-    color: var(--accent-ink);
-  }
-  .areas p {
-    font-family: var(--serif);
-    font-size: 0.92rem;
-    line-height: 1.6;
-    color: var(--ink-70);
-    margin: 0;
-  }
-
   .two {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);

@@ -40,15 +40,12 @@ const Wrapper = link ? 'a' : 'div';
   }
   .frame {
     display: block;
-    border: 1px solid var(--rule);
-    background: var(--grid);
-    padding: clamp(0.6rem, 1.6vw, 1.1rem);
     text-decoration: none;
-    transition: border-color 0.18s ease;
+    transition: opacity 0.18s ease;
   }
   a.frame:hover,
   a.frame:focus-visible {
-    border-color: var(--accent);
+    opacity: 0.85;
   }
   .frame img {
     display: block;

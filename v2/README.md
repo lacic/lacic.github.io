@@ -37,7 +37,7 @@ src/
   content.config.ts     Schemas for all content. The contract everything else relies on.
   data/
     profile.ts          Singletons: identity, career, education, funding, awards, AIR areas
-    publications.yml    33 papers — the single source for the list AND the citations
+    publications.yml    Every paper — the single source for the list AND the citations
     talks.yml           Talks and slides
     projects.yml        Research software and case studies
     service.yml         Programme committees, reviewing, editorial, supervision

@@ -24,6 +24,18 @@ import { education } from '../data/profile';
               ))}
             </span>
           )}
+          {'aside' in item && item.aside && (
+            <span class="aside">
+              <span class="aside-year">{item.aside.year}</span>
+              <span class="aside-body">
+                <span class="aside-title">
+                  {item.aside.title}
+                  {item.aside.tag && <span class="pill">{item.aside.tag}</span>}
+                </span>
+                <span class="where">{item.aside.detail}</span>
+              </span>
+            </span>
+          )}
         </span>
       </li>
     ))
@@ -71,11 +83,40 @@ import { education } from '../data/profile';
     margin-top: 0.45rem;
     flex-wrap: wrap;
   }
+  /* Part of the degree, not a separate line in the record: dashed and indented. */
+  .aside {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0 0.8rem;
+    margin: 0.55rem 0 0.15rem;
+    padding-left: 0.9rem;
+    border-left: 1px dashed var(--rule);
+  }
+  .aside-year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.1rem;
+  }
+  .aside-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
   @media (max-width: 620px) {
     .edu li {
       grid-template-columns: 1fr;
     }
     .year {
+      padding: 0;
+    }
+    .aside {
+      grid-template-columns: 1fr;
+    }
+    .aside-year {
       padding: 0;
     }
   }

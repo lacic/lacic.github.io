@@ -112,13 +112,6 @@ export const career: CareerEntry[] = [
         title: 'Senior Researcher & Recommender Systems Architect',
         detail: 'Management, lead development and consulting on industry recommender system projects.',
       },
-      {
-        years: '2018',
-        title: 'Visiting researcher, UCLA Computer Science',
-        detail: 'Marshall Plan Fellowship — session-based recommendation.',
-        concurrent: true,
-        tag: 'visiting',
-      },
     ],
   },
   {
@@ -171,6 +164,9 @@ export const career: CareerEntry[] = [
  * A separate block, deliberately not merged into the career timeline: the PhD
  * completed in 2022 while the Know-Center role was running, so a single merged
  * list would place a degree between two jobs and imply a career break.
+ *
+ * `aside` holds a stay that belongs to the degree rather than to a job — the
+ * UCLA visit was doctoral research abroad, not a change of employer.
  */
 export const education = [
   {
@@ -179,6 +175,12 @@ export const education = [
     institution: 'Graz University of Technology',
     place: 'Graz',
     year: 2022,
+    aside: {
+      year: '2018',
+      title: 'Visiting researcher, UCLA Computer Science',
+      detail: 'Marshall Plan Fellowship — session-based recommendation.',
+      tag: 'visiting',
+    },
     links: [
       { label: 'thesis', href: '/documents/2022_phd_cummulative_elacic.pdf' },
       { label: 'defence slides', href: '/documents/phd_rigorosum_short_slides.pdf' },
@@ -256,57 +258,108 @@ export const languages = [
 ] as const;
 
 /**
+ * Infobip's dark/bright colour pairs, one per area. `ink` is the tile
+ * background, `glow` the icon and name on top of it.
+ *
+ * tools/air/compose.html hard-codes the same four pairs, because it is a
+ * standalone HTML file rendered by headless Chrome and cannot import TypeScript.
+ * Change a value here and change it there too, or the carousel and the
+ * generated image will disagree.
+ */
+export const airPalettes = {
+  pink: { ink: '#32232F', glow: '#FFA8EB' },
+  green: { ink: '#053133', glow: '#CBEA99' },
+  blue: { ink: '#17283A', glow: '#9EB2FF' },
+  brand: { ink: '#2D2C2B', glow: '#FC6423' },
+} as const;
+
+export type AirPalette = keyof typeof airPalettes;
+
+/**
  * The eight AIR research areas, matching research.infobip.com/research.
- * The landing page shows these as one generated image and names them only.
- * The order here matches the order in the image (tools/air/compose.html).
+ * The landing page shows these as one generated image and names them only;
+ * /air walks through them one at a time in AirCarousel.astro.
+ * The order and the palettes here match the image (tools/air/compose.html).
+ *
+ * `icon` is a filename in public/icons/air/ rather than something derived from
+ * the slug, because the generative-models icon is filed under a different name
+ * than its area.
+ *
+ * `focus` holds the phrases the carousel emphasises — the payoff of the
+ * sentence, not the topic, which the tile title already gives. Each one must
+ * appear verbatim in `summary`; the build fails if it does not.
  */
 export const researchAreas = [
   {
     name: 'Human-AI Collaboration',
     slug: 'human-ai-collaboration',
+    icon: 'human-ai-collaboration.svg',
+    palette: 'pink',
     summary:
-      'How people work with AI-powered communication systems in practice: where trust forms, how individual differences and system explanations shape confidence, and what that implies for transparent and predictable design.',
+      'People trust AI communication systems unevenly. We study where that trust forms, and what it means for transparent, predictable design.',
+    focus: ['where that trust forms', 'transparent, predictable design'],
   },
   {
     name: 'Trustworthy AI',
     slug: 'trustworthy-ai',
+    icon: 'trustworthy-ai.svg',
+    palette: 'green',
     summary:
-      'Fairness, transparency and accountability in AI-driven communication, using evaluation and explainability techniques that survive real-world settings rather than only benchmarks.',
+      'Fairness, transparency and accountability in AI-driven communication, with evaluation and explainability built for real-world deployment.',
+    focus: ['Fairness, transparency and accountability', 'real-world deployment'],
   },
   {
     name: 'Conversational AI',
     slug: 'conversational-ai',
+    icon: 'conversational-ai.svg',
+    palette: 'blue',
     summary:
-      'Context awareness, personalization and multimodal interaction across text, voice and visual signals, so conversations resolve rather than merely respond.',
+      'Most systems respond without resolving. We work on context, personalization and multimodal signals across text, voice and vision.',
+    focus: ['respond without resolving', 'multimodal signals'],
   },
   {
     name: 'AI-powered Communication',
     slug: 'ai-powered-communication',
+    icon: 'ai-powered-communication.svg',
+    palette: 'brand',
     summary:
       'Intelligent routing, adaptive orchestration and predictive network management that reduce latency and operational overhead, and recover from failures automatically.',
+    focus: ['reduce latency and operational overhead'],
   },
   {
     name: 'Fraud Detection',
     slug: 'fraud-detection',
+    icon: 'fraud-detection.svg',
+    palette: 'green',
     summary:
       'Anomaly detection, behavioural modelling and prediction to catch fraud and malicious activity across communication channels, in real time and at scale.',
+    focus: ['in real time and at scale'],
   },
   {
     name: 'Spam Filtering',
     slug: 'spam-filtering',
+    icon: 'spam-filtering.svg',
+    palette: 'blue',
     summary:
-      'Detecting spam and harmful content across text, images and voice under topic drift and distribution shift, with the accuracy and latency a high-traffic network demands.',
+      'Spam shifts faster than the models that catch it. Detection across text, images and voice, at the latency high traffic demands.',
+    focus: ['shifts faster than the models that catch it'],
   },
   {
     name: 'Voice AI',
     slug: 'voice-ai',
+    icon: 'voice-ai.svg',
+    palette: 'brand',
     summary:
       'Speech enhancement, noise suppression, compression and unbiased voice processing, so voice quality holds up under real network conditions.',
+    focus: ['holds up under real network conditions'],
   },
   {
     name: 'Generative Models',
     slug: 'generative-models',
+    icon: 'special-generative-models.svg',
+    palette: 'pink',
     summary:
       'Domain-specific generative architectures for communication platforms, prioritising privacy, efficiency and operational control, including lightweight and privacy-preserving deployment.',
+    focus: ['privacy, efficiency and operational control'],
   },
 ] as const;

@@ -328,14 +328,14 @@ has a comment explaining why it is shaped the way it is — worth reading before
   roles: [
     { years: '2021—23', title: 'Operations Area Manager, Fair-AI', detail: '...' },
     { years: '2016—20', title: 'Senior Researcher', detail: '...' },
-    { years: '2018', title: 'Visiting researcher, UCLA', concurrent: true, tag: 'visiting', detail: '...' },
   ],
 }
 ```
 
 - **A promotion** is a new entry in `roles`, newest first — not a new organisation.
-- **A parallel engagement** (a visiting stay during a job) gets `concurrent: true`, which indents it
-  and marks it as running alongside rather than after.
+- **A parallel engagement** — a second post held during a job — gets `concurrent: true`, which
+  indents it and marks it as running alongside rather than after. A research stay that belongs to a
+  degree rather than to an employer goes under `education` instead, as an `aside`.
 - `early: true` renders an organisation quietly. It is set on the pre-2013 roles so the recent work
   leads; the full history is still there.
 - `current: true` adds the orange dot.
