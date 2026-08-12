@@ -1,0 +1,58 @@
+---
+/**
+ * v1 had URLs like /projects.html and /publications.html. Those are redirected
+ * (see astro.config.mjs / the redirects in src/pages), but anything else that
+ * rotted should land somewhere useful rather than on a dead end.
+ */
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found" description="That page does not exist.">
+  <section class="block">
+    <p class="code">404</p>
+    <h1 class="page-title">That page is not here.</h1>
+    <p class="page-lede">
+      The site was rebuilt in 2026 and a few addresses changed. The PDFs all kept their old URLs, so if you followed
+      a link to a paper it should still work — everything else is one of these:
+    </p>
+    <ul class="where">
+      <li><a href="/">Start page</a></li>
+      <li><a href="/updates">Updates</a></li>
+      <li><a href="/publications">Publications</a></li>
+      <li><a href="/air">Team AI Research</a></li>
+      <li><a href="/cv">CV</a></li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .code {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent-ink);
+    margin: 0 0 1rem;
+  }
+  .where {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .where a {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    text-decoration: none;
+    border: 1px solid var(--rule);
+    padding: 0.45em 0.7em;
+    display: inline-block;
+    color: var(--ink-70);
+  }
+  .where a:hover,
+  .where a:focus-visible {
+    border-color: var(--accent-ink);
+    color: var(--accent-ink);
+  }
+</style>

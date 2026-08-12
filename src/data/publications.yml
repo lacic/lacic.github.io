@@ -1,0 +1,947 @@
+# Publications — the single source of truth for every paper on this site.
+#
+# The publication list, the per-paper pages, the "selected work" section on the
+# landing page, and the generated BibTeX and APA citation strings all read from
+# this file. Nothing about a paper is stored anywhere else, so a record here can
+# never disagree with what a visitor sees or copies.
+#
+# Validated at build time by the `publications` collection in
+# src/content.config.ts. `id` is the stable slug other collections reference
+# (paper-notes frontmatter, project entries), so treat it as permanent: changing
+# an id breaks those references and the paper's URL.
+#
+# Conventions:
+#   id        <year>-<venue-short-lowercase>-<one-or-two-keywords>
+#   authors   publication order, "Surname, I." form
+#   pdf/poster site-absolute paths under /documents/
+#   selected  exactly five papers, ranked 1-5
+#   areas     open topic tags (kebab-case); prefer reusing existing ones
+#   air       true for Team AIR / Infobip research outcomes
+
+- id: 2023-ecir-uptrendz
+  title: "Uptrendz: API-Centric Real-Time Recommendations in Multi-Domain Settings"
+  authors:
+    - "Lacić, E."
+    - "Duricic, T."
+    - "Fadljevic, L."
+    - "Theiler, D."
+    - "Kowald, D."
+  year: 2023
+  venue:
+    name: "ECIR"
+    full: "45th European Conference on Information Retrieval"
+    kind: demo
+    publisher: "Springer"
+  pdf: /documents/2023_ECIR_uptrendz.pdf
+  poster: /documents/posters/2023_ECIR_uptrendz_poster.pdf
+  selected: false
+  areas:
+    - multi-domain-recommendations
+    - api-centric-recommendations
+    - real-time
+  needsReview: false
+
+- id: 2022-ecir-news
+  title: "What Drives Readership? An Online Study on User Interface Types and Popularity Bias Mitigation in News Article Recommendations"
+  authors:
+    - "Lacić, E."
+    - "Fadljevic, L."
+    - "Weissenboeck, F."
+    - "Lindstaedt, S."
+    - "Kowald, D."
+  year: 2022
+  venue:
+    name: "ECIR"
+    full: "44th European Conference on Information Retrieval"
+    kind: conference
+    publisher: "Springer"
+  pdf: /documents/2022_ECIR_news.pdf
+  poster: /documents/posters/2022_ECIR_news_poster.pdf
+  selected: true
+  selectedRank: 2
+  areas:
+    - news-recommendation
+    - popularity-bias
+    - user-interface
+  needsReview: false
+
+- id: 2022-bias-popularity
+  title: "Popularity Bias in Collaborative Filtering-Based Multimedia Recommender Systems"
+  authors:
+    - "Kowald, D."
+    - "Lacić, E."
+  year: 2022
+  venue:
+    name: "BIAS"
+    full: "BIAS Workshop at the 44th European Conference on Information Retrieval"
+    kind: workshop
+    publisher: "Springer"
+    colocatedWith: "ECIR 2022"
+  pdf: /documents/2022_ECIR_bias.pdf
+  selected: false
+  areas:
+    - popularity-bias
+    - collaborative-filtering
+    - multimedia-recommender-systems
+    - algorithmic-fairness
+  needsReview: false
+
+- id: 2022-ecir-industry
+  title: "Recommendations in a Multi-Domain Setting: Adapting for Customization, Scalability and Real-Time Performance"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+  year: 2022
+  venue:
+    name: "ECIR"
+    full: "Industry-Day Track of the European Conference on Information Retrieval"
+    kind: industry
+  pdf: /documents/2022_ECIR_industry.pdf
+  poster: /documents/posters/2022_ECIR_industry_poster.pdf
+  selected: false
+  areas:
+    - multi-domain-recommendations
+    - real-time
+    - collaborative-filtering
+  needsReview: false
+
+- id: 2021-pharmaceuticals-embeddings
+  title: "Should We Embed in Chemistry? A Comparison of Unsupervised Transfer Learning with PCA, UMAP, and VAE on Molecular Fingerprints"
+  authors:
+    - "Lovric, M."
+    - "Đuricic, T."
+    - "Tran, H. T."
+    - "Hussain, H."
+    - "Lacić, E."
+    - "Rasmussen, M. A."
+    - "Kern, R."
+  year: 2021
+  venue:
+    name: "Pharmaceuticals"
+    kind: journal
+    volume: "14(8)"
+    pages: "758"
+  pdf: /documents/2021_pharmaceuticals.pdf
+  selected: false
+  areas:
+    - cheminformatics
+    - dimensionality-reduction
+    - unsupervised-transfer-learning
+    - molecular-fingerprints
+  needsReview: false
+
+- id: 2021-children-asthma
+  title: "Predicting treatment outcomes using explainable machine learning in children with asthma"
+  authors:
+    - "Lovric, M."
+    - "Banic, I."
+    - "Lacić, E."
+    - "Pavlovic, K."
+    - "Kern, R."
+    - "Turkalj, M."
+  year: 2021
+  venue:
+    name: "Children"
+    kind: journal
+    volume: "8(5)"
+    pages: "376"
+  pdf: /documents/2021_children.pdf
+  selected: false
+  areas:
+    - childhood-asthma
+    - treatment-outcome-prediction
+    - explainable-machine-learning
+    - precision-medicine
+  needsReview: false
+
+- id: 2020-umuai-job-recsys
+  title: "Using Autoencoders for Session-based Job Recommendations"
+  authors:
+    - "Lacić, E."
+    - "Reiter-Haas, M."
+    - "Kowald, D."
+    - "Dareddy, M."
+    - "Cho, J."
+    - "Lex, E."
+  year: 2020
+  venue:
+    name: "UMUAI"
+    full: "User Modeling and User-Adapted Interaction"
+    kind: journal
+    publisher: "Springer"
+  pdf: /documents/2020umuai_job.pdf
+  selected: true
+  selectedRank: 3
+  areas:
+    - job-recommendation
+    - session-based-recommendation
+    - autoencoders
+  needsReview: false
+
+- id: 2020-ismis-graph-embeddings
+  title: "Empirical Comparison of Graph Embeddings for Trust-Based Collaborative Filtering"
+  authors:
+    - "Duricic, T."
+    - "Hussain, H."
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Helic, D."
+    - "Lex, E."
+  year: 2020
+  venue:
+    name: "ISMIS"
+    full: "25th International Symposium on Intelligent Systems"
+    kind: conference
+    publisher: "Springer"
+  pdf: /documents/2020ismis_trust.pdf
+  selected: false
+  areas:
+    - trust-based-recommendation
+    - collaborative-filtering
+    - graph-embeddings
+    - cold-start
+  needsReview: false
+
+- id: 2019-recsys-embeddings
+  title: "Should we Embed? A Study on the Online Performance of Utilizing Embeddings for Real-Time Job Recommendations"
+  authors:
+    - "Lacić, E."
+    - "Reiter-Haas, M."
+    - "Duricic, M."
+    - "Slawicek, V."
+    - "Lex, E."
+  year: 2019
+  venue:
+    name: "RecSys"
+    full: "13th ACM Conference on Recommender Systems"
+    kind: conference
+    publisher: "ACM"
+  pdf: /documents/2019_RecSys_Emb.pdf
+  poster: /documents/posters/Studo_RecSys19_Poster.pdf
+  selected: true
+  selectedRank: 4
+  areas:
+    - job-recommendation
+    - real-time
+    - item-embeddings
+  needsReview: false
+
+- id: 2019-reveal-ebook-tags
+  title: "Evaluating Tag Recommendations for E-Book Annotation Using a Semantic Similarity Metric"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Theiler, D."
+    - "Traub, M."
+    - "Kuffer, L."
+    - "Lindstaedt, S."
+    - "Lex, E."
+  year: 2019
+  venue:
+    name: "REVEAL"
+    full: "REVEAL Workshop at the ACM Conference on Recommender Systems"
+    kind: workshop
+    colocatedWith: "RecSys 2019"
+  pdf: /documents/2019_RecSys_HGV.pdf
+  poster: /documents/posters/2019_RecSys_HGV_Poster.pdf
+  selected: false
+  areas:
+    - tag-recommendation
+    - ebook-annotation
+    - hybrid-recommendation
+  needsReview: false
+
+- id: 2019-reveal-data-markets
+  title: "Using the Open Meta Kaggle Dataset to Evaluate Tripartite Recommendations in Data Markets"
+  authors:
+    - "Kowald, D."
+    - "Traub, M."
+    - "Theiler, D."
+    - "Gursch, H."
+    - "Lacić, E."
+    - "Lindstaedt, S."
+    - "Kern, R."
+    - "Lex, E."
+  year: 2019
+  venue:
+    name: "REVEAL"
+    full: "REVEAL Workshop at the ACM Conference on Recommender Systems"
+    kind: workshop
+    colocatedWith: "RecSys 2019"
+  pdf: /documents/2019_RecSys_Data_Markets.pdf
+  poster: /documents/posters/2019_RecSys_Data_Markets_Poster.pdf
+  selected: false
+  areas:
+    - tripartite-recommendation
+    - data-markets
+    - collaborative-filtering
+  needsReview: false
+
+- id: 2018-eyre-neighborhood
+  title: "Neighborhood Troubles: On the Value of User Pre-Filtering To Speed Up and Enhance Recommendations"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Lex, E."
+  year: 2018
+  venue:
+    name: "EYRE"
+    full: "International Workshop on Entity Retrieval at the Conference on Information and Knowledge Management"
+    kind: workshop
+    colocatedWith: "CIKM 2018"
+  pdf: /documents/2018_CIKM_CF.pdf
+  selected: false
+  areas:
+    - user-pre-filtering
+    - collaborative-filtering
+    - real-time
+    - apache-solr
+  needsReview: false
+
+- id: 2018-sir-afel-rec
+  title: "AFEL-REC: A Recommender System for Providing Learning Resource Recommendations in Social Learning Environments"
+  authors:
+    - "Kowald, D."
+    - "Lacić, E."
+    - "Theiler, D."
+    - "Lex, E."
+  year: 2018
+  venue:
+    name: "SIR"
+    full: "Social Interaction-Based Recommender Systems Workshop at the Conference on Information and Knowledge Management"
+    kind: workshop
+    colocatedWith: "CIKM 2018"
+  pdf: /documents/2018_CIKM_AFEL.pdf
+  selected: false
+  areas:
+    - social-learning-environments
+    - learning-resource-recommendation
+    - collaborative-filtering
+    - apache-solr
+  needsReview: false
+
+- id: 2018-recsys-trust
+  title: "Trust-Based Collaborative Filtering: Tackling the Cold Start Problem Using Regular Equivalence"
+  authors:
+    - "Duricic, T."
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Lex, E."
+  year: 2018
+  venue:
+    name: "RecSys"
+    full: "12th ACM Conference on Recommender Systems"
+    kind: conference
+    publisher: "ACM"
+  pdf: /documents/2018_RECSYS_TRUST.pdf
+  poster: /documents/posters/RecSys18_Trust_A0_Poster.pdf
+  selected: false
+  areas:
+    - trust-based-recommendation
+    - collaborative-filtering
+    - cold-start
+    - katz-similarity
+  needsReview: false
+
+- id: 2018-it-car-import
+  title: "Gone in 30 days! Predictions for car import planning"
+  authors:
+    - "Lacić, E."
+    - "Traub, M."
+    - "Duricic, T."
+    - "Haslauer, E."
+    - "Lex, E."
+  year: 2018
+  venue:
+    name: "it - Information Technology"
+    kind: journal
+    volume: "60(4)"
+    pages: "219-228"
+  pdf: /documents/2018_IT_SI_Journal.pdf
+  selected: false
+  areas:
+    - car-import-forecasting
+    - automotive-industry
+    - lstm-networks
+    - sarima
+  needsReview: false
+
+- id: 2018-ifup-job-embeddings
+  title: "Beyond Accuracy Optimization: On the Value of Item Embeddings for Student Job Recommendation"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Reiter-Haas, M."
+    - "Slawicek, V."
+    - "Lex, E."
+  year: 2018
+  venue:
+    name: "IFUP"
+    full: "International Workshop on Multi-dimensional Information Fusion for User Modeling and Personalization at the 11th ACM International Conference on Web Search and Data Mining"
+    kind: workshop
+    colocatedWith: "WSDM 2018"
+  pdf: /documents/WSDM2018_IFUP.pdf
+  selected: false
+  areas:
+    - item-embeddings
+    - job-recommendation
+    - novelty
+    - diversity
+  needsReview: false
+
+- id: 2017-sigweb-real-time
+  title: "Real-Time Recommendations in a Multi-Domain Environment"
+  authors:
+    - "Lacić, E."
+  year: 2017
+  venue:
+    name: "ACM SIGWEB Newsletter"
+    kind: newsletter
+    publisher: "ACM"
+    volume: "Autumn 2017"
+    pages: "4"
+  pdf: /documents/SigWeb_2017.pdf
+  selected: false
+  areas:
+    - real-time
+    - multi-domain-recommendations
+    - microservices-architecture
+    - apache-solr
+  needsReview: false
+
+- id: 2017-rs-sna-studo-jobs
+  title: "Studo Jobs: Enriching Data With Predicted Job Labels"
+  authors:
+    - "Reiter-Haas, M."
+    - "Slawicek, V."
+    - "Lacić, E."
+  year: 2017
+  venue:
+    name: "RS-SNA"
+    full: "Workshop on Recommender Systems and Social Network Analysis at i-KNOW"
+    kind: workshop
+    colocatedWith: "i-KNOW 2017"
+  pdf: /documents/RS_BDA_2017.pdf
+  selected: false
+  areas:
+    - job-label-prediction
+    - data-enrichment
+    - multi-label-classification
+    - svm-classification
+  needsReview: false
+
+- id: 2017-recsysktl-multi-domain
+  title: "Tailoring Recommendations for a Multi-Domain Environment"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Lex, E."
+  year: 2017
+  venue:
+    name: "RecSysKTL"
+    full: "Workshop on Intelligent Recommender Systems by Knowledge Transfer & Learning at the 11th ACM Conference on Recommender Systems"
+    kind: workshop
+    colocatedWith: "RecSys 2017"
+  pdf: /documents/KTL_2017.pdf
+  selected: false
+  areas:
+    - recommender-systems
+    - multi-domain-recommendations
+    - microservices-architecture
+    - apache-solr
+  needsReview: false
+
+- id: 2016-rsbda-social-care
+  title: "Need Help? Recommending Social Care Institutions"
+  authors:
+    - "Traub, M."
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Kahr, M."
+    - "Lex, E."
+  year: 2016
+  venue:
+    name: "RSBDA"
+    full: "Workshop on Recommender Systems and Big Data Analytics at i-KNOW"
+    kind: workshop
+    colocatedWith: "i-KNOW 2016"
+  pdf: /documents/RS_BDA_2016.pdf
+  selected: false
+  areas:
+    - social-care-recommendation
+    - content-based-recommendation
+    - hybrid-recommendation
+    - apache-solr
+  needsReview: false
+
+- id: 2016-ht-doctoral-consortium
+  title: "Real-Time Recommendations in a Multi-Domain Environment"
+  authors:
+    - "Lacić, E."
+  year: 2016
+  venue:
+    name: "HT"
+    full: "Extended Proceedings of the 27th ACM Conference on Hypertext and Social Media"
+    kind: conference
+    publisher: "ACM"
+  pdf: /documents/HT_2016_DC.pdf
+  poster: /documents/posters/ht16_dc_poster.pdf
+  selected: false
+  areas:
+    - real-time
+    - multi-domain-recommendations
+    - scalability
+    - apache-solr
+  needsReview: false
+
+- id: 2016-ht-airline-reviews
+  title: "High Enough?: Explaining and Predicting Traveler Satisfaction Using Airline Reviews"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Lex, E."
+  year: 2016
+  venue:
+    name: "HT"
+    full: "27th ACM Conference on Hypertext and Social Media"
+    kind: conference
+    publisher: "ACM"
+    pages: "249-254"
+  pdf: /documents/HT_2016_HighEnoguh.pdf
+  selected: false
+  areas:
+    - traveler-satisfaction-prediction
+    - airline-reviews
+    - sentiment-analysis
+    - feature-analysis
+  needsReview: false
+
+- id: 2015-iknow-triprebel
+  title: "Smart booking without looking: providing hotel recommendations in the TripRebel portal"
+  authors:
+    - "Traub, M."
+    - "Kowald, D."
+    - "Lacić, E."
+    - "Schoen, P."
+    - "Supp, G."
+    - "Lex, E."
+  year: 2015
+  venue:
+    name: "i-KNOW"
+    full: "15th International Conference on Knowledge Technologies and Data-driven Business"
+    kind: demo
+    publisher: "ACM"
+    pages: "50"
+  pdf: /documents/iKNOW_2015_TripRebel.pdf
+  poster: /documents/posters/iknow15_triprebel_poster.pdf
+  selected: false
+  areas:
+    - hotel-recommendation
+    - apache-solr
+    - collaborative-filtering
+    - hybrid-recommendation
+  needsReview: false
+
+- id: 2015-iknow-social-semantic-server
+  title: "The social semantic server: a flexible framework to support informal learning at the workplace"
+  authors:
+    - "Dennerlein, S."
+    - "Kowald, D."
+    - "Lex, E."
+    - "Theiler, D."
+    - "Lacić, E."
+    - "Ley, T."
+  year: 2015
+  venue:
+    name: "i-KNOW"
+    full: "15th International Conference on Knowledge Technologies and Data-driven Business"
+    kind: conference
+    publisher: "ACM"
+    pages: "26"
+  pdf: /documents/iKNOW_2015_SSS.pdf
+  selected: false
+  areas:
+    - social-semantic-technologies
+    - informal-workplace-learning
+    - technology-enhanced-learning
+    - service-oriented-architecture
+  needsReview: false
+
+- id: 2015-lsrs-scar
+  title: "ScaR: Towards a Real-Time Recommender Framework Following the Microservices Architecture"
+  authors:
+    - "Lacić, E."
+    - "Traub, M."
+    - "Kowald, D."
+    - "Lex, E."
+  year: 2015
+  venue:
+    name: "LSRS"
+    full: "Workshop on Large Scale Recommender Systems at the 9th ACM Conference on Recommender Systems"
+    kind: workshop
+    colocatedWith: "RecSys 2015"
+  pdf: /documents/LSRS_2015_ScaR.pdf
+  selected: false
+  areas:
+    - real-time
+    - recommender-systems
+    - microservices-architecture
+    - apache-solr
+  needsReview: false
+
+- id: 2015-recsys-cold-start
+  title: "Tackling Cold-Start Users in Recommender Systems with Indoor Positioning Systems"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Traub, M."
+    - "Luzhnica, G."
+    - "Simon, J."
+    - "Lex, E."
+  year: 2015
+  venue:
+    name: "RecSys"
+    full: "9th ACM Conference on Recommender Systems"
+    kind: conference
+    publisher: "CEUR-WS"
+  pdf: /documents/RecSys_2015_CS.pdf
+  poster: /documents/posters/recsys15_cold_start_poster.pdf
+  selected: false
+  areas:
+    - cold-start
+    - indoor-positioning-systems
+    - collaborative-filtering
+  needsReview: false
+
+- id: 2015-sigweb-tagrec
+  title: "TagRec: towards a toolkit for reproducible evaluation and development of tag-based recommender algorithms"
+  authors:
+    - "Trattner, C."
+    - "Kowald, D."
+    - "Lacić, E."
+  year: 2015
+  venue:
+    name: "ACM SIGWEB Newsletter"
+    kind: newsletter
+    publisher: "ACM"
+    volume: "Winter 2015"
+    pages: "3"
+  pdf: /documents/TagRec_SigWeb.pdf
+  selected: false
+  areas:
+    - tag-recommendation
+    - folksonomy
+    - reproducibility
+    - toolkit-development
+  needsReview: false
+
+- id: 2015-mmsm-social-location
+  title: "Utilizing online social network and location-based data to recommend products and categories in online marketplaces"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Eberhard, L."
+    - "Trattner, C."
+    - "Parra, D."
+    - "Marinho, L. B."
+  year: 2015
+  venue:
+    name: "MMSM"
+    full: "Mining, Modeling, and Recommending 'Things' in Social Media"
+    kind: book-chapter
+    publisher: "Springer International Publishing"
+    pages: "96-115"
+  pdf: /documents/MMSM_2015.pdf
+  selected: true
+  selectedRank: 5
+  areas:
+    - online-marketplaces
+    - social-data
+    - location-based-data
+    - collaborative-filtering
+  needsReview: false
+
+- id: 2014-sp-tag-time
+  title: "Recommending items in social tagging systems using tag and time information"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Seitlinger, P."
+    - "Trattner, C."
+    - "Parra, D."
+  year: 2014
+  venue:
+    name: "SP"
+    full: "1st International Workshop on Social Personalisation at the 25th ACM Conference on Hypertext and Social Media"
+    kind: workshop
+    publisher: "CEUR-WS"
+    colocatedWith: "HT 2014"
+  pdf: /documents/HT_2014_SP.pdf
+  selected: false
+  areas:
+    - collaborative-filtering
+    - social-tagging
+    - item-ranking
+    - base-level-learning
+  needsReview: false
+
+- id: 2014-ht-socrecm
+  title: "Socrecm: A scalable social recommender engine for online marketplaces"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Trattner, C."
+  year: 2014
+  venue:
+    name: "HT"
+    full: "25th ACM Conference on Hypertext and Social Media"
+    kind: conference
+    publisher: "ACM"
+    pages: "308-310"
+  pdf: /documents/HT_2014_SocRecM.pdf
+  selected: false
+  areas:
+    - social-recommender-engine
+    - online-marketplaces
+    - apache-solr
+  needsReview: false
+
+- id: 2014-ht-tagrec
+  title: "Tagrec: Towards a standardized tag recommender benchmarking framework"
+  authors:
+    - "Kowald, D."
+    - "Lacić, E."
+    - "Trattner, C."
+  year: 2014
+  venue:
+    name: "HT"
+    full: "25th ACM Conference on Hypertext and Social Media"
+    kind: conference
+    publisher: "ACM"
+    pages: "305-307"
+  pdf: /documents/HT_2014_TagRec.pdf
+  selected: false
+  areas:
+    - tag-recommendation
+    - benchmarking-framework
+    - folksonomy
+    - human-memory-models
+  needsReview: false
+
+- id: 2014-www-solr
+  title: "Towards a scalable social recommender engine for online marketplaces: The case of apache solr"
+  authors:
+    - "Lacić, E."
+    - "Kowald, D."
+    - "Parra, D."
+    - "Kahr, M."
+    - "Trattner, C."
+  year: 2014
+  venue:
+    name: "WWW"
+    full: "23rd International Conference on World Wide Web"
+    kind: conference
+    publisher: "ACM"
+    pages: "817-822"
+  pdf: /documents/w12srs11.pdf
+  selected: false
+  areas:
+    - social-recommender-engine
+    - scalability
+    - online-marketplaces
+    - apache-solr
+  needsReview: false
+
+- id: 2013-ectel-lim-app
+  title: "LIM App: Reflecting on Audience Feedback for Improving Presentation Skills"
+  authors:
+    - "Rivera-Pelayo, V."
+    - "Lacić, E."
+    - "Zacharias, V."
+    - "Studer, R."
+  year: 2013
+  venue:
+    name: "EC-TEL"
+    full: "European Conference on Technology Enhanced Learning"
+    kind: conference
+    publisher: "Springer Berlin Heidelberg"
+    pages: "514-519"
+  pdf: /documents/ECTEL_2013.pdf
+  selected: false
+  areas:
+    - reflective-learning
+    - presentation-skills
+    - audience-feedback
+    - quantified-self
+  needsReview: false
+- id: 2026-www-visual-content
+  title: "Visual Content Moderation in Messaging Systems"
+  authors:
+    - "Ljubičić, M."
+    - "Lacić, E."
+    - "Helic, D."
+  year: 2026
+  venue:
+    name: "WWW"
+    full: "Proceedings of the ACM Web Conference 2026"
+    kind: conference
+    publisher: "ACM"
+    pages: "8241-8249"
+  pdf: "/documents/2026_TheWeb_Spam.pdf"
+  doi: "10.1145/3774904.3792796"
+  url: "https://doi.org/10.1145/3774904.3792796"
+  selected: true
+  selectedRank: 1
+  areas:
+    - content-moderation
+    - spam-detection
+    - real-time
+    - clip
+  air: true
+  needsReview: false
+- id: 2023-frontiers-in-big-data-beyond-accuracy
+  title: "Beyond-accuracy: a review on diversity, serendipity, and fairness in recommender systems based on graph neural networks"
+  authors:
+    - "Duricic, T."
+    - "Kowald, D."
+    - "Lacić, E."
+    - "Lex, E."
+  year: 2023
+  venue:
+    name: "Frontiers in Big Data"
+    full: "Frontiers in Big Data"
+    kind: journal
+    publisher: "Frontiers Media SA"
+    volume: "6"
+  pdf: "/documents/2023_Frontiers_Beyond-Accuracy.pdf"
+  doi: "10.3389/fdata.2023.1251072"
+  url: "https://doi.org/10.3389/fdata.2023.1251072"
+  selected: false
+  areas:
+    - recommender-systems
+    - graph-neural-networks
+    - diversity
+    - fairness-bias
+  needsReview: false
+- id: 2024-frontiers-in-big-data-editorial-reviews
+  title: "Editorial: Reviews in recommender systems: 2022"
+  authors:
+    - "Kowald, D."
+    - "Yang, D."
+    - "Lacić, E."
+  year: 2024
+  venue:
+    name: "Frontiers in Big Data"
+    full: "Frontiers in Big Data"
+    kind: journal
+    publisher: "Frontiers Media SA"
+    volume: "7"
+  pdf: "/documents/2024_Frontiers_Editorial_Review.pdf"
+  doi: "10.3389/fdata.2024.1384460"
+  url: "https://doi.org/10.3389/fdata.2024.1384460"
+  selected: false
+  areas:
+    - recommender-systems
+    - fairness-bias
+    - privacy
+    - collaborative-filtering
+  needsReview: false
+- id: 2024-arxiv-knowledge-distillation
+  title: "Knowledge Distillation for Real-Time Classification of Early Media in Voice Communications"
+  authors:
+    - "Altwlkany, K."
+    - "Hadžić, H."
+    - "Kurić, A."
+    - "Lacić, E."
+  year: 2024
+  venue:
+    name: "MASCOTS"
+    full: "2024 32nd International Conference on Modeling, Analysis and Simulation of Computer and Telecommunication Systems (MASCOTS)"
+    kind: preprint
+    publisher: "IEEE"
+    pages: "1-4"
+  pdf: "/documents/2024_MASCOTS.pdf"
+  doi: "10.1109/mascots64422.2024.10786538"
+  url: "https://doi.org/10.1109/mascots64422.2024.10786538"
+  selected: false
+  areas:
+    - knowledge-distillation
+    - audio-classification
+    - real-time
+    - voice-communications
+  air: true
+  needsReview: false
+- id: 2025-hypertext-vocalize-lead
+  title: "Vocalize: Lead Acquisition and User Engagement through Gamified Voice Competitions"
+  authors:
+    - "Teskeredzic, E."
+    - "Paric, M."
+    - "Sestic, A."
+    - "Fribert, P."
+    - "Lukac, A."
+    - "Hadzic, H."
+    - "Altwlkany, K."
+    - "Lacic, E."
+  year: 2025
+  venue:
+    name: "Hypertext"
+    full: "Adjunct Proceedings of the 36th ACM Conference on Hypertext and Social Media"
+    kind: demo
+    publisher: "ACM"
+    pages: "35-39"
+  pdf: "/documents/2025_Hypertext_Vocalize.pdf"
+  doi: "10.1145/3720533.3750059"
+  url: "https://doi.org/10.1145/3720533.3750059"
+  selected: false
+  areas:
+    - lead-acquisition
+    - user-engagement
+    - gamified-voice-competitions
+    - speech-processing
+  air: true
+  needsReview: false
+- id: 2025-arxiv-language-gender
+  title: "On the Language and Gender Biases in PSTN, VoIP and Neural Audio Codecs"
+  authors:
+    - "Altwlkany, K."
+    - "Kuric, A."
+    - "Lacić, E."
+  year: 2025
+  venue:
+    name: "Interspeech"
+    full: "Interspeech 2025"
+    kind: conference
+    publisher: "ISCA"
+    pages: "1348-1352"
+  pdf: "/documents/2025_INTERSPEECH.pdf"
+  doi: "10.21437/interspeech.2025-481"
+  url: "https://doi.org/10.21437/interspeech.2025-481"
+  selected: false
+  areas:
+    - audio-codecs
+    - fairness-bias
+    - speech-processing
+  air: true
+  needsReview: false
+- id: 2025-iui-improving-visual
+  title: "Towards Improving Visual Chatbot Builders with Intent-based Copilots"
+  authors:
+    - "Lacic, E."
+    - "Fribert, P."
+    - "Lukac, A."
+    - "Lovric, I."
+  year: 2025
+  venue:
+    name: "IUI"
+    full: "Joint Proceedings of the ACM IUI Workshops 2025, March 24-27, 2025, Cagliari, Italy"
+    kind: workshop
+    publisher: "CEUR"
+  pdf: "/documents/2025_IUI_HAI-GEN.pdf"
+  selected: false
+  areas:
+    - visual-chatbot-building
+    - intent-based-copilots
+    - large-language-models
+    - popularity-bias
+  air: true
+  needsReview: false

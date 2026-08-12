@@ -1,0 +1,514 @@
+---
+/**
+ * The eight AIR research areas, one at a time.
+ *
+ * The area names and their summaries used to sit as a generated image followed
+ * by a list of eight paragraphs. Both said the same thing, and neither invited
+ * anyone to read the second one. Here each area gets the whole width for a
+ * moment: its tile on the left carries the identity (Infobip's colour pair and
+ * icon, same as the image), the summary on the right gets room to be read.
+ *
+ * The track is a real scroll container, so swipe, trackpad and keyboard all
+ * work before any JavaScript runs. The script only adds the timer and the
+ * controls, which stay hidden until it does — a dead arrow button is worse than
+ * no arrow button.
+ *
+ * On the auto-advance: anything that moves on its own has to be stoppable, so
+ * it yields to hover, an off-screen section, a hidden tab, a reduced-motion
+ * preference, and the pause button. Keyboard focus and any manual navigation
+ * stop it outright — see the focusin handler.
+ */
+import { airPalettes, researchAreas } from '../data/profile';
+
+/** Milliseconds a panel holds before advancing. Set to 0 to disable autoplay. */
+const DELAY = 5000;
+
+/**
+ * Cuts a summary into plain and emphasised runs.
+ *
+ * Exact substring matching rather than a pattern, so the phrases in profile.ts
+ * read as the sentences they are. A phrase that no longer appears — because the
+ * copy was reworded — throws instead of quietly rendering an unemphasised
+ * paragraph nobody notices for months.
+ */
+function emphasise(summary: string, phrases: readonly string[]) {
+  let runs: { text: string; key: boolean }[] = [{ text: summary, key: false }];
+
+  for (const phrase of phrases) {
+    const i = runs.findIndex((run) => !run.key && run.text.includes(phrase));
+    if (i === -1) throw new Error(`AirCarousel: focus phrase "${phrase}" is not in "${summary}"`);
+
+    const at = runs[i].text.indexOf(phrase);
+    runs = runs.toSpliced(
+      i,
+      1,
+      { text: runs[i].text.slice(0, at), key: false },
+      { text: phrase, key: true },
+      { text: runs[i].text.slice(at + phrase.length), key: false },
+    );
+  }
+
+  return runs.filter((run) => run.text !== '');
+}
+---
+
+<div class="air-carousel" role="group" aria-roledescription="carousel" aria-label="AIR research areas" data-delay={DELAY}>
+  <div class="bar">
+    <p class="status" data-status aria-live="off">01 / {String(researchAreas.length).padStart(2, '0')}</p>
+    <div class="controls">
+      {/* The rotation control comes first so it is the first thing a keyboard
+          user reaches inside the carousel, per the W3C carousel pattern. */}
+      <button type="button" data-toggle aria-pressed="false">
+        <span data-toggle-label>Pause</span>
+      </button>
+      <button type="button" data-nav="-1" aria-label="Previous research area">
+        <span aria-hidden="true">←</span>
+      </button>
+      <button type="button" data-nav="1" aria-label="Next research area">
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <ol class="track" tabindex="0" data-track>
+    {
+      researchAreas.map((area, i) => (
+        <li
+          class="panel"
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${researchAreas.length}: ${area.name}`}
+          style={`--panel-bg:${airPalettes[area.palette].ink};--panel-fg:${airPalettes[area.palette].glow};--panel-icon:url(/icons/air/${area.icon})`}
+        >
+          <div class="tile">
+            <span class="ic" aria-hidden="true" />
+            <h3>{area.name}</h3>
+          </div>
+          <div class="body">
+            <p class="summary">
+              {emphasise(area.summary, area.focus).map((run) => (run.key ? <strong>{run.text}</strong> : run.text))}
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="dots">
+    {
+      researchAreas.map((area, i) => (
+        <button
+          type="button"
+          data-goto={i}
+          data-label={area.name}
+          class={i === 0 ? 'is-on' : undefined}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          aria-label={area.name}
+        />
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .air-carousel {
+    margin-top: 2rem;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    min-height: 34px;
+  }
+  .status {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    color: var(--pencil);
+    margin: 0;
+  }
+  /* Hidden until the script confirms they do something. */
+  .controls {
+    display: none;
+    gap: 0.4rem;
+  }
+  .is-live .controls {
+    display: flex;
+  }
+  .controls button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--pencil);
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    min-height: 34px;
+    padding: 0 0.7rem;
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+  .controls button:hover,
+  .controls button:focus-visible {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .track {
+    display: flex;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+  .track:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .panel {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr);
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+  }
+
+  .tile {
+    background: var(--panel-bg);
+    color: var(--panel-fg);
+    border-radius: 30px;
+    corner-shape: squircle;
+    padding: clamp(1.1rem, 2.4vw, 1.7rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    min-height: 210px;
+  }
+  .ic {
+    width: 84px;
+    height: 76px;
+    background-color: currentColor;
+    -webkit-mask-image: var(--panel-icon);
+    mask-image: var(--panel-icon);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .tile h3 {
+    font-size: clamp(1.1rem, 2.1vw, 1.4rem);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 0.35rem;
+  }
+  /* Sized to sit clearly below the tile title in the hierarchy, and measured
+     at roughly 50 characters a line so a four-line summary reads in one go. */
+  .summary {
+    font-family: var(--serif);
+    font-size: clamp(0.88rem, 1.4vw, 0.98rem);
+    line-height: 1.5;
+    color: var(--ink-70);
+    margin: 0;
+    max-width: 44ch;
+  }
+  /* Weight carries the emphasis as well as colour, so it still reads for
+     anyone who does not separate the hue from the surrounding grey. */
+  .summary strong {
+    font-weight: 500;
+    color: var(--accent-ink);
+  }
+
+  .dots {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 1.6rem;
+  }
+  .dots button {
+    position: relative;
+    flex: 1;
+    max-width: 72px;
+    height: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 2px;
+    background: var(--rule);
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      height 0.15s ease;
+  }
+  /* A 4px bar is not a hit target, so each one carries an invisible band that
+     is comfortable to click and clears the 24px minimum for touch. */
+  .dots button::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block: -12px;
+  }
+  .dots button:hover,
+  .dots button:focus-visible {
+    background: var(--ink);
+    height: 8px;
+    margin-block: -2px;
+  }
+  .dots button.is-on {
+    background: var(--accent);
+    height: 8px;
+    margin-block: -2px;
+  }
+  .dots button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 5px;
+  }
+  /* Names the bar on hover and on keyboard focus, so the row is legible as
+     eight destinations rather than eight anonymous ticks. */
+  .dots button::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 0.55rem);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--accent-ink);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+  .dots button:hover::after,
+  .dots button:focus-visible::after {
+    opacity: 1;
+  }
+  /* The right-hand bars hang their label leftwards so it cannot run off the
+     edge in a narrow window. */
+  .dots button:nth-child(n + 5)::after {
+    left: auto;
+    right: 0;
+  }
+
+  @media (hover: none) {
+    .dots button::after {
+      content: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .panel {
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+    .tile {
+      min-height: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1.1rem;
+    }
+    .ic {
+      width: 52px;
+      height: 48px;
+      flex: none;
+    }
+    .body {
+      padding-block: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dots button {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.air-carousel');
+  const track = root?.querySelector<HTMLElement>('[data-track]');
+
+  if (root && track) {
+    const panels = [...track.querySelectorAll<HTMLElement>('.panel')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('button[data-goto]')];
+    const status = root.querySelector<HTMLElement>('[data-status]');
+    const toggle = root.querySelector<HTMLButtonElement>('button[data-toggle]');
+    const toggleLabel = root.querySelector<HTMLElement>('[data-toggle-label]');
+    const delay = Number(root.dataset.delay ?? 0);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let index = 0;
+    let timer: number | undefined;
+
+    // Autoplay runs only when the reader wants it (`playing`) *and* is in a
+    // position to see it — the rest of these are circumstances, not intent, so
+    // they suspend the timer without flipping the button to "paused".
+    let playing = delay > 0 && !reduced.matches;
+    let hovered = false;
+    let onscreen = true;
+
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+
+    const sync = () => {
+      const runnable = playing && !hovered && onscreen && !document.hidden;
+      if (runnable && timer === undefined) {
+        timer = window.setInterval(() => go(index + 1), delay);
+      } else if (!runnable) {
+        stop();
+      }
+    };
+
+    const paint = () => {
+      for (const [i, dot] of dots.entries()) {
+        const on = i === index;
+        dot.classList.toggle('is-on', on);
+        dot.setAttribute('aria-pressed', String(on));
+      }
+      if (status) status.textContent = `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}`;
+    };
+
+    /** Distance between panel starts, which the flex gap makes wider than one panel. */
+    const stride = () => (panels.length > 1 ? panels[1].offsetLeft - panels[0].offsetLeft : 0);
+
+    const go = (to: number) => {
+      index = (to + panels.length) % panels.length;
+      track.scrollTo({ left: index * stride(), behavior: reduced.matches ? 'auto' : 'smooth' });
+      paint();
+    };
+
+    /**
+     * Taking manual control ends the slideshow rather than fighting it: an
+     * advance the reader did not ask for, one second after they picked a panel,
+     * is the reason carousels get a bad name. The button brings it back.
+     */
+    const surrender = () => {
+      if (!playing) return;
+      playing = false;
+      setToggle();
+      sync();
+      // Now that changes are the reader's own doing, the counter is worth
+      // announcing; during autoplay it would interrupt every few seconds.
+      status?.setAttribute('aria-live', 'polite');
+    };
+
+    function setToggle() {
+      if (!toggle || !toggleLabel) return;
+      toggleLabel.textContent = playing ? 'Pause' : 'Play';
+      toggle.setAttribute('aria-pressed', String(!playing));
+      toggle.setAttribute('aria-label', playing ? 'Pause the slideshow' : 'Play the slideshow');
+    }
+
+    root.classList.add('is-live');
+    setToggle();
+
+    toggle?.addEventListener('click', () => {
+      playing = !playing;
+      if (playing) status?.setAttribute('aria-live', 'off');
+      else status?.setAttribute('aria-live', 'polite');
+      setToggle();
+      sync();
+    });
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('button[data-nav]')) {
+      button.addEventListener('click', () => {
+        surrender();
+        go(index + Number(button.dataset.nav));
+      });
+    }
+
+    for (const [i, dot] of dots.entries()) {
+      dot.addEventListener('click', () => {
+        surrender();
+        go(i);
+      });
+    }
+
+    track.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      surrender();
+      go(index + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    track.addEventListener('pointerdown', surrender);
+    track.addEventListener('wheel', surrender, { passive: true });
+
+    // Scrolling by hand moves the active panel without going through go().
+    let settle: number | undefined;
+    track.addEventListener(
+      'scroll',
+      () => {
+        window.clearTimeout(settle);
+        settle = window.setTimeout(() => {
+          const step = stride();
+          if (!step) return;
+          const at = Math.round(track.scrollLeft / step);
+          if (at !== index && at >= 0 && at < panels.length) {
+            index = at;
+            paint();
+          }
+        }, 90);
+      },
+      { passive: true },
+    );
+
+    root.addEventListener('mouseenter', () => {
+      hovered = true;
+      sync();
+    });
+    root.addEventListener('mouseleave', () => {
+      hovered = false;
+      sync();
+    });
+    // Keyboard focus landing anywhere in the carousel ends the rotation for
+    // good rather than merely suspending it: someone reading with the keyboard
+    // should not have the panel move again the moment they tab away. The
+    // rotation control is exempt, or pressing it would cancel the very state it
+    // is there to toggle.
+    root.addEventListener('focusin', (event) => {
+      if ((event.target as HTMLElement).closest('[data-toggle]')) return;
+      surrender();
+    });
+    document.addEventListener('visibilitychange', sync);
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) surrender();
+    });
+
+    new IntersectionObserver(
+      ([entry]) => {
+        onscreen = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0.35 },
+    ).observe(root);
+
+    paint();
+    sync();
+  }
+</script>

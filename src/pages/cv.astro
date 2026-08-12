@@ -1,0 +1,224 @@
+---
+/**
+ * The full record, in one page.
+ *
+ * The landing page shows career "in brief" on purpose. This is where the
+ * complete version lives, including the early roles, awards and languages —
+ * the things a reader only wants once they have already decided to look you up.
+ */
+import Base from '../layouts/Base.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import CareerList from '../components/CareerList.astro';
+import EducationList from '../components/EducationList.astro';
+import FundingList from '../components/FundingList.astro';
+import { awards, languages, profile } from '../data/profile';
+import { getPublications, getService, getTalks } from '../lib/content';
+
+const publications = await getPublications();
+const talks = await getTalks();
+const service = await getService();
+const supervision = service.filter((entry) => entry.data.category === 'supervision');
+---
+
+<Base title="CV" description={profile.bio}>
+  <section class="block">
+    <h1 class="page-title">Curriculum vitae</h1>
+    <p class="page-lede">{profile.bio}</p>
+    <p class="acts">
+      <a class="act" href={profile.links.cv}>CV (PDF)</a>
+      <a class="act" href={profile.links.scholar}>Scholar</a>
+      <a class="act" href={profile.links.linkedin}>LinkedIn</a>
+      <a class="act" href={`mailto:${profile.email}`}>Email</a>
+    </p>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="01" label="Experience" />
+    <CareerList />
+  </section>
+
+  <section class="block">
+    <SectionHeader n="02" label="Education" />
+    <EducationList />
+  </section>
+
+  <section class="block">
+    <SectionHeader n="03" label="Funding & fellowships" />
+    <FundingList />
+  </section>
+
+  <section class="block">
+    <SectionHeader n="04" label="Awards & honours" />
+    <ul class="plain">
+      {
+        awards.map((award) => (
+          <li>
+            <span class="years">{award.year}</span>
+            <span class="body">
+              <span class="strong">{award.name}</span>
+              <span class="detail">{award.detail}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    supervision.length > 0 && (
+      <section class="block">
+        <SectionHeader n="05" label="Supervision" more={{ href: '/service', label: 'all service' }} />
+        <ul class="plain">
+          {supervision.map((entry) => (
+            <li>
+              <span class="years">{entry.data.years ?? ''}</span>
+              <span class="body">
+                <span class="strong">{entry.data.role}</span>
+                {entry.data.detail && <span class="detail">{entry.data.detail}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="block">
+    <SectionHeader n="06" label="Output" />
+    <ul class="counts">
+      <li>
+        <a href="/publications">
+          <span class="num">{publications.length}</span>
+          <span>peer-reviewed publications</span>
+        </a>
+      </li>
+      <li>
+        <a href="/talks">
+          <span class="num">{talks.length}</span>
+          <span>recorded talks</span>
+        </a>
+      </li>
+      <li>
+        <a href="/service">
+          <span class="num">{service.length}</span>
+          <span>service roles</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="07" label="Languages" />
+    <ul class="langs">
+      {
+        languages.map((language) => (
+          <li>
+            <span class="strong">{language.name}</span> <span class="lvl">{language.level}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .page-lede {
+    max-width: none;
+  }
+  .acts {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 0;
+  }
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .plain li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0 1rem;
+    padding: 0.55rem 0;
+  }
+  .plain li + li {
+    border-top: 1px dotted var(--rule);
+  }
+  .years {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.15rem;
+    white-space: nowrap;
+  }
+  .strong {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .detail {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--ink-70);
+    line-height: 1.55;
+    max-width: 66ch;
+  }
+
+  .counts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  .counts a {
+    display: block;
+    border: 1px solid var(--rule);
+    padding: 1rem;
+    text-decoration: none;
+    transition: border-color 0.16s ease;
+  }
+  .counts a:hover,
+  .counts a:focus-visible {
+    border-color: var(--accent);
+  }
+  .num {
+    display: block;
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--accent-ink);
+    line-height: 1.1;
+  }
+  .counts span + span {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pencil);
+  }
+
+  .langs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+  }
+  .lvl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--pencil);
+  }
+  @media (max-width: 620px) {
+    .plain li {
+      grid-template-columns: 1fr;
+    }
+    .years {
+      padding: 0;
+    }
+  }
+</style>

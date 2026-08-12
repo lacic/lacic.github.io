@@ -1,0 +1,103 @@
+---
+/**
+ * Funding, given its own block rather than folded into awards.
+ *
+ * An award says other people rated the work. Funding says a consortium and a
+ * budget were trusted to you, which is the rarer signal for someone leading an
+ * industrial research team — and the one a prospective partner is looking for.
+ */
+import { funding } from '../data/profile';
+---
+
+<ul class="fund">
+  {
+    funding.map((item) => (
+      <li>
+        <span class="years">{item.years}</span>
+        <span class="body">
+          <span class="name">
+            {'url' in item && item.url ? (
+              <a href={item.url} rel="noopener noreferrer">{item.name}</a>
+            ) : (
+              item.name
+            )}
+            {item.amount && <span class="amount">{item.amount}</span>}
+            <span class="kind">{item.kind}</span>
+          </span>
+          <span class="detail">{item.detail}</span>
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .fund {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .fund li {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0 1rem;
+    padding: 0.6rem 0;
+  }
+  .fund li + li {
+    border-top: 1px dotted var(--rule);
+  }
+  .years {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.15rem;
+    white-space: nowrap;
+  }
+  .name {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .name a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .name a:hover,
+  .name a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .amount {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--accent-ink);
+  }
+  .kind {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    font-weight: 400;
+  }
+  .detail {
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--ink-70);
+    line-height: 1.55;
+    max-width: 60ch;
+  }
+  @media (max-width: 620px) {
+    .fund li {
+      grid-template-columns: 1fr;
+    }
+    .years {
+      padding: 0;
+    }
+  }
+</style>

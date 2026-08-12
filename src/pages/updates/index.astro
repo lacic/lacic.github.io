@@ -1,0 +1,104 @@
+---
+/**
+ * The log index.
+ *
+ * Reverse-chronological and unpaginated. At a bi-monthly cadence pagination
+ * would be premature complexity, and a single page is both easier to scan and
+ * easier to search in-browser.
+ */
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/content';
+import { typeLabel } from '../../lib/format';
+
+const posts = await getPosts();
+
+const byType = (['field-note', 'deep-dive', 'paper-note'] as const)
+  .map((type) => ({ type, count: posts.filter((post) => post.data.type === type).length }))
+  .filter((row) => row.count > 0);
+
+const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))].sort((a, b) => b - a);
+---
+
+<Base
+  title="Updates"
+  description="Field notes, deep dives and paper notes on applied AI research: recommender systems, generative models, evaluation, and what survives production."
+>
+  <section class="block intro">
+    <h1 class="page-title">Updates</h1>
+    <p class="page-lede">
+      Field notes when something surprised me, deep dives when it took more than one sitting to understand, and
+      paper notes in plain language. Roughly every other month, and only when there is something to say.
+    </p>
+    <p class="meta">
+      {posts.length} {posts.length === 1 ? 'entry' : 'entries'}
+      {byType.map((row) => <span>· {row.count} {typeLabel(row.type).toLowerCase()}{row.count > 1 ? 's' : ''}</span>)}
+      · <a href="/feed.xml">RSS</a>
+    </p>
+  </section>
+
+  {
+    posts.length === 0 ? (
+      <section class="block">
+        <p class="empty">
+          Nothing published yet. Drafts are visible when running <code>npm run dev</code> — see
+          <code>docs/content-guide.md</code> for how to write one.
+        </p>
+      </section>
+    ) : (
+      years.map((year) => (
+        <section class="block year-sec">
+          <h2 class="year">{year}</h2>
+          <PostList posts={posts.filter((post) => post.data.date.getUTCFullYear() === year)} showTags />
+        </section>
+      ))
+    )
+  }
+</Base>
+
+<style>
+  .page-lede {
+    max-width: none;
+  }
+  .intro {
+    padding-bottom: clamp(1.15rem, 2.5vw, 1.6rem);
+  }
+  .year-sec {
+    padding-top: clamp(1.15rem, 2.5vw, 1.6rem);
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--pencil);
+    margin: 1.5rem 0 0;
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .meta a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .year {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.11em;
+    color: var(--pencil);
+    margin: 0 0 1.4rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .empty {
+    font-family: var(--serif);
+    color: var(--ink-70);
+    margin: 0;
+  }
+  .empty code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: var(--grid);
+    padding: 0.15em 0.35em;
+  }
+</style>

@@ -1,0 +1,183 @@
+---
+/**
+ * The publication list, used on the landing page ("Selected work"), on
+ * /publications and inside project pages.
+ *
+ * There is no citation count column: it dates badly, invites the wrong kind of
+ * comparison, and Scholar already publishes the number for anyone who wants it.
+ * The actions are what a reader actually came for — the PDF, the poster, and a
+ * citation they can paste without retyping.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { isSelf, toApa, toBibtex, venueLine } from '../lib/citation';
+import { areaLabel } from '../lib/format';
+import CiteScript from './CiteScript.astro';
+
+interface Props {
+  papers: CollectionEntry<'publications'>[];
+  /** Publication ids that have a plain-language note, so we can link to it. */
+  noteFor?: Map<string, string>;
+  /** Show the plain-language summary link column. */
+  showNotes?: boolean;
+}
+
+const { papers, noteFor = new Map(), showNotes = true } = Astro.props;
+---
+
+<ol class="papers">
+  {
+    papers.map((paper) => {
+      const p = paper.data;
+      const note = noteFor.get(paper.id);
+      return (
+        <li class="paper" data-areas={p.areas.join(' ')} data-kind={p.venue.kind} data-air={p.air ? 'true' : 'false'}>
+          <div class="year">{p.year}</div>
+          <div class="body">
+            <h3 class="title">
+              {p.pdf ? (
+                <a href={p.pdf} target="_blank" rel="noopener noreferrer">{p.title}</a>
+              ) : p.url ? (
+                <a href={p.url} target="_blank" rel="noopener noreferrer">{p.title}</a>
+              ) : (
+                p.title
+              )}
+            </h3>
+            <p class="authors">
+              {p.authors.map((author, i) => (
+                <>
+                  {i > 0 && ', '}
+                  {isSelf(author) ? <b>{author}</b> : author}
+                </>
+              ))}
+            </p>
+            <p class="venue">
+              {venueLine(p)}
+              {p.air && <span class="pill pill--accent" title="Team AIR research at Infobip">Team AIR</span>}
+              {p.needsReview && <span class="pill pill--accent" title="Machine-extracted metadata, not yet checked">needs review</span>}
+            </p>
+            {p.areas.length > 0 && (
+              <p class="topics">
+                {p.areas.map((area, i) => (
+                  <>
+                    {i > 0 && <span class="topics-sep" aria-hidden="true"> · </span>}
+                    <span>{areaLabel(area)}</span>
+                  </>
+                ))}
+              </p>
+            )}
+            <p class="acts">
+              {p.pdf && <a class="act" href={p.pdf} target="_blank" rel="noopener noreferrer">PDF</a>}
+              {p.poster && <a class="act" href={p.poster} target="_blank" rel="noopener noreferrer">poster</a>}
+              {p.slides && <a class="act" href={p.slides} target="_blank" rel="noopener noreferrer">slides</a>}
+              <button
+                class="act cite"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-bibtex={toBibtex(p)}
+                data-apa={toApa(p)}
+              >
+                cite
+              </button>
+              {showNotes && note && (
+                <a class="act act--note" href={`/publications/${paper.id}`}>
+                  what it says
+                </a>
+              )}
+            </p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<CiteScript />
+
+<style>
+  .papers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .paper {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0 1.5rem;
+    padding: 1.15rem 0;
+    border-top: 1px dotted var(--rule);
+  }
+  .paper:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .year {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--pencil);
+    padding-top: 0.28rem;
+  }
+  .title {
+    font-size: 1.03rem;
+    font-weight: 500;
+    line-height: 1.34;
+    margin: 0 0 0.3rem;
+    max-width: 54ch;
+  }
+  .title a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .title a:hover,
+  .title a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .authors {
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    color: var(--ink-70);
+    margin: 0 0 0.2rem;
+  }
+  .authors b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .venue {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--pencil);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .topics {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+    margin: 0.35rem 0 0;
+  }
+  .acts {
+    margin: 0.65rem 0 0;
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .act--note {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  @media (max-width: 620px) {
+    .paper {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .year {
+      padding: 0 0 0.3rem;
+    }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+/**
+ * The eight AIR research areas as one image rather than a table.
+ *
+ * A table of eight rows reads as an inventory and gets skimmed. The tiles carry
+ * Infobip's own colour pairs and squircle shape language, so the section looks
+ * like it belongs to the team it describes — and the names are still legible at
+ * a glance, which is the only job this figure has on the landing page.
+ *
+ * The image is generated from tools/air/compose.html (`npm run image`), so the
+ * labels come from one place and cannot drift from profile.ts. The alt text
+ * spells out all eight names for anyone who cannot see it.
+ */
+import { researchAreas } from '../data/profile';
+
+interface Props {
+  /** Link the figure to /air. Off on the /air page itself. */
+  link?: boolean;
+}
+
+const { link = true } = Astro.props;
+const names = researchAreas.map((area) => area.name);
+const alt = `The eight research areas of Team AI Research at Infobip: ${names.join(', ')}.`;
+const Wrapper = link ? 'a' : 'div';
+---
+
+<figure class="air-figure">
+  <Wrapper {...link ? { href: '/air' } : {}} class="frame">
+    <img src="/air-areas.png" width="1600" height="800" alt={alt} loading="lazy" decoding="async" />
+  </Wrapper>
+  <figcaption>
+    Eight areas, one question: what holds up when it meets real traffic.
+  </figcaption>
+</figure>
+
+<style>
+  .air-figure {
+    margin: 0;
+  }
+  .frame {
+    display: block;
+    text-decoration: none;
+    transition: opacity 0.18s ease;
+  }
+  a.frame:hover,
+  a.frame:focus-visible {
+    opacity: 0.85;
+  }
+  .frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    margin-top: 0.85rem;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--pencil);
+    text-align: center;
+  }
+</style>

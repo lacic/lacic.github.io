@@ -399,9 +399,9 @@ def main():
 
     args = parser.parse_args()
 
-    # Setup paths
+    # Setup paths — PDFs live under public/ so Astro serves /documents/... URLs.
     project_root = Path(__file__).parent.parent
-    documents_dir = project_root / "documents"
+    documents_dir = project_root / "public" / "documents"
     summaries_dir = documents_dir / "summaries"
 
     print("🤖 Research Paper Summarizer")

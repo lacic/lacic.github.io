@@ -1,0 +1,14 @@
+---
+paper: 2025-iui-improving-visual
+generated: 2026-08-12
+---
+
+Visual chatbot builders promise to make conversational agent development simple and intuitive, yet as these platforms gain features, the complexity creeps in—especially for anyone not well-versed in their UI quirks or in prompt engineering. The core friction is clear: the wide vocabulary of building elements (like API calls, conditional blocks, message sending, etc.) and the multi-dialog structure create a steep learning curve. LLM-powered "copilots" sound like a solution, but in practice, are they smart enough for intent-based design, or do they just pile on more guesswork and occasional frustration?
+
+We focused on this gap using a proprietary dataset of over 59,000 real chatbot dialogs built at Infobip, annotating them with user intent prompts. Our benchmark compared four prompt-based strategies—zero-shot, few-shot (with and without rules), and Chain-of-Thought—using both popular commercial LLMs (OpenAI's GPT-3.5 Turbo and Google's Gemini Pro). We went further: instead of relying solely on prompting, we fine-tuned four LLMs (from the compact Sheared-LLaMa-1.3B to full-scale GPT-3.5 Turbo) with our dialog-building data, then evaluated accuracy (nDCG, Recall, HitRate) and the rate of "hallucinations"—those invalid or nonsensical outputs that don't fit the visual builder.
+
+The simple approaches (zero-shot, few-shot) were, frankly, not good enough: accuracy lagged and hallucinations were frequent, sometimes catastrophically so (Gemini Pro hallucinated more than 90% on zero-shot). Adding domain rules into the prompt sometimes made things worse, killing the HitRate, except when compensated by Chain-of-Thought, which consistently stabilized results and gave the best HitRate with GPT-3.5 Turbo (up to 3.7%) and the best overall HitRate with Gemini Pro (5.4%). Still, these numbers are modest—just getting the full dialog structure right even 5% of the time reflects the genuine challenge.
+
+What actually made a difference was fine-tuning. All four purpose-trained LLMs outperformed prompt strategies across the board, with HitRate jumping as high as 27% for Mistral-7B and nDCG exceeding 0.89 for the compact Sheared-LLaMa-1.3B. The best models almost eliminated hallucinations, making them safe to plug into a UI. Perhaps the most surprising result is that even tiny models (1.3B parameters) could nearly match much larger counterparts in accuracy, as long as they were fine-tuned with good intent-element data. This finding matters for anyone deploying copilots at scale—smaller models can keep hardware costs down and inference fast, without giving up much on the user experience.
+
+The upshot: prompt engineering alone won’t tame the visual chatbot builder’s complexity, but fine-tuned LLMs, even lightweight ones, bring these "intent-based copilots" much closer to being reliable design partners.

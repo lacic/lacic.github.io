@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A — Relevance — elacic.me v2 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,300..600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14192B;
+  --paper:#F6F7FB;
+  --muted:#7C859B;
+  --accent:#4739FF;
+  --signal:#FFA62B;
+
+  --rule:rgba(20,25,43,.12);
+  --rule-soft:rgba(20,25,43,.07);
+  --ink-70:rgba(20,25,43,.72);
+
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --measure:66ch;
+  --gutter:clamp(1.25rem,5vw,4.5rem);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:19px;
+  line-height:1.6;
+  font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
+
+/* ---------- mockup chrome ---------- */
+.flag{
+  position:fixed;top:0;left:0;right:0;z-index:99;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px var(--gutter);display:flex;justify-content:space-between;gap:1rem;
+}
+.flag b{color:var(--signal);font-weight:500}
+
+/* ---------- masthead ---------- */
+.masthead{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft);
+  margin-top:31px;
+}
+.masthead .shell{display:flex;align-items:baseline;justify-content:space-between;gap:2rem;padding-top:1rem;padding-bottom:1rem}
+.wordmark{
+  font-family:var(--display);font-weight:700;font-size:16px;
+  letter-spacing:.13em;text-transform:uppercase;font-variation-settings:"wdth" 82;
+  text-decoration:none;
+}
+.wordmark span{color:var(--accent)}
+.masthead nav{display:flex;gap:1.6rem;font-family:var(--mono);font-size:12.5px;letter-spacing:.04em}
+.masthead nav a{color:var(--muted);text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.masthead nav a:hover,.masthead nav a:focus-visible{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* ---------- shared section furniture ---------- */
+.band{border-top:1px solid var(--rule-soft)}
+.band > .shell{padding-top:clamp(3rem,7vw,5.5rem);padding-bottom:clamp(3rem,7vw,5.5rem)}
+
+.eyebrow{
+  display:flex;align-items:baseline;justify-content:space-between;gap:2rem;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 2rem;padding-bottom:.75rem;
+  border-bottom:1px solid var(--rule);
+}
+.eyebrow a{color:var(--accent);text-decoration:none;letter-spacing:.06em}
+.eyebrow a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- hero ---------- */
+.hero > .shell{padding-top:clamp(3.5rem,10vw,8rem);padding-bottom:clamp(3rem,7vw,5.5rem)}
+.statement{
+  font-family:var(--display);
+  font-size:clamp(2.1rem,5.4vw,4.15rem);
+  line-height:1.03;
+  letter-spacing:-.022em;
+  font-weight:500;
+  font-variation-settings:"wdth" 92;
+  margin:0;
+  max-width:19em;
+  text-wrap:balance;
+}
+.statement em{
+  font-style:normal;font-weight:700;
+  font-variation-settings:"wdth" 100;
+  color:var(--accent);
+}
+.statement .quiet{color:var(--muted);font-weight:400}
+
+.hero-line{display:block;opacity:0;transform:translateY(.42em);animation:rise .75s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-line:nth-child(1){animation-delay:.05s}
+.hero-line:nth-child(2){animation-delay:.14s}
+.hero-line:nth-child(3){animation-delay:.23s}
+.hero-line:nth-child(4){animation-delay:.32s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.hero-foot{
+  margin-top:clamp(2rem,4vw,3.25rem);
+  display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem 2.5rem;
+  opacity:0;animation:rise .75s cubic-bezier(.2,.7,.2,1) .48s forwards;
+}
+.proof{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+.proof i{font-style:normal;color:var(--ink)}
+.cta{
+  font-family:var(--mono);font-size:13px;letter-spacing:.03em;
+  text-decoration:none;color:var(--paper);background:var(--ink);
+  padding:.72em 1.15em;display:inline-flex;align-items:center;gap:.65em;
+  transition:background .18s ease;
+}
+.cta::after{content:"→";color:var(--signal)}
+.cta:hover,.cta:focus-visible{background:var(--accent)}
+
+/* ---------- now ---------- */
+.now{list-style:none;margin:0;padding:0}
+.now li{border-bottom:1px solid var(--rule-soft)}
+.now a{
+  display:grid;grid-template-columns:6.5rem 1fr auto;gap:1.5rem;align-items:baseline;
+  padding:1.15rem 0;text-decoration:none;
+}
+.now a:hover .now-title,.now a:focus-visible .now-title{color:var(--accent)}
+.now .when{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.now-title{font-size:1.08rem;line-height:1.35;max-width:42ch;transition:color .16s ease}
+.now .tail{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
+.tag-series{color:var(--accent)}
+.new{color:var(--ink);background:var(--signal);padding:.15em .45em;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-right:.55em;vertical-align:.12em}
+
+/* ---------- air ---------- */
+.air{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(2rem,5vw,4.5rem)}
+.air-lede{font-size:1.16rem;line-height:1.55;margin:0 0 1.4rem;max-width:34ch}
+.air-lede strong{font-weight:600}
+.air-note{color:var(--ink-70);font-size:.98rem;margin:0 0 1.6rem;max-width:38ch}
+.air-link{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
+.air-link:hover{border-bottom-color:var(--accent)}
+
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.area{background:var(--paper);padding:1.4rem 1.3rem 1.5rem;min-height:11.5rem;display:flex;flex-direction:column}
+.area h3{font-family:var(--display);font-size:1.12rem;line-height:1.15;font-weight:600;letter-spacing:-.01em;margin:0 0 .55rem;font-variation-settings:"wdth" 88}
+.area p{font-size:.93rem;line-height:1.5;color:var(--ink-70);margin:0}
+.area .evidence{margin-top:auto;padding-top:1rem;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted)}
+.area .evidence a{color:var(--accent);text-decoration:none}
+.area .evidence a:hover{text-decoration:underline;text-underline-offset:2px}
+
+/* ---------- selected work: the ranked list ---------- */
+.ranked{list-style:none;margin:0;padding:0}
+.ranked > li{border-bottom:1px solid var(--rule-soft)}
+.ranked a{
+  display:grid;
+  grid-template-columns:2.6rem minmax(0,1fr) 7.5rem 6.5rem 3rem;
+  gap:1.4rem;align-items:center;padding:1.2rem 0;text-decoration:none;
+}
+.rank{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.ranked a:hover .rank,.ranked a:focus-visible .rank{color:var(--accent)}
+.work-title{font-size:1.06rem;line-height:1.32;transition:color .16s ease}
+.ranked a:hover .work-title{color:var(--accent)}
+.venue{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--muted);white-space:nowrap}
+.venue.system{color:var(--ink);background:var(--rule-soft);padding:.25em .5em}
+
+.score{display:flex;align-items:center;gap:.55rem}
+.score .track{position:relative;flex:1;height:4px;background:var(--rule-soft)}
+.score .track i{position:absolute;inset:0 auto 0 0;background:var(--accent);display:block}
+.score .n{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:2.2em;text-align:right}
+.getpdf{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-align:right}
+.ranked a:hover .getpdf{color:var(--accent)}
+.legend{margin-top:1.1rem;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+
+/* ---------- closing ---------- */
+.close{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,5vw,4.5rem)}
+.mini{list-style:none;margin:0;padding:0}
+.mini li{display:grid;grid-template-columns:5.5rem 1fr;gap:1.2rem;padding:.7rem 0;border-bottom:1px solid var(--rule-soft);font-size:.97rem}
+.mini .yr{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;padding-top:.25em}
+.mini .role{display:block}
+.mini .org{color:var(--muted);font-size:.88rem}
+.mini li.current .role{font-weight:600}
+.mini li.current .yr{color:var(--accent)}
+
+.collab h2{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.1;font-weight:500;letter-spacing:-.015em;margin:0 0 1rem;font-variation-settings:"wdth" 92;max-width:20ch}
+.collab p{color:var(--ink-70);margin:0 0 1.6rem;max-width:34ch;font-size:1rem}
+
+footer{border-top:1px solid var(--rule);background:var(--ink);color:var(--paper)}
+footer .shell{padding:2.5rem var(--gutter);display:flex;flex-wrap:wrap;gap:1rem 2.5rem;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.04em}
+footer a{color:var(--paper);text-decoration:none;opacity:.72}
+footer a:hover{opacity:1;color:var(--signal)}
+footer .set{display:flex;gap:1.6rem;flex-wrap:wrap}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+@media (max-width:860px){
+  .air,.close{grid-template-columns:1fr}
+  .areas{grid-template-columns:1fr}
+  .ranked a{grid-template-columns:2rem 1fr;gap:.5rem 1rem}
+  .ranked .venue,.ranked .score,.ranked .getpdf{grid-column:2}
+  .ranked .score{max-width:12rem}
+  .now a{grid-template-columns:1fr;gap:.35rem}
+  .now .when{order:-1}
+  .masthead nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .hero-line,.hero-foot{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="flag">
+  <span>Direction A — <b>Relevance</b></span>
+  <span>mockup · relevance bars use sample numbers</span>
+</div>
+
+<header class="masthead">
+  <div class="shell">
+    <a class="wordmark" href="#">ELACIĆ<span>.</span></a>
+    <nav>
+      <a href="#now">updates</a>
+      <a href="#air">air</a>
+      <a href="#work">papers</a>
+      <a href="#talks">talks</a>
+      <a href="#cv">cv</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="shell">
+    <h1 class="statement">
+      <span class="hero-line">I lead <em>Team AI Research</em></span>
+      <span class="hero-line">at Infobip, building AI for</span>
+      <span class="hero-line">communication at global scale</span>
+      <span class="hero-line quiet">— and finding out what survives production.</span>
+    </h1>
+    <div class="hero-foot">
+      <a class="cta" href="#now">Read the latest</a>
+      <div class="proof">
+        <span><i>PhD</i> with distinction, TU Graz</span>
+        <span><i>33</i> peer-reviewed papers</span>
+        <span>Editor, <i>Frontiers in Big Data</i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="now">
+  <div class="shell">
+    <p class="eyebrow"><span>Now</span> <a href="#">all updates →</a></p>
+    <ul class="now">
+      <li><a href="#">
+        <span class="when">10 Aug 2026</span>
+        <span class="now-title"><span class="new">new</span>The phone codec behind most calls favors male voices by a full standard deviation</span>
+        <span class="tail">field note · 6 min</span>
+      </a></li>
+      <li><a href="#">
+        <span class="when">21 Jul 2026</span>
+        <span class="now-title">Semantic Scholar MCP, part 3: replacing the MCP with a skill?</span>
+        <span class="tail"><span class="tag-series">series 3/3</span> · 11 min</span>
+      </a></li>
+      <li><a href="#">
+        <span class="when">01 Jul 2026</span>
+        <span class="now-title">Semantic Scholar MCP, part 2: benchmarking what the agent actually retrieves</span>
+        <span class="tail"><span class="tag-series">series 2/3</span> · 9 min</span>
+      </a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" id="air">
+  <div class="shell">
+    <p class="eyebrow"><span>Team AI Research (AIR)</span> <a href="#">about the team →</a></p>
+    <div class="air">
+      <div>
+        <p class="air-lede">AIR is the <strong>R&amp;D team inside Infobip</strong>. We work on applied AI for messaging, voice and customer engagement — at the scale of a platform that carries a large share of the world's business communication.</p>
+        <p class="air-note">The interesting part is not the research. It is the distance between a result that holds in a paper and one that holds in production, on real traffic, for real customers. That distance is what the team exists to close.</p>
+        <a class="air-link" href="#">How research reaches production →</a>
+      </div>
+      <div class="areas">
+        <article class="area">
+          <h3>Human-AI Collaboration</h3>
+          <p>How do people actually work with AI communication systems — where does trust form, and where does it break?</p>
+          <p class="evidence"><a href="#">Shift'24 talk</a></p>
+        </article>
+        <article class="area">
+          <h3>Trustworthy AI</h3>
+          <p>Fairness, transparency and accountability, measured rather than asserted.</p>
+          <p class="evidence"><a href="#">3 papers</a> · <a href="#">codec bias study</a></p>
+        </article>
+        <article class="area">
+          <h3>Conversational AI</h3>
+          <p>Context awareness and personalization in conversations that have to resolve, not just respond.</p>
+          <p class="evidence"><a href="#">Order Management</a></p>
+        </article>
+        <article class="area">
+          <h3>AI-powered Communication</h3>
+          <p>Models that improve reliability and performance of communication networks in real time.</p>
+          <p class="evidence"><a href="#">IPCEI-CIS</a> · <a href="#">EDIH Adria</a></p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="work">
+  <div class="shell">
+    <p class="eyebrow"><span>Selected work</span> <a href="#">all 33 papers →</a></p>
+    <ul class="ranked">
+      <li><a href="#">
+        <span class="rank">01</span>
+        <span class="work-title">What Drives Readership? User Interface Types and Popularity Bias Mitigation in News Recommendation</span>
+        <span class="venue">ECIR '22</span>
+        <span class="score"><span class="track"><i style="width:100%"></i></span><span class="n">84</span></span>
+        <span class="getpdf">pdf</span>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">02</span>
+        <span class="work-title">Using Autoencoders for Session-based Job Recommendations</span>
+        <span class="venue">UMUAI '20</span>
+        <span class="score"><span class="track"><i style="width:74%"></i></span><span class="n">62</span></span>
+        <span class="getpdf">pdf</span>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">03</span>
+        <span class="work-title">Should we Embed? Online Performance of Embeddings for Real-Time Job Recommendations</span>
+        <span class="venue">RecSys '19</span>
+        <span class="score"><span class="track"><i style="width:56%"></i></span><span class="n">47</span></span>
+        <span class="getpdf">pdf</span>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">04</span>
+        <span class="work-title">Job Marketplace — session-based recommendation serving a live student job platform</span>
+        <span class="venue system">deployed</span>
+        <span class="score"><span class="track"><i style="width:38%"></i></span><span class="n">—</span></span>
+        <span class="getpdf">case</span>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">05</span>
+        <span class="work-title">Steerable Guest Activities — controllable recommendation for regional tourism</span>
+        <span class="venue system">deployed</span>
+        <span class="score"><span class="track"><i style="width:31%"></i></span><span class="n">—</span></span>
+        <span class="getpdf">case</span>
+      </a></li>
+    </ul>
+    <p class="legend">Bar = citations. Ordering is a ranking, not a chronology.</p>
+  </div>
+</section>
+
+<section class="band" id="talks">
+  <div class="shell">
+    <p class="eyebrow"><span>Talks</span> <a href="#">all talks →</a></p>
+    <ul class="now">
+      <li><a href="#">
+        <span class="when">2024</span>
+        <span class="now-title">Shift'24 Zadar — building with LLMs when the answer has to be right</span>
+        <span class="tail">slides pdf</span>
+      </a></li>
+      <li><a href="#">
+        <span class="when">2024</span>
+        <span class="now-title">Shift'24 Miami — the copilot nobody asked for, and the one they did</span>
+        <span class="tail">slides pdf</span>
+      </a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" id="cv">
+  <div class="shell">
+    <div class="close">
+      <div>
+        <p class="eyebrow"><span>Career in brief</span> <a href="#">full cv →</a></p>
+        <ul class="mini">
+          <li class="current"><span class="yr">2023 —</span><span><span class="role">Principal Engineer, Team AI Research</span><span class="org">Infobip · Zagreb</span></span></li>
+          <li><span class="yr">2021—23</span><span><span class="role">Operations Area Manager, Fair-AI</span><span class="org">Know-Center · Graz</span></span></li>
+          <li><span class="yr">2016—20</span><span><span class="role">Senior Researcher &amp; RecSys Architect</span><span class="org">Know-Center · Graz</span></span></li>
+          <li><span class="yr">2013—16</span><span><span class="role">Project Assistant, Learning Layers</span><span class="org">TU Graz</span></span></li>
+          <li><span class="yr">2011</span><span><span class="role">Software Engineer</span><span class="org">Infobip · where this started</span></span></li>
+        </ul>
+      </div>
+      <div class="collab">
+        <p class="eyebrow"><span>Collaborate</span></p>
+        <h2>Working on something adjacent?</h2>
+        <p>Joint agendas, pilots, student theses, or a paper that needs an industrial testbed — those are the conversations worth having.</p>
+        <a class="cta" href="#">Get in touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    <span>Dr. Emanuel Lacić · Zagreb</span>
+    <span class="set">
+      <a href="#">Scholar</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
+      <a href="#">research.infobip.com</a><a href="#">RSS</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>

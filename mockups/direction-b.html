@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B — Lab notebook — elacic.me v2 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --grid:#EDF1F4;
+  --ink:#1B2024;
+  --pencil:#5C6670;
+  --plot:#D83A2C;
+  --paper:#FBFCFD;
+
+  --rule:rgba(27,32,36,.16);
+  --rule-soft:rgba(27,32,36,.09);
+  --ink-70:rgba(27,32,36,.74);
+
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,serif;
+
+  --gutter:clamp(1.25rem,4.5vw,3.5rem);
+  --cell:26px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:17.5px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  background-color:var(--grid);
+  background-image:
+    linear-gradient(to right,rgba(27,32,36,.055) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(27,32,36,.055) 1px,transparent 1px);
+  background-size:var(--cell) var(--cell);
+}
+a{color:inherit}
+
+.shell{max-width:1140px;margin:0 auto;padding:0 var(--gutter)}
+
+/* mockup chrome */
+.flag{
+  position:fixed;top:0;left:0;right:0;z-index:99;
+  background:var(--ink);color:var(--grid);
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  padding:7px var(--gutter);display:flex;justify-content:space-between;gap:1rem;
+}
+.flag b{color:var(--plot);font-weight:500}
+
+/* the sheet: content sits on paper laid over the grid */
+.sheet{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  margin:31px auto 3rem;
+  max-width:1140px;
+}
+.sheet > * + *{border-top:1px solid var(--rule-soft)}
+
+.masthead{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:.9rem var(--gutter);border-bottom:1px solid var(--rule)!important}
+.wordmark{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+.wordmark s{text-decoration:none;color:var(--plot)}
+.masthead nav{display:flex;gap:1.4rem;font-family:var(--mono);font-size:12px}
+.masthead nav a{color:var(--pencil);text-decoration:none;border-bottom:1px dotted var(--rule)}
+.masthead nav a:hover{color:var(--plot);border-bottom-style:solid;border-bottom-color:var(--plot)}
+
+/* section furniture: numbered like notebook entries */
+.block{padding:clamp(2.25rem,5vw,3.5rem) var(--gutter)}
+.hdr{
+  display:flex;align-items:baseline;gap:1rem;justify-content:space-between;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--pencil);margin:0 0 1.9rem;
+}
+.hdr .n{color:var(--plot)}
+.hdr a{color:var(--pencil);text-decoration:none;border-bottom:1px solid var(--rule)}
+.hdr a:hover{color:var(--plot);border-bottom-color:var(--plot)}
+
+/* hero, with a marginal annotation */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 15rem;gap:clamp(1.5rem,4vw,3rem)}
+.statement{
+  font-family:var(--sans);font-weight:500;
+  font-size:clamp(1.85rem,4.2vw,3.1rem);line-height:1.14;letter-spacing:-.021em;
+  margin:0;max-width:24ch;text-wrap:balance;
+}
+.statement u{
+  text-decoration:none;
+  background:linear-gradient(transparent 62%,rgba(216,58,44,.22) 62%);
+  padding:0 .06em;
+}
+.annot{
+  font-family:var(--mono);font-size:11.5px;line-height:1.62;color:var(--pencil);
+  border-left:2px solid var(--plot);padding-left:.85rem;align-self:end;
+}
+.annot b{color:var(--ink);font-weight:500;display:block;margin-bottom:.35rem;font-style:normal}
+.hero-foot{margin-top:2.4rem;display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center}
+.stats{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;font-family:var(--mono);font-size:11.5px;color:var(--pencil)}
+.stats i{font-style:normal;color:var(--ink);font-weight:500}
+.cta{
+  font-family:var(--mono);font-size:12.5px;text-decoration:none;
+  color:var(--paper);background:var(--ink);padding:.68em 1.05em;
+  display:inline-flex;gap:.6em;align-items:center;transition:background .18s ease;
+}
+.cta::after{content:"→";color:var(--plot)}
+.cta:hover{background:var(--plot)}
+.cta:hover::after{color:var(--paper)}
+
+/* log entries */
+.log{list-style:none;margin:0;padding:0;font-family:var(--mono)}
+.log li + li{border-top:1px dotted var(--rule)}
+.log a{display:grid;grid-template-columns:6.8rem 1fr auto;gap:1.4rem;align-items:baseline;padding:.95rem 0;text-decoration:none}
+.log .stamp{font-size:11.5px;color:var(--pencil);white-space:nowrap;font-variant-numeric:tabular-nums}
+.log .t{font-family:var(--sans);font-size:1.02rem;line-height:1.38;max-width:46ch}
+.log a:hover .t{color:var(--plot)}
+.log .meta{font-size:11px;color:var(--pencil);white-space:nowrap}
+.log .rev{color:var(--plot)}
+
+/* research areas as a measured table */
+.areas{border:1px solid var(--rule);border-collapse:collapse;width:100%}
+.areas th,.areas td{border:1px solid var(--rule-soft);padding:.85rem .9rem;text-align:left;vertical-align:top}
+.areas thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--pencil);font-weight:500;background:var(--grid)}
+.areas .name{font-weight:600;font-size:.98rem;width:12.5rem}
+.areas .q{color:var(--ink-70);font-size:.93rem}
+.areas .ev{font-family:var(--mono);font-size:11px;color:var(--pencil);white-space:nowrap;width:9rem}
+.areas .ev a{color:var(--plot);text-decoration:none;border-bottom:1px solid rgba(216,58,44,.3)}
+
+.air-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(1.5rem,4vw,3rem);align-items:start}
+.lede{font-family:var(--serif);font-size:1.12rem;line-height:1.58;margin:0 0 1.1rem}
+.hand{font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--pencil);margin:0 0 1.3rem;padding-left:.85rem;border-left:2px solid var(--rule)}
+
+/* selected work with inline plot */
+.tbl{width:100%;border-collapse:collapse;font-size:.99rem}
+.tbl th{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--pencil);font-weight:500;text-align:left;padding:0 .8rem .6rem 0;border-bottom:1px solid var(--rule)}
+.tbl td{padding:.85rem .8rem .85rem 0;border-bottom:1px dotted var(--rule);vertical-align:baseline}
+.tbl .idx{font-family:var(--mono);font-size:11.5px;color:var(--pencil);width:2.4rem}
+.tbl .ttl a{text-decoration:none;line-height:1.35;display:block;max-width:44ch}
+.tbl .ttl a:hover{color:var(--plot)}
+.tbl .vn{font-family:var(--mono);font-size:11.5px;color:var(--pencil);white-space:nowrap;width:6.5rem}
+.tbl .vn.sys{color:var(--plot)}
+.tbl .plot{width:7rem}
+.tbl .plot span{display:block;height:9px;background:repeating-linear-gradient(90deg,var(--plot) 0 2px,transparent 2px 4px)}
+.tbl .c{font-family:var(--mono);font-size:11.5px;color:var(--pencil);font-variant-numeric:tabular-nums;text-align:right;width:3.2rem}
+.tbl .dl{font-family:var(--mono);font-size:11px;color:var(--pencil);text-align:right;width:3rem}
+.note{margin-top:1rem;font-family:var(--mono);font-size:10.5px;color:var(--pencil);letter-spacing:.05em}
+
+/* closing */
+.close{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.75rem,4vw,3rem)}
+.mini{list-style:none;margin:0;padding:0}
+.mini li{display:grid;grid-template-columns:5.4rem 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px dotted var(--rule);font-size:.95rem}
+.mini .yr{font-family:var(--mono);font-size:11.5px;color:var(--pencil);padding-top:.2em;font-variant-numeric:tabular-nums}
+.mini .org{display:block;color:var(--pencil);font-size:.86rem}
+.mini li.cur .yr{color:var(--plot)}
+.mini li.cur .role{font-weight:600}
+.collab h2{font-family:var(--sans);font-weight:500;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.15;letter-spacing:-.018em;margin:0 0 .85rem;max-width:20ch}
+.collab p{font-family:var(--serif);color:var(--ink-70);margin:0 0 1.4rem;max-width:33ch;font-size:1rem}
+
+footer{padding:1.6rem var(--gutter);display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--pencil);background:var(--grid);border-top:1px solid var(--rule)!important}
+footer a{color:var(--pencil);text-decoration:none;border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--plot);border-bottom-color:var(--plot)}
+footer .set{display:flex;gap:1.3rem;flex-wrap:wrap}
+
+:focus-visible{outline:2px solid var(--plot);outline-offset:3px}
+
+@media (max-width:880px){
+  .hero,.air-grid,.close{grid-template-columns:1fr}
+  .annot{border-left:none;border-top:2px solid var(--plot);padding:.8rem 0 0}
+  .log a{grid-template-columns:1fr;gap:.3rem}
+  .log .stamp{order:-1}
+  .masthead nav{display:none}
+  .tbl .plot,.tbl .c{display:none}
+  .areas .ev{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="flag">
+  <span>Direction B — <b>Lab notebook</b></span>
+  <span>mockup · citation figures are sample data</span>
+</div>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <a class="wordmark" href="#">E<s>.</s>LACIĆ — NOTEBOOK</a>
+    <nav>
+      <a href="#now">updates</a>
+      <a href="#air">air</a>
+      <a href="#work">papers</a>
+      <a href="#talks">talks</a>
+      <a href="#cv">cv</a>
+    </nav>
+  </header>
+
+  <section class="block">
+    <div class="hero">
+      <h1 class="statement">I lead <u>Team AI Research</u> at Infobip. We do applied AI for communication at global scale.</h1>
+      <p class="annot"><b>Working note</b>Most of what we try does not work. This site is where I write down which parts did, and why the difference was rarely the model.</p>
+    </div>
+    <div class="hero-foot">
+      <a class="cta" href="#now">Read the latest</a>
+      <div class="stats">
+        <span>PhD <i>w/ distinction</i>, TU Graz</span>
+        <span><i>33</i> papers</span>
+        <span>Editor, <i>Frontiers in Big Data</i></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="now">
+    <p class="hdr"><span><span class="n">01</span> &nbsp;Log</span> <a href="#">all updates →</a></p>
+    <ul class="log">
+      <li><a href="#">
+        <span class="stamp">2026-08-10</span>
+        <span class="t">The phone codec behind most calls favors male voices by a full standard deviation</span>
+        <span class="meta">field note · 6 min</span>
+      </a></li>
+      <li><a href="#">
+        <span class="stamp">2026-07-21</span>
+        <span class="t">Semantic Scholar MCP, part 3: replacing the MCP with a skill?</span>
+        <span class="meta"><span class="rev">series 3/3</span> · 11 min</span>
+      </a></li>
+      <li><a href="#">
+        <span class="stamp">2026-07-01</span>
+        <span class="t">Semantic Scholar MCP, part 2: benchmarking what the agent actually retrieves</span>
+        <span class="meta"><span class="rev">series 2/3</span> · 9 min</span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="block" id="air">
+    <p class="hdr"><span><span class="n">02</span> &nbsp;Team AI Research (AIR)</span> <a href="#">about the team →</a></p>
+    <div class="air-grid">
+      <div>
+        <p class="lede">AIR is the R&amp;D team inside Infobip — applied research on messaging, voice and customer engagement, running on a platform that carries a large share of the world's business communication.</p>
+        <p class="hand">The distance between a result that holds in a paper and one that holds on live traffic is the whole job. Closing it is what the team is for.</p>
+        <a class="cta" href="#">Research → production</a>
+      </div>
+      <table class="areas">
+        <thead><tr><th>Area</th><th>The question</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Human-AI Collaboration</td><td class="q">Where does trust in an AI communication system form, and where does it break?</td><td class="ev"><a href="#">Shift'24</a></td></tr>
+          <tr><td class="name">Trustworthy AI</td><td class="q">Fairness, transparency and accountability — measured, not asserted.</td><td class="ev"><a href="#">3 papers</a></td></tr>
+          <tr><td class="name">Conversational AI</td><td class="q">Context and personalization in conversations that must resolve, not just respond.</td><td class="ev"><a href="#">Order Mgmt</a></td></tr>
+          <tr><td class="name">AI-powered Communication</td><td class="q">Models that improve network reliability in real time.</td><td class="ev"><a href="#">IPCEI-CIS</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <p class="hdr"><span><span class="n">03</span> &nbsp;Selected work</span> <a href="#">all 33 papers →</a></p>
+    <table class="tbl">
+      <thead><tr><th></th><th>Title</th><th>Venue</th><th colspan="2">Cited</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="idx">01</td>
+          <td class="ttl"><a href="#">What Drives Readership? User Interface Types and Popularity Bias Mitigation in News Recommendation</a></td>
+          <td class="vn">ECIR '22</td>
+          <td class="plot"><span style="width:100%"></span></td><td class="c">84</td>
+          <td class="dl">pdf</td>
+        </tr>
+        <tr>
+          <td class="idx">02</td>
+          <td class="ttl"><a href="#">Using Autoencoders for Session-based Job Recommendations</a></td>
+          <td class="vn">UMUAI '20</td>
+          <td class="plot"><span style="width:74%"></span></td><td class="c">62</td>
+          <td class="dl">pdf</td>
+        </tr>
+        <tr>
+          <td class="idx">03</td>
+          <td class="ttl"><a href="#">Should we Embed? Online Performance of Embeddings for Real-Time Job Recommendations</a></td>
+          <td class="vn">RecSys '19</td>
+          <td class="plot"><span style="width:56%"></span></td><td class="c">47</td>
+          <td class="dl">pdf</td>
+        </tr>
+        <tr>
+          <td class="idx">04</td>
+          <td class="ttl"><a href="#">Job Marketplace — session-based recommendation on a live student job platform</a></td>
+          <td class="vn sys">deployed</td>
+          <td class="plot"><span style="width:0"></span></td><td class="c">—</td>
+          <td class="dl">case</td>
+        </tr>
+        <tr>
+          <td class="idx">05</td>
+          <td class="ttl"><a href="#">Steerable Guest Activities — controllable recommendation for regional tourism</a></td>
+          <td class="vn sys">deployed</td>
+          <td class="plot"><span style="width:0"></span></td><td class="c">—</td>
+          <td class="dl">case</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">Ordered by relevance, not date. Deployed systems have no citation count — that is the point.</p>
+  </section>
+
+  <section class="block" id="talks">
+    <p class="hdr"><span><span class="n">04</span> &nbsp;Talks</span> <a href="#">all talks →</a></p>
+    <ul class="log">
+      <li><a href="#">
+        <span class="stamp">2024-09</span>
+        <span class="t">Shift'24 Zadar — building with LLMs when the answer has to be right</span>
+        <span class="meta">slides pdf</span>
+      </a></li>
+      <li><a href="#">
+        <span class="stamp">2024-04</span>
+        <span class="t">Shift'24 Miami — the copilot nobody asked for, and the one they did</span>
+        <span class="meta">slides pdf</span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="block" id="cv">
+    <div class="close">
+      <div>
+        <p class="hdr"><span><span class="n">05</span> &nbsp;Career in brief</span> <a href="#">full cv →</a></p>
+        <ul class="mini">
+          <li class="cur"><span class="yr">2023 —</span><span><span class="role">Principal Engineer, Team AI Research</span><span class="org">Infobip · Zagreb</span></span></li>
+          <li><span class="yr">2021—23</span><span><span class="role">Operations Area Manager, Fair-AI</span><span class="org">Know-Center · Graz</span></span></li>
+          <li><span class="yr">2016—20</span><span><span class="role">Senior Researcher &amp; RecSys Architect</span><span class="org">Know-Center · Graz</span></span></li>
+          <li><span class="yr">2013—16</span><span><span class="role">Project Assistant, Learning Layers</span><span class="org">TU Graz</span></span></li>
+          <li><span class="yr">2011</span><span><span class="role">Software Engineer</span><span class="org">Infobip · where this started</span></span></li>
+        </ul>
+      </div>
+      <div class="collab">
+        <p class="hdr"><span><span class="n">06</span> &nbsp;Collaborate</span></p>
+        <h2>Working on something adjacent?</h2>
+        <p>Joint agendas, pilots, student theses, or a paper that needs an industrial testbed — those are the conversations worth having.</p>
+        <a class="cta" href="#">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dr. Emanuel Lacić · Zagreb</span>
+    <span class="set">
+      <a href="#">Scholar</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
+      <a href="#">research.infobip.com</a><a href="#">RSS</a>
+    </span>
+  </footer>
+
+</div>
+
+</body>
+</html>

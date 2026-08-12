@@ -1,0 +1,517 @@
+---
+/**
+ * The AIR page.
+ *
+ * This is the section v1 had no answer for, and the reason for the rebuild. It
+ * has to work for two readers at once: a peer deciding whether the team does
+ * real research, and a candidate deciding whether to apply. Both want the same
+ * thing first — what the team actually works on — so the areas lead, and the
+ * institutional framing comes after.
+ *
+ * research.infobip.com stays the canonical home for team-authored posts. This
+ * page is the personal account of leading it, and links out rather than
+ * duplicating.
+ */
+import Base from '../layouts/Base.astro';
+import AirCarousel from '../components/AirCarousel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PostList from '../components/PostList.astro';
+import { profile, airTeam } from '../data/profile';
+import { getPosts, getPublications } from '../lib/content';
+import { venueLine } from '../lib/citation';
+import { formatMonth, areaLabel } from '../lib/format';
+import { fetchLatestFeedItem } from '../lib/rss';
+
+const posts = (await getPosts()).filter((post) => post.data.tags.includes('air')).slice(0, 4);
+const airAll = (await getPublications()).filter((paper) => paper.data.air);
+const airPapers = airAll.slice(0, 3);
+
+/**
+ * Latest blog post per member. Prefer live RSS when the feed is reachable;
+ * otherwise use the committed `latestPost` fallback so local/offline previews
+ * still show the shout-out.
+ */
+type LatestPost = { title: string; link: string; date: Date };
+const latestByMember = new Map<string, LatestPost>();
+await Promise.all(
+  airTeam.map(async (member) => {
+    if (member.feed) {
+      const item = await fetchLatestFeedItem(member.feed, { pathIncludes: '/blog/' });
+      if (item) {
+        latestByMember.set(member.name, item);
+        return;
+      }
+    }
+    if (member.latestPost) {
+      latestByMember.set(member.name, {
+        title: member.latestPost.title,
+        link: member.latestPost.link,
+        date: new Date(member.latestPost.date),
+      });
+    }
+  }),
+);
+
+/** Soft invite under the roster (Ante’s blog today; hide if nothing resolved). */
+const blogInviteMember = airTeam.find((m) => latestByMember.has(m.name));
+const blogInvite = blogInviteMember
+  ? { member: blogInviteMember, post: latestByMember.get(blogInviteMember.name)! }
+  : null;
+
+const description =
+  'Team AI Research (AIR) is the R&D team inside Infobip: applied research on messaging, voice and customer engagement across eight areas, from conversational AI to fraud detection and voice quality.';
+---
+
+<Base title="Team AI Research (AIR)" description={description}>
+  <section class="block intro">
+    <div class="intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow"><span class="dot"></span> Team AI Research · Infobip</p>
+        <h1 class="page-title">Research that carries a large share of the world's business communication.</h1>
+        <p class="page-lede">
+          AIR is the R&amp;D team at Infobip. We work on messaging, voice and customer engagement, but 
+          focus on applied research that has an impact on live traffic at scale.
+        </p>
+      </div>
+      {
+        airPapers.length > 0 && (
+          <aside class="intro-rail" aria-label="Recent Team AIR publications">
+            <div class="rail-head">
+              <p class="stamp">Recent papers</p>
+              <a class="rail-more" href="/publications#air">all Team AIR ({airAll.length}) →</a>
+            </div>
+            <ol class="air-papers">
+              {airPapers.map((paper) => {
+                const p = paper.data;
+                const href = p.pdf ?? `/publications/${paper.id}`;
+                return (
+                  <li>
+                    <a class="air-paper" href={href} target={p.pdf ? '_blank' : undefined} rel={p.pdf ? 'noopener noreferrer' : undefined}>
+                      <span class="air-year">{p.year}</span>
+                      <span class="air-title">{p.title}</span>
+                      <span class="air-meta">
+                        <span class="air-venue">{venueLine(p)}</span>
+                        {p.areas.length > 0 && (
+                          <span class="air-topics">
+                            {p.areas.map((area, i) => (
+                              <>
+                                {i > 0 && <span aria-hidden="true"> · </span>}
+                                <span>{areaLabel(area)}</span>
+                              </>
+                            ))}
+                          </span>
+                        )}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </aside>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="01" label="What we work on" />
+    <AirCarousel />
+    <p class="note">
+      More from the team — including posts and updates — also lives on <a href={profile.links.infobipResearch}>research.infobip.com</a>.
+    </p>
+  </section>
+
+  <section class="block">
+    <SectionHeader n="02" label="The team" />
+    <ul class="team">
+      {
+        airTeam.map((member) => {
+          const linkParts = [
+            member.url && { href: member.url, label: 'website' },
+            member.blog && { href: member.blog, label: 'blog' },
+            member.scholar && { href: member.scholar, label: 'Scholar' },
+          ].filter(Boolean) as { href: string; label: string }[];
+          return (
+            <li class="person">
+              <img class="avatar" src={member.photo} alt="" width="64" height="64" loading="lazy" decoding="async" />
+              <div class="person-body">
+                <p class="person-name">{member.name}</p>
+                <p class="person-role">{member.role}</p>
+                {linkParts.length > 0 && (
+                  <p class="person-links">
+                    {linkParts.map((link, i) => (
+                      <>
+                        {i > 0 && <span aria-hidden="true"> · </span>}
+                        <a href={link.href} target="_blank" rel="noopener noreferrer">
+                          {link.label}
+                        </a>
+                      </>
+                    ))}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
+    {
+      blogInvite && (
+        <p class="team-invite">
+          <span class="team-invite-lead">
+            Check out{' '}
+            <a href={blogInvite.member.blog ?? blogInvite.member.url} target="_blank" rel="noopener noreferrer">
+              Ante’s blog
+            </a>
+            {' '}
+            — some of our ongoing research is updated there.
+          </span>
+          <a class="team-invite-post" href={blogInvite.post.link} target="_blank" rel="noopener noreferrer">
+            <span class="team-invite-date">{formatMonth(blogInvite.post.date)}</span>
+            <span class="team-invite-title">{blogInvite.post.title}</span>
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <section class="block">
+    <SectionHeader n="03" label="How the team works" />
+    <div class="two">
+      <div class="prose">
+        <p>
+          Industrial research fails in two predictable ways. It either drifts far enough from the product that
+          nothing ships, or it collapses into feature work with a research label. The team is organised to avoid
+          both: every area has a live question a peer would recognise as research, and a route to production where
+          the answer gets tested against traffic.
+        </p>
+        <p>
+          That constraint shapes what counts as a result. An offline metric is a hypothesis. The finding is what
+          happens when real users, real latency budgets and real distribution shift get a say — and often the
+          interesting part is <em>why</em> the two disagreed.
+        </p>
+        <p>
+          We publish either way. A negative result that saves another team six months is worth more than a
+          benchmark win nobody can reproduce, and writing it down is how a research team compounds instead of
+          repeating itself.
+        </p>
+      </div>
+      <aside class="rail">
+        <p class="stamp">In practice</p>
+        <ul>
+          <li>Peer-reviewed publication that follow deployed systems</li>
+          <li>Evaluation that includes online behaviour in addition to offline metrics</li>
+          <li>Student theses and academic collaborations</li>
+          <li>Privacy, fairness and cost as optimization criteria</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="block">
+        <SectionHeader n="04" label="Notes from the team" more={{ href: '/updates', label: 'all updates' }} />
+        <PostList posts={posts} />
+      </section>
+    )
+  }
+
+  <section class="block">
+    <div class="collab">
+      <SectionHeader label="Work with us" />
+      <h2>Joint agendas, pilots, theses</h2>
+      <p>
+        If you are working on something adjacent — a paper that needs an industrial testbed, a student thesis with
+        real data behind it, or a joint agenda — that is the conversation worth having.
+      </p>
+      <a class="cta" href={`mailto:${profile.email}`}>Get in touch</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .block {
+    padding-block: clamp(1.25rem, 2.5vw, 1.85rem);
+  }
+  .block :global(.hdr) {
+    margin-bottom: 1.1rem;
+  }
+  .intro {
+    padding-bottom: 0;
+  }
+  .intro + .block {
+    padding-top: clamp(0.35rem, 0.9vw, 0.6rem);
+  }
+  .intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(14rem, 0.85fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin: 0 0 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .intro-copy .page-lede {
+    margin-bottom: 0;
+  }
+  .intro-rail {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1rem, 2vw, 1.75rem);
+  }
+  .rail-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .rail-head .stamp {
+    margin: 0;
+  }
+  .rail-more {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  .rail-more:hover,
+  .rail-more:focus-visible {
+    border-bottom-color: var(--accent-ink);
+  }
+  .air-papers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .air-papers li {
+    border-top: 1px dotted var(--rule);
+  }
+  .air-papers li:first-child {
+    border-top: 0;
+  }
+  .air-paper {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.1rem 0.75rem;
+    padding: 0.55rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .air-papers li:first-child .air-paper {
+    padding-top: 0;
+  }
+  .air-year {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.2rem;
+  }
+  .air-title {
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .air-paper:hover .air-title,
+  .air-paper:focus-visible .air-title {
+    color: var(--accent-ink);
+  }
+  .air-meta {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.75rem;
+  }
+  .air-venue {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--pencil);
+  }
+  .air-topics {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+  }
+
+  .team {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1.1rem 1.75rem;
+  }
+  .person {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 0.85rem;
+    align-items: start;
+  }
+  .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--grid);
+  }
+  .person-name {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .person-role {
+    margin: 0.15rem 0 0;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    color: var(--pencil);
+  }
+  .person-links {
+    margin: 0.35rem 0 0;
+    font-family: var(--mono);
+    font-size: 10.5px;
+  }
+  .person-links a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .person-links a:hover,
+  .person-links a:focus-visible {
+    border-bottom-color: var(--accent-ink);
+  }
+  .team-invite {
+    margin: 1.75rem 0 0;
+    max-width: 42rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .team-invite-lead {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--ink-70);
+  }
+  .team-invite-lead a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .team-invite-lead a:hover,
+  .team-invite-lead a:focus-visible {
+    border-bottom-color: var(--accent-ink);
+  }
+  .team-invite-post {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.65rem;
+    text-decoration: none;
+    color: inherit;
+    max-width: 40rem;
+  }
+  .team-invite-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .team-invite-title {
+    font-size: 0.92rem;
+    line-height: 1.35;
+    color: var(--ink-70);
+    border-bottom: 1px solid transparent;
+  }
+  .team-invite-post:hover .team-invite-title,
+  .team-invite-post:focus-visible .team-invite-title {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  .two .prose p:first-child {
+    margin-top: 0;
+  }
+  .rail {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1rem, 2vw, 1.75rem);
+  }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.8rem;
+  }
+  .rail ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  .rail li {
+    padding: 0.55rem 0;
+    border-top: 1px dotted var(--rule);
+    color: var(--ink-70);
+  }
+  .rail li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .collab {
+    max-width: 52ch;
+  }
+  .collab h2 {
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    font-weight: 500;
+    margin: 0 0 0.6rem;
+  }
+  .collab p {
+    font-family: var(--serif);
+    color: var(--ink-70);
+    margin: 0 0 1.4rem;
+  }
+
+  @media (max-width: 880px) {
+    .intro-grid,
+    .two {
+      grid-template-columns: 1fr;
+    }
+    .intro-rail,
+    .rail {
+      border-left: 0;
+      border-top: 1px solid var(--rule);
+      padding-left: 0;
+      padding-top: 1.25rem;
+    }
+  }
+</style>

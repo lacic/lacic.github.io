@@ -1,0 +1,261 @@
+---
+/**
+ * A single post.
+ *
+ * `type` drives what appears around the text: a deep dive gets series
+ * navigation, a paper note gets the paper's links and citation. That is the
+ * whole reason `type` is a closed set while tags stay open.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getEntry, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PaperList from '../../components/PaperList.astro';
+import { formatDay, isoDay, readingTime, typeLabel } from '../../lib/format';
+import { getPosts } from '../../lib/content';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+};
+
+interface Props {
+  post: CollectionEntry<'updates'>;
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+const paper = post.data.paper ? await getEntry(post.data.paper) : undefined;
+
+// Sibling parts of the same series, so a reader can move without going back to
+// the index. Ascending, because a series is read forwards.
+const all = await getPosts();
+const seriesName = post.data.series?.name;
+const siblings = seriesName
+  ? all
+      .filter((entry) => entry.data.series?.name === seriesName)
+      .sort((a, b) => (a.data.series?.part ?? 0) - (b.data.series?.part ?? 0))
+  : [];
+
+const showToc = post.data.type === 'deep-dive' && headings.filter((h) => h.depth === 2).length > 2;
+const toc = headings.filter((heading) => heading.depth === 2);
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.standfirst}
+  canonical={post.data.canonical}
+  type="article"
+  publishedTime={post.data.date}
+>
+  <article class="block">
+    <header class="head">
+      <p class="stamps">
+        <span class="kind">{typeLabel(post.data.type)}</span>
+        <time datetime={isoDay(post.data.date)}>{formatDay(post.data.date)}</time>
+        <span>{readingTime(post.body ?? '')}</span>
+        {post.data.draft && <span class="pill pill--accent">draft — not published</span>}
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="stand">{post.data.standfirst}</p>
+      {
+        post.data.canonical && (
+          <p class="cross">
+            First published on <a href={post.data.canonical}>research.infobip.com</a> — that version is canonical.
+          </p>
+        )
+      }
+    </header>
+
+    {
+      siblings.length > 1 && (
+        <nav class="series" aria-label="Series navigation">
+          <p class="stamp">{seriesName}</p>
+          <ol>
+            {siblings.map((entry) => (
+              <li>
+                {entry.id === post.id ? (
+                  <span aria-current="page">
+                    <span class="pnum">Part {entry.data.series?.part}</span> {entry.data.title}
+                  </span>
+                ) : (
+                  <a href={`/updates/${entry.id}`}>
+                    <span class="pnum">Part {entry.data.series?.part}</span> {entry.data.title}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    {
+      showToc && (
+        <nav class="toc" aria-label="On this page">
+          <p class="stamp">On this page</p>
+          <ol>
+            {toc.map((heading) => (
+              <li>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      paper && (
+        <section class="paperbox">
+          <p class="stamp">The paper</p>
+          <PaperList papers={[paper]} showNotes={false} />
+        </section>
+      )
+    }
+
+    {
+      post.data.tags.length > 0 && (
+        <footer class="tags">
+          {post.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </footer>
+      )
+    }
+
+    <p class="back"><a href="/updates">← All updates</a></p>
+  </article>
+</Base>
+
+<style>
+  .head {
+    max-width: var(--measure);
+    margin-bottom: 2.25rem;
+  }
+  .stamps {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    color: var(--pencil);
+    margin: 0 0 1.1rem;
+  }
+  .kind {
+    color: var(--accent-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+    font-weight: 500;
+    margin: 0 0 0.8rem;
+    text-wrap: balance;
+  }
+  .stand {
+    font-family: var(--serif);
+    font-size: 1.12rem;
+    line-height: 1.6;
+    color: var(--ink-70);
+    margin: 0;
+  }
+  .cross {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--pencil);
+    margin: 1.1rem 0 0;
+  }
+  .cross a {
+    color: var(--accent-ink);
+  }
+
+  .stamp {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.7rem;
+  }
+
+  .series,
+  .toc {
+    border: 1px solid var(--rule);
+    background: var(--grid);
+    padding: 1rem 1.25rem;
+    margin: 0 0 2rem;
+    max-width: var(--measure);
+  }
+  .series ol,
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.92rem;
+  }
+  .series li,
+  .toc li {
+    padding: 0.28rem 0;
+  }
+  .series a,
+  .toc a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .series a:hover,
+  .toc a:hover,
+  .series a:focus-visible,
+  .toc a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .series [aria-current='page'] {
+    color: var(--pencil);
+  }
+  .pnum {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--pencil);
+    margin-right: 0.45rem;
+  }
+
+  .paperbox {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    max-width: var(--measure);
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px dotted var(--rule);
+  }
+  .back {
+    margin: 2rem 0 0;
+    font-family: var(--mono);
+    font-size: 11.5px;
+  }
+  .back a {
+    color: var(--pencil);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .back a:hover,
+  .back a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+</style>

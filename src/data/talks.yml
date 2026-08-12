@@ -1,0 +1,32 @@
+# Talks. Migrated from v1 speaking.html.
+# Titles and dates were recovered from the slide decks themselves (title slide
+# text and PDF creation timestamps), since v1 only said "Speaker at Shift 2024".
+
+- id: shift-2024-zadar
+  title: "Is Prompting Enough? The Process of Making a Copilot for UI-based Chatbot Builders"
+  event: Infobip Shift 2024
+  location: Zadar, Croatia
+  date: 2024-09-16
+  kind: talk
+  slides: /documents/talks/Infobip_Shift_2024_Zadar.pdf
+  url: "https://shift.infobip.com/schedule/"
+  description: >-
+    What it actually takes to ship a copilot that generates chatbot dialogs
+    inside a visual builder. The talk walks through prompting commercial LLMs
+    (zero-shot, few-shot, few-shot with instructions and chain-of-thought),
+    measuring hallucination rate and exact-match hit rate on the generated
+    output, and then adapting smaller open models when prompting alone is not
+    enough.
+
+- id: shift-2024-miami
+  title: "Is Prompting Enough? The Process of Making a Copilot for UI-based Chatbot Builders"
+  event: Infobip Shift Americas 2024
+  location: Miami, USA
+  date: 2024-04-23
+  kind: talk
+  slides: /documents/talks/2024_04_Shift_Copilot.pdf
+  url: "https://shift.infobip.com/us/schedule/"
+  description: >-
+    The Miami edition of the copilot talk: how a copilot for a UI-based chatbot
+    builder was built, what prompting techniques were tried against commercial
+    LLMs, and where they fell short.

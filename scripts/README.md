@@ -49,15 +49,15 @@ uv run python scripts/summarize_papers.py --pdf "2023_RecSys_paper.pdf"
 
 ## How It Works
 
-1. **Scans** the `documents/` folder for PDF files (not subdirectories)
-2. **Checks** if a summary already exists in `documents/summaries/`
+1. **Scans** the `public/documents/` folder for PDF files (not subdirectories)
+2. **Checks** if a summary already exists in `public/documents/summaries/`
 3. **Extracts** text from PDFs that need summaries
 4. **Generates** engaging blog-style summaries using Azure OpenAI via Pydantic AI
 5. **Saves** summaries as markdown files with frontmatter
 
 ## Output Format
 
-Each summary is saved as `documents/summaries/<pdf-name>.md` with this structure:
+Each summary is saved as `public/documents/summaries/<pdf-name>.md` with this structure:
 
 ```markdown
 ---
@@ -89,11 +89,11 @@ generated: 2026-04-06
 The script preserves your existing PDF naming convention:
 
 ```
-documents/2023_RecSys_personalization.pdf
-→ documents/summaries/2023_RecSys_personalization.md
+public/documents/2023_RecSys_personalization.pdf
+→ public/documents/summaries/2023_RecSys_personalization.md
 
-documents/SIGIR_2024_embeddings.pdf
-→ documents/summaries/SIGIR_2024_embeddings.md
+public/documents/SIGIR_2024_embeddings.pdf
+→ public/documents/summaries/SIGIR_2024_embeddings.md
 ```
 
 ## Features

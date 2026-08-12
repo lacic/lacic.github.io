@@ -1,0 +1,16 @@
+---
+interface Props {
+  /** Two-digit index. Numbering makes the reading order explicit. */
+  n?: string;
+  label: string;
+  more?: { href: string; label: string };
+  stacked?: boolean;
+}
+
+const { n, label, more, stacked = false } = Astro.props;
+---
+
+<h2 class:list={['hdr', { stacked }]}>
+  <span>{n && <span class="n">{n}</span>} {label}</span>
+  {more && <a href={more.href}>{more.label} →</a>}
+</h2>

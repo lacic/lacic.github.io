@@ -1,0 +1,14 @@
+---
+paper: 2026-www-visual-content
+generated: 2026-08-12
+---
+
+Confronted with a staggering 220% rise in malicious images sent over MMS in 2024, I saw firsthand that the tools for visual content moderation weren't keeping up. Our MMS moderation teams at Infobip were seeing everything from manipulated gambling promotions to graphic violence, with the majority of current models slow, narrowly scoped, or missing problematic categories common in real-world communication. 
+
+The obvious starting point—existing taxonomies—proved insufficient. Industry taxonomies tended to lump unrelated categories like gambling and advertising together, or ignore domains like tobacco, alcohol, or firearms, which moderation policies required us to flag distinctly. We began by drafting an empirically-driven taxonomy of eight categories: alcohol, drugs, firearms, gambling, sexual content, tobacco, violence, and a "safe" catch-all. This structure was grounded in regulatory frameworks such as the EU DSA and U.S. FCC standards, not abstract content theory. 
+
+Next hurdle: data. Publicly available datasets didn’t cover the range or context of problematic MMS images. We developed three new, hand-annotated datasets. SIMAS, the training set, merges carefully filtered public images with balanced, semantically-aligned safe counterparts—pairing, for example, firearms with outdoor sporting scenes or sexual images with benign beach images to challenge the classifier. SIMAS+ and SIMAS++ bring something not previously available: real, production MMS images, annotated by experts, separated into web-linked and direct-uploaded samples. These benchmarks pushed our models to handle the gritty, unvarnished world of actual user traffic.
+
+For detection, we weighed model complexity, speed, and real-time deployment constraints. GPT-4o delivered strong zero-shot results, but high costs and latency made it unsuitable for our volume. Fine-tuning CLIP (ViT-L/14) on UnsafeBench, then retraining on our balanced MMS datasets, gave us a model that closed the accuracy gap with GPT-4o, but operated quickly and cheaply enough for practical production use. Notably, the model’s robustness to image corruptions and mild adversarial attacks alleviated operational risk—a critical improvement for large-scale moderation workloads.
+
+Honestly, the most surprising part was how often domain detail mattered more than sheer model size. It’s easy to think bigger models always win, but pairing fine-grained taxonomy with hand-balanced, real data and a carefully chosen backbone mattered just as much (if not more) for real-world moderation. If you’re planning high-throughput visual moderation in messaging environments, blind reliance on off-the-shelf benchmarks and catch-all models isn't enough—the nuances in data and labels make all the difference.

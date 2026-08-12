@@ -1,0 +1,219 @@
+---
+/**
+ * The full publication list.
+ *
+ * v1 kept this as hand-written HTML, which is why it had drifted: adding a paper
+ * meant editing markup in two places. Everything here is generated from
+ * src/data/publications.yml, so the list, the citations and the counts cannot
+ * disagree with each other.
+ *
+ * The area filter is progressive enhancement: without JavaScript the full list
+ * is present and complete, and the filter bar simply does nothing.
+ */
+import Base from '../../layouts/Base.astro';
+import PaperList from '../../components/PaperList.astro';
+import { profile } from '../../data/profile';
+import { getNoteMap, getPublications } from '../../lib/content';
+import { areaLabel } from '../../lib/format';
+
+const papers = await getPublications();
+const noteFor = await getNoteMap();
+
+const years = [...new Set(papers.map((paper) => paper.data.year))].sort((a, b) => b - a);
+
+const areaCounts = new Map<string, number>();
+for (const paper of papers) {
+  for (const area of paper.data.areas) {
+    areaCounts.set(area, (areaCounts.get(area) ?? 0) + 1);
+  }
+}
+const areas = [...areaCounts.entries()]
+  .filter(([, count]) => count >= 2)
+  .sort((a, b) => b[1] - a[1]);
+const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
+const airCount = papers.filter((paper) => paper.data.air).length;
+---
+
+<Base
+  title="Publications"
+  description={`${papers.length} peer-reviewed publications on recommender systems, information retrieval, fairness and real-time personalization.`}
+>
+  <section class="block block--intro">
+    <h1 class="page-title">Publications</h1>
+    <p class="page-lede">
+      {papers.length} peer-reviewed papers. {withNotes} have a plain-language note, so you can find out what a paper
+      says before deciding whether to read it. Every entry has its PDF and a citation you can copy.
+    </p>
+    <p class="meta">
+      <a href={profile.links.scholar}>Google Scholar</a> · <a href={profile.links.researchgate}>ResearchGate</a> ·
+      <a href={profile.links.cv}>CV (PDF)</a>
+    </p>
+  </section>
+
+  <section class="block block--tight filterbar">
+    <div class="filters" id="filters" data-total={papers.length}>
+      <span class="stamp">Filter</span>
+      <button class="tag is-on" type="button" data-filter="all" aria-pressed="true">all {papers.length}</button>
+      {
+        airCount > 0 && (
+          <button class="tag tag--air" type="button" data-filter="air" aria-pressed="false">
+            Team AIR {airCount}
+          </button>
+        )
+      }
+      {
+        areas.map(([area, count]) => (
+          <button class="tag" type="button" data-filter={area} aria-pressed="false">
+            {areaLabel(area)} {count}
+          </button>
+        ))
+      }
+    </div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+  </section>
+
+  {
+    years.map((year) => (
+      <section class="block block--tight yearblock" data-year={year}>
+        <h2 class="year">{year}</h2>
+        <PaperList papers={papers.filter((paper) => paper.data.year === year)} noteFor={noteFor} />
+      </section>
+    ))
+  }
+</Base>
+
+<script>
+  const filters = document.getElementById('filters');
+  const count = document.getElementById('count');
+
+  if (filters && count) {
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-filter]')];
+    const papers = [...document.querySelectorAll<HTMLElement>('.paper')];
+    const blocks = [...document.querySelectorAll<HTMLElement>('.yearblock')];
+
+    const apply = (filter: string) => {
+      let shown = 0;
+      for (const paper of papers) {
+        const areas = (paper.dataset.areas ?? '').split(' ').filter(Boolean);
+        const match =
+          filter === 'all' ||
+          (filter === 'air' ? paper.dataset.air === 'true' : areas.includes(filter));
+        paper.hidden = !match;
+        if (match) shown += 1;
+      }
+
+      // Hide a year heading once nothing is left under it, so the page does not
+      // fill with empty years.
+      for (const block of blocks) {
+        block.hidden = !block.querySelector('.paper:not([hidden])');
+      }
+
+      for (const button of buttons) {
+        const on = button.dataset.filter === filter;
+        button.classList.toggle('is-on', on);
+        button.setAttribute('aria-pressed', String(on));
+      }
+
+      count.textContent = filter === 'all' ? '' : `${shown} of ${papers.length} papers`;
+      history.replaceState(null, '', filter === 'all' ? location.pathname : `#${filter}`);
+    };
+
+    filters.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]');
+      if (button?.dataset.filter) apply(button.dataset.filter);
+    });
+
+    // Deep-linkable: /publications#air or /publications#fairness-bias
+    const initial = location.hash.slice(1);
+    if (initial && buttons.some((button) => button.dataset.filter === initial)) apply(initial);
+  }
+</script>
+
+<style>
+  .block--intro {
+    padding-bottom: 0.75rem;
+  }
+  .page-lede {
+    max-width: none;
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    margin: 1.4rem 0 0;
+  }
+  .meta a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .filterbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-top: 0.75rem;
+  }
+  .filters {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin-right: 0.3rem;
+  }
+  .filters button {
+    cursor: pointer;
+    background: none;
+    font-family: var(--mono);
+  }
+  .filters button.is-on {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .filters button.tag--air {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .filters button.tag--air.is-on {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .count {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--pencil);
+    margin: 0;
+  }
+
+  .yearblock {
+    padding-block: 0.85rem;
+  }
+  .year {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.11em;
+    color: var(--pencil);
+    margin: 0 0 0.55rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .yearblock + .yearblock {
+    border-top: 0;
+  }
+</style>
