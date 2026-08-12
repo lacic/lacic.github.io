@@ -161,7 +161,7 @@ const description =
           <span class="team-invite-lead">
             Check out{' '}
             <a href={blogInvite.member.blog ?? blogInvite.member.url} target="_blank" rel="noopener noreferrer">
-              Ante’s blog
+              {blogInvite.member.name.split(' ')[0]}’s blog
             </a>
             {' '}
             — some of our ongoing research is updated there.
@@ -357,8 +357,21 @@ const description =
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: 1.1rem 1.75rem;
+    /* The roster is a small, curated set. A 2-up base becomes a single clean
+       row on wide viewports, so four members never strand one alone the way an
+       auto-fill grid did (3 + 1). */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 1.75rem;
+  }
+  @media (min-width: 60rem) {
+    .team {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 30rem) {
+    .team {
+      grid-template-columns: 1fr;
+    }
   }
   .person {
     display: grid;
@@ -400,12 +413,27 @@ const description =
   .person-links a:focus-visible {
     border-bottom-color: var(--accent-ink);
   }
+  /* A tinted notebook callout lifts the blog shout-out off the page: the grid
+     fill and a single accent arrow mark it as worth a look, without a new
+     colour or a heavier device. */
   .team-invite {
+    position: relative;
     margin: 1.75rem 0 0;
     max-width: 42rem;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 0.5rem;
+    background: var(--grid);
+    padding: 1rem 1.15rem 1rem 1.7rem;
+  }
+  .team-invite::before {
+    content: '\2192';
+    position: absolute;
+    left: 0.85rem;
+    top: 1.02rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
   }
   .team-invite-lead {
     margin: 0;
@@ -440,8 +468,9 @@ const description =
   }
   .team-invite-title {
     font-size: 0.92rem;
+    font-weight: 500;
     line-height: 1.35;
-    color: var(--ink-70);
+    color: var(--ink);
     border-bottom: 1px solid transparent;
   }
   .team-invite-post:hover .team-invite-title,
