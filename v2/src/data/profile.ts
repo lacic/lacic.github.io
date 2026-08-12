@@ -55,6 +55,62 @@ export const profile = {
   },
 } as const;
 
+/** Team AIR members shown on /air. Order is intentional. */
+export type AirMember = {
+  name: string;
+  role: string;
+  photo: string;
+  url?: string;
+  /** Personal blog index, when they write publicly. */
+  blog?: string;
+  /** RSS feed used for the team-section blog invite under the roster. */
+  feed?: string;
+  /**
+   * Fallback for the team blog invite when the live feed cannot be fetched
+   * (offline `astro dev`, flaky network). Prefer the feed when it resolves;
+   * bump this when you notice a new post and the build machine is offline.
+   */
+  latestPost?: { title: string; link: string; date: string };
+  scholar?: string;
+};
+
+export const airTeam: AirMember[] = [
+  {
+    name: 'Ante Kapetanović',
+    role: 'Senior AI Research Scientist',
+    photo: '/images/team/ante-kapetanovic.jpg',
+    url: 'https://antekapetanovic.com/',
+    blog: 'https://antekapetanovic.com/blog/',
+    feed: 'https://antekapetanovic.com/index.xml',
+    latestPost: {
+      title: 'How Far Can an Agentic Research Loop Push a Standard Computer Graphics Baseline?',
+      link: 'https://antekapetanovic.com/blog/phased-agent-normal-estimation/',
+      date: '2026-07-26',
+    },
+    scholar: 'https://scholar.google.com/citations?user=oAShnpsAAAAJ&hl=en',
+  },
+  {
+    name: 'Tomislav Đuričić',
+    role: 'Senior AI Research Scientist',
+    photo: '/images/team/tomislav-duricic.jpg',
+    url: 'https://tduricic.me/',
+    scholar: 'https://scholar.google.com/citations?user=_mY5j2UAAAAJ&hl=en',
+  },
+  {
+    name: 'Andro Merćep',
+    role: 'Senior AI Research Scientist',
+    photo: '/images/team/andro-mercep.jpg',
+    scholar: 'https://scholar.google.com/citations?user=qtDNIKsAAAAJ&hl=hr',
+  },
+  {
+    name: 'Dionizije Fa',
+    role: 'Senior AI Research Scientist',
+    photo: '/images/team/dionizije-fa.jpg',
+    url: 'https://dionizijefa.com/',
+    scholar: 'https://scholar.google.com/citations?user=bjqVJYkAAAAJ&hl=en',
+  },
+];
+
 export type CareerRole = {
   years: string;
   title: string;
@@ -71,6 +127,11 @@ export type CareerEntry = {
   url?: string;
   /** Set for pre-2013 roles, which render quietly so recent work still leads. */
   early?: boolean;
+  /**
+   * Include in the landing-page “career in brief”. Defaults to `!early`.
+   * Set false for mid-career roles that still belong on /cv but not the home list.
+   */
+  inBrief?: boolean;
   current?: boolean;
   roles: CareerRole[];
 };
@@ -95,7 +156,7 @@ export const career: CareerEntry[] = [
       {
         years: '2023 —',
         title: 'Principal Engineer',
-        detail: 'Founded and lead Team AI Research, focusing on generative AI and the impact of LLMs.',
+        detail: 'Team AI Research. Focus on generative AI and the impact of LLMs.',
       },
     ],
   },
@@ -122,6 +183,7 @@ export const career: CareerEntry[] = [
     place: 'Graz',
     span: '2013—2016',
     url: 'https://www.tugraz.at/en/home/',
+    inBrief: false,
     roles: [
       {
         years: '2013—16',
@@ -210,29 +272,72 @@ export const education = [
  * work; funding says you can be trusted with a budget and a consortium. For
  * someone leading an industrial research team the second is the rarer signal.
  *
- * `amount` is only set where the figure is public.
+ * `amount` is only set where the figure is public. Optional `url` links the
+ * project name to a public page.
  */
 export const funding = [
   {
     name: 'IPCEI-CIS',
-    amount: null,
-    kind: 'EU programme',
-    years: '2026 —',
-    detail: 'Multi-country EU research project on cloud and edge infrastructure · Infobip research lead',
-  },
-  {
-    name: 'EDIH Adria',
-    amount: null,
-    kind: 'EU programme',
-    years: '2023 —',
-    detail: 'European Digital Innovation Hub for AI and high-performance computing · partner',
-  },
-  {
-    name: 'Data Market Austria',
-    amount: '€286,000',
+    amount: '€35M',
     kind: 'project grant',
-    years: '2015',
-    detail: 'IKT der Zukunft · secured for Know-Center as technology contributor for the recommender-based brokerage platform',
+    years: '2024',
+    detail: 'Next-Generation Communication Platform · author of the AI Research Strategy for the EU programme',
+  },
+  {
+    name: 'DDIA',
+    amount: '€3.7M',
+    kind: 'COMET module',
+    years: '2022–26',
+    detail: 'Data Driven Immersive Analytics in Digital Industries · €350k for FAIR-AI, Know-Center · key researcher for “Personalized Immersive Learning Support”',
+    url: 'https://www.know-center.at/en/research/comet-modul/ddia/',
+  },
+  {
+    name: 'Radreisen4All',
+    amount: '€150,000',
+    kind: 'project grant',
+    years: '2022–25',
+    detail: 'FFG Femtech · for Fair-AI, Know-Center · key researcher',
+    url: 'https://projekte.ffg.at/projekt/4387847',
+  },
+  {
+    name: 'DDAI',
+    amount: '€3.7M',
+    kind: 'COMET module',
+    years: '2020–23',
+    detail: 'Explainable, Verifiable and Privacy-Preserving Data-Driven AI · €700k for Social Computing, Know-Center · key researcher for “Explainable AI for Users”',
+    url: 'https://www.know-center.at/en/research/comet-modul/ddai-data-driven-artificial-intelligence/',
+  },
+  {
+    name: 'JOLIOO',
+    amount: '€120,000',
+    kind: 'project grant',
+    years: '2020',
+    detail: 'FFG Basisantrag · for Social Computing, Know-Center · researcher',
+    url: 'https://projekte.ffg.at/projekt/3411124',
+  },
+  {
+    name: 'COGSTEPS',
+    amount: '€130,000',
+    kind: 'project grant',
+    years: '2020–23',
+    detail: 'Erasmus+ · for Know-Center and ISDS@TU Graz · researcher',
+    url: 'https://cogsteps.com/about/',
+  },
+  {
+    name: 'TRUSTS',
+    amount: '€730,000',
+    kind: 'project grant',
+    years: '2020–22',
+    detail: 'H2020 · for Know-Center (€138k for Social Computing) · task leader',
+    url: 'https://cordis.europa.eu/project/id/871481',
+  },
+  {
+    name: 'TRIPLE',
+    amount: '€377,000',
+    kind: 'project grant',
+    years: '2019–22',
+    detail: 'H2020 · for Know-Center (€120k for Social Computing) · researcher',
+    url: 'https://project.gotriple.eu/',
   },
   {
     name: 'Marshall Plan Fellowship',
@@ -240,6 +345,13 @@ export const funding = [
     kind: 'fellowship',
     years: '2018',
     detail: 'Individual research grant for a visiting stay at UCLA, Los Angeles',
+  },
+  {
+    name: 'Data Market Austria',
+    amount: '€286,000',
+    kind: 'project grant',
+    years: '2015',
+    detail: 'IKT der Zukunft · secured for Know-Center as technology contributor for the recommender-based brokerage platform',
   },
 ] as const;
 

@@ -16,7 +16,11 @@ import { funding } from '../data/profile';
         <span class="years">{item.years}</span>
         <span class="body">
           <span class="name">
-            {item.name}
+            {'url' in item && item.url ? (
+              <a href={item.url} rel="noopener noreferrer">{item.name}</a>
+            ) : (
+              item.name
+            )}
             {item.amount && <span class="amount">{item.amount}</span>}
             <span class="kind">{item.kind}</span>
           </span>
@@ -35,7 +39,7 @@ import { funding } from '../data/profile';
   }
   .fund li {
     display: grid;
-    grid-template-columns: 4.5rem 1fr;
+    grid-template-columns: 5rem 1fr;
     gap: 0 1rem;
     padding: 0.6rem 0;
   }
@@ -56,6 +60,15 @@ import { funding } from '../data/profile';
     flex-wrap: wrap;
     font-size: 0.95rem;
     font-weight: 500;
+  }
+  .name a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .name a:hover,
+  .name a:focus-visible {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
   }
   .amount {
     font-family: var(--mono);

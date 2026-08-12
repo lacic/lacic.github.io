@@ -56,8 +56,8 @@ const n = () => String(++section).padStart(2, '0');
           running on a platform that carries a large share of the world's business communication.
         </p>
         <p class="hand">
-          The distance between a result that holds in a paper and one that holds on live traffic is the whole job.
-          Closing it is what the team is for.
+          AI is at the core of how <a href="https://www.infobip.com/" target="_blank" rel="noopener noreferrer">Infobip</a> enables communication between businesses and people at global scale.
+          We combine applied research, industry-scale data, and production deployment to turn research insights into practical impact.
         </p>
         <a class="cta" href="/air">Read what AI Research is working on</a>
       </div>
@@ -86,8 +86,11 @@ const n = () => String(++section).padStart(2, '0');
   <section class="block" id="cv">
     <div class="close">
       <div>
-        <SectionHeader n={n()} label="Career in brief" more={{ href: '/cv', label: 'full cv' }} />
-        <CareerList />
+        <SectionHeader n={n()} label="Career in brief" />
+        <CareerList brief />
+        <p class="career-more">
+          <a class="cta" href="/cv">See the rest on the full CV</a>
+        </p>
       </div>
       <div>
         <SectionHeader n={n()} label="Education" more={{ href: '/cv', label: 'cv' }} />
@@ -136,12 +139,25 @@ const n = () => String(++section).padStart(2, '0');
     padding-left: 0.9rem;
     margin: 0 0 1.5rem;
   }
+  .hand a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hand a:hover,
+  .hand a:focus-visible {
+    border-bottom-color: var(--accent-ink);
+  }
 
   .close {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     gap: clamp(1.75rem, 4vw, 3.5rem);
     align-items: start;
+  }
+  .career-more {
+    margin: 1.5rem 0 0;
+    text-align: center;
   }
 
   .collab {

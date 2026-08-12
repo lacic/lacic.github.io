@@ -34,8 +34,7 @@
     publisher: "Springer"
   pdf: /documents/2023_ECIR_uptrendz.pdf
   poster: /documents/posters/2023_ECIR_uptrendz_poster.pdf
-  selected: true
-  selectedRank: 1
+  selected: false
   areas:
     - multi-domain-recommendations
     - api-centric-recommendations
@@ -791,7 +790,8 @@
   pdf: "/documents/2026_TheWeb_Spam.pdf"
   doi: "10.1145/3774904.3792796"
   url: "https://doi.org/10.1145/3774904.3792796"
-  selected: false
+  selected: true
+  selectedRank: 1
   areas:
     - content-moderation
     - spam-detection

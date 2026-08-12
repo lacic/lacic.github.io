@@ -4,6 +4,17 @@ Short bullet summaries of what has shipped. Newest first.
 
 ---
 
+## 2026-08-12 — Team AIR roster + funding refresh
+
+- Named Team AIR roster on `/air` (photos, roles, website · blog · Scholar) from `airTeam` in profile
+- Soft invite under the roster for Ante’s latest post: live RSS with committed `latestPost` fallback
+- Added `src/lib/rss.ts` and team photos under `images/team/` (served via the public symlink)
+- Rebuilt the funding list with public amounts and project URLs where available
+- Landing “career in brief” uses `inBrief` so mid-career roles stay on `/cv` only
+- Hero link row gets small icons; masthead wordmark is just `E.LACIĆ`
+- AIR outcomes rail shows topic labels; TheWeb spam paper is selected #1 (Uptrendz deselected)
+- Tighter vertical spacing on `/air` and `/updates`; CV/Updates ledes can span full width
+
 ## 2026-08-12 — Publications refresh + Team AIR outcomes
 
 - Added seven recent papers (PDFs, YAML entries, paper notes), including Infobip AIR work

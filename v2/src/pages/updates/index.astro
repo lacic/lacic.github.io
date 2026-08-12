@@ -24,7 +24,7 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
   title="Updates"
   description="Field notes, deep dives and paper notes on applied AI research: recommender systems, generative models, evaluation, and what survives production."
 >
-  <section class="block">
+  <section class="block intro">
     <h1 class="page-title">Updates</h1>
     <p class="page-lede">
       Field notes when something surprised me, deep dives when it took more than one sitting to understand, and
@@ -47,7 +47,7 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
       </section>
     ) : (
       years.map((year) => (
-        <section class="block">
+        <section class="block year-sec">
           <h2 class="year">{year}</h2>
           <PostList posts={posts.filter((post) => post.data.date.getUTCFullYear() === year)} showTags />
         </section>
@@ -57,6 +57,15 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
 </Base>
 
 <style>
+  .page-lede {
+    max-width: none;
+  }
+  .intro {
+    padding-bottom: clamp(1.15rem, 2.5vw, 1.6rem);
+  }
+  .year-sec {
+    padding-top: clamp(1.15rem, 2.5vw, 1.6rem);
+  }
   .meta {
     font-family: var(--mono);
     font-size: 11px;

@@ -14,12 +14,18 @@
 import { career } from '../data/profile';
 
 interface Props {
-  /** Hide pre-2013 roles entirely. Used where space is tight. */
+  /** Landing-page shortlist: hide early roles and anything marked `inBrief: false`. */
+  brief?: boolean;
+  /** @deprecated Prefer `brief`. Hide pre-2013 roles only. */
   recentOnly?: boolean;
 }
 
-const { recentOnly = false } = Astro.props;
-const entries = recentOnly ? career.filter((entry) => !entry.early) : career;
+const { brief = false, recentOnly = false } = Astro.props;
+const entries = brief
+  ? career.filter((entry) => entry.inBrief ?? !entry.early)
+  : recentOnly
+    ? career.filter((entry) => !entry.early)
+    : career;
 ---
 
 <ul class="career">

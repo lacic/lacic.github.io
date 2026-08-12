@@ -319,6 +319,7 @@ has a comment explaining why it is shaped the way it is — worth reading before
 | Funding and fellowships | `funding` |
 | Awards | `awards` |
 | Languages | `languages` |
+| Team AIR members on `/air` | `airTeam` |
 
 ### Adding a job
 
