@@ -39,7 +39,6 @@ src/
     profile.ts          Singletons: identity, career, education, funding, awards, AIR areas
     publications.yml    Every paper — the single source for the list AND the citations
     talks.yml           Talks and slides
-    projects.yml        Research software and case studies
     service.yml         Programme committees, reviewing, editorial, supervision
   content/
     updates/            Blog posts. One folder per post, images alongside the text.
@@ -97,9 +96,11 @@ The site currently lives in `v2/` so it can be built and reviewed beside the old
    `scripts/`, `astro.config.mjs`, `tsconfig.json`, `.npmrc`, `docs/`).
 2. Replace `public/documents` and `public/images` symlinks with the real directories, which are
    already at the root — just move them into `public/`.
-3. Delete v1's `index.html`, `*.html` fragments, `css/`, `js/`, `fonts/`, `vendor/`.
+3. Delete v1's `index.html`, `*.html` fragments, `css/`, `js/`, `fonts/`, `vendor/`. Also delete
+   `images/apps/` (Know-Center project screenshots): they were left in place during the
+   projects-page removal because `public/images` symlinks to the root `images/` tree shared with v1.
 4. Switch **Settings → Pages → Source** to **GitHub Actions**.
-5. Push. Then check: the home page, one PDF link, `/feed.xml`, and `/projects.html` redirecting.
+5. Push. Then check: the home page, one PDF link, `/feed.xml`, and `/projects.html` redirecting to `/publications`.
 
 Keep `CNAME` (`elacic.me`) in `public/` throughout — losing it drops the custom domain.
 

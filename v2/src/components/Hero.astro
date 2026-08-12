@@ -2,7 +2,8 @@
 /**
  * The identity block. A reader arriving cold should be able to answer "who is
  * this and why should I read on" in about ten seconds, so the statement is set
- * large and the supporting detail is demoted to the margin.
+ * large and the supporting detail is demoted to the margin: portrait, working
+ * note, and a few links.
  *
  * The keyword line replaces the credential list that used to sit here. Titles
  * and paper counts describe a record; keywords tell a reader whether they are
@@ -32,7 +33,13 @@ import { profile } from '../data/profile';
   </div>
 
   <aside class="margin">
-    <p class="stamp">Working note</p>
+    <img
+      class="portrait"
+      src={profile.photo}
+      alt={profile.shortName}
+      width="112"
+      height="112"
+    />
     <p class="hand">{profile.workingNote}</p>
     <div class="links">
       <a href="/air">Team AIR</a>
@@ -50,7 +57,7 @@ import { profile } from '../data/profile';
     gap: clamp(1.75rem, 4vw, 3.5rem);
     align-items: start;
     padding-top: clamp(2.5rem, 6vw, 4.5rem);
-    padding-bottom: clamp(2.5rem, 6vw, 4rem);
+    padding-bottom: clamp(0.5rem, 1.5vw, 1rem);
   }
   .who {
     font-family: var(--mono);
@@ -100,7 +107,6 @@ import { profile } from '../data/profile';
     line-height: 2;
     letter-spacing: 0.03em;
     color: var(--ink-70);
-    max-width: 60ch;
   }
   .keywords .sep {
     color: var(--accent);
@@ -111,13 +117,14 @@ import { profile } from '../data/profile';
     border-left: 1px solid var(--rule);
     padding-left: clamp(1rem, 2vw, 1.75rem);
   }
-  .stamp {
-    font-family: var(--mono);
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent-ink);
-    margin: 0 0 0.6rem;
+  .portrait {
+    display: block;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.15rem;
+    border: 1px solid var(--rule);
   }
   .hand {
     font-family: var(--serif);

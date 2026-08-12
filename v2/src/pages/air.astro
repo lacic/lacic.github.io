@@ -17,21 +17,53 @@ import AirCarousel from '../components/AirCarousel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import PostList from '../components/PostList.astro';
 import { profile } from '../data/profile';
-import { getPosts } from '../lib/content';
+import { getPosts, getPublications } from '../lib/content';
+import { venueLine } from '../lib/citation';
 
 const posts = (await getPosts()).filter((post) => post.data.tags.includes('air')).slice(0, 4);
+const airAll = (await getPublications()).filter((paper) => paper.data.air);
+const airPapers = airAll.slice(0, 3);
 const description =
   'Team AI Research (AIR) is the R&D team inside Infobip: applied research on messaging, voice and customer engagement across eight areas, from conversational AI to fraud detection and voice quality.';
 ---
 
 <Base title="Team AI Research (AIR)" description={description}>
-  <section class="block">
-    <p class="eyebrow"><span class="dot"></span> Team AI Research · Infobip</p>
-    <h1 class="page-title">Applied research on a platform that carries a large share of the world's business communication.</h1>
-    <p class="page-lede">
-      AIR is the R&amp;D team I founded and lead at Infobip. We work on messaging, voice and customer engagement —
-      and on the gap between a result that holds in a paper and one that holds on live traffic.
-    </p>
+  <section class="block intro">
+    <div class="intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow"><span class="dot"></span> Team AI Research · Infobip</p>
+        <h1 class="page-title">Applied research on a platform that carries a large share of the world's business communication.</h1>
+        <p class="page-lede">
+          AIR is the R&amp;D team I founded and lead at Infobip. We work on messaging, voice and customer engagement —
+          and on the gap between a result that holds in a paper and one that holds on live traffic.
+        </p>
+      </div>
+      {
+        airPapers.length > 0 && (
+          <aside class="intro-rail" aria-label="Recent Team AIR publications">
+            <div class="rail-head">
+              <p class="stamp">Recent papers</p>
+              <a class="rail-more" href="/publications#air">all Team AIR ({airAll.length}) →</a>
+            </div>
+            <ol class="air-papers">
+              {airPapers.map((paper) => {
+                const p = paper.data;
+                const href = p.pdf ?? `/publications/${paper.id}`;
+                return (
+                  <li>
+                    <a class="air-paper" href={href} target={p.pdf ? '_blank' : undefined} rel={p.pdf ? 'noopener noreferrer' : undefined}>
+                      <span class="air-year">{p.year}</span>
+                      <span class="air-title">{p.title}</span>
+                      <span class="air-venue">{venueLine(p)}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </aside>
+        )
+      }
+    </div>
   </section>
 
   <section class="block">
@@ -99,6 +131,15 @@ const description =
 </Base>
 
 <style>
+  .intro {
+    padding-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  }
+  .intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(14rem, 0.85fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: start;
+  }
   .eyebrow {
     font-family: var(--mono);
     font-size: 11.5px;
@@ -116,6 +157,80 @@ const description =
     border-radius: 50%;
     background: var(--accent);
   }
+  .intro-copy .page-lede {
+    margin-bottom: 0;
+  }
+  .intro-rail {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1rem, 2vw, 1.75rem);
+  }
+  .rail-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .rail-head .stamp {
+    margin: 0;
+  }
+  .rail-more {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  .rail-more:hover,
+  .rail-more:focus-visible {
+    border-bottom-color: var(--accent-ink);
+  }
+  .air-papers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .air-papers li {
+    border-top: 1px dotted var(--rule);
+  }
+  .air-papers li:first-child {
+    border-top: 0;
+  }
+  .air-paper {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.15rem 0.75rem;
+    padding: 0.7rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .air-papers li:first-child .air-paper {
+    padding-top: 0;
+  }
+  .air-year {
+    grid-row: 1 / span 2;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--pencil);
+    padding-top: 0.2rem;
+  }
+  .air-title {
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .air-paper:hover .air-title,
+  .air-paper:focus-visible .air-title {
+    color: var(--accent-ink);
+  }
+  .air-venue {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--pencil);
+  }
+
   .two {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
@@ -168,9 +283,11 @@ const description =
   }
 
   @media (max-width: 880px) {
+    .intro-grid,
     .two {
       grid-template-columns: 1fr;
     }
+    .intro-rail,
     .rail {
       border-left: 0;
       border-top: 1px solid var(--rule);

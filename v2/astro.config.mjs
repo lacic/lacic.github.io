@@ -24,7 +24,8 @@ export default defineConfig({
     // which then collides with the real homepage.
     '/main_pubs.html': '/publications',
     '/selected_pubs.html': '/publications',
-    '/projects.html': '/projects',
+    '/projects': '/publications',
+    '/projects.html': '/publications',
     '/services.html': '/service',
     '/speaking.html': '/talks',
     '/experience.html': '/cv',

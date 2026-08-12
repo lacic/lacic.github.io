@@ -14,23 +14,12 @@ import Base from '../../layouts/Base.astro';
 import PaperList from '../../components/PaperList.astro';
 import { profile } from '../../data/profile';
 import { getNoteMap, getPublications } from '../../lib/content';
+import { areaLabel } from '../../lib/format';
 
 const papers = await getPublications();
 const noteFor = await getNoteMap();
 
 const years = [...new Set(papers.map((paper) => paper.data.year))].sort((a, b) => b - a);
-
-const AREA_LABELS: Record<string, string> = {
-  'recommender-systems': 'recommender systems',
-  'information-retrieval': 'information retrieval',
-  'fairness-bias': 'fairness & bias',
-  'real-time': 'real-time',
-  'social-networks': 'social networks',
-  'learning-analytics': 'learning analytics',
-  evaluation: 'evaluation',
-  health: 'health',
-  'generative-ai': 'generative AI',
-};
 
 const areaCounts = new Map<string, number>();
 for (const paper of papers) {
@@ -38,15 +27,18 @@ for (const paper of papers) {
     areaCounts.set(area, (areaCounts.get(area) ?? 0) + 1);
   }
 }
-const areas = [...areaCounts.entries()].sort((a, b) => b[1] - a[1]);
+const areas = [...areaCounts.entries()]
+  .filter(([, count]) => count >= 2)
+  .sort((a, b) => b[1] - a[1]);
 const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
+const airCount = papers.filter((paper) => paper.data.air).length;
 ---
 
 <Base
   title="Publications"
   description={`${papers.length} peer-reviewed publications on recommender systems, information retrieval, fairness and real-time personalization.`}
 >
-  <section class="block">
+  <section class="block block--intro">
     <h1 class="page-title">Publications</h1>
     <p class="page-lede">
       {papers.length} peer-reviewed papers. {withNotes} have a plain-language note, so you can find out what a paper
@@ -61,11 +53,18 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
   <section class="block block--tight filterbar">
     <div class="filters" id="filters" data-total={papers.length}>
       <span class="stamp">Filter</span>
-      <button class="tag is-on" type="button" data-area="all" aria-pressed="true">all {papers.length}</button>
+      <button class="tag is-on" type="button" data-filter="all" aria-pressed="true">all {papers.length}</button>
+      {
+        airCount > 0 && (
+          <button class="tag tag--air" type="button" data-filter="air" aria-pressed="false">
+            Team AIR {airCount}
+          </button>
+        )
+      }
       {
         areas.map(([area, count]) => (
-          <button class="tag" type="button" data-area={area} aria-pressed="false">
-            {AREA_LABELS[area] ?? area} {count}
+          <button class="tag" type="button" data-filter={area} aria-pressed="false">
+            {areaLabel(area)} {count}
           </button>
         ))
       }
@@ -88,15 +87,17 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
   const count = document.getElementById('count');
 
   if (filters && count) {
-    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-area]')];
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-filter]')];
     const papers = [...document.querySelectorAll<HTMLElement>('.paper')];
     const blocks = [...document.querySelectorAll<HTMLElement>('.yearblock')];
 
-    const apply = (area: string) => {
+    const apply = (filter: string) => {
       let shown = 0;
       for (const paper of papers) {
         const areas = (paper.dataset.areas ?? '').split(' ').filter(Boolean);
-        const match = area === 'all' || areas.includes(area);
+        const match =
+          filter === 'all' ||
+          (filter === 'air' ? paper.dataset.air === 'true' : areas.includes(filter));
         paper.hidden = !match;
         if (match) shown += 1;
       }
@@ -108,27 +109,33 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
       }
 
       for (const button of buttons) {
-        const on = button.dataset.area === area;
+        const on = button.dataset.filter === filter;
         button.classList.toggle('is-on', on);
         button.setAttribute('aria-pressed', String(on));
       }
 
-      count.textContent = area === 'all' ? '' : `${shown} of ${papers.length} papers`;
-      history.replaceState(null, '', area === 'all' ? location.pathname : `#${area}`);
+      count.textContent = filter === 'all' ? '' : `${shown} of ${papers.length} papers`;
+      history.replaceState(null, '', filter === 'all' ? location.pathname : `#${filter}`);
     };
 
     filters.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-area]');
-      if (button?.dataset.area) apply(button.dataset.area);
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]');
+      if (button?.dataset.filter) apply(button.dataset.filter);
     });
 
-    // Deep-linkable: /publications#fairness-bias arrives pre-filtered.
+    // Deep-linkable: /publications#air or /publications#fairness-bias
     const initial = location.hash.slice(1);
-    if (initial && buttons.some((button) => button.dataset.area === initial)) apply(initial);
+    if (initial && buttons.some((button) => button.dataset.filter === initial)) apply(initial);
   }
 </script>
 
 <style>
+  .block--intro {
+    padding-bottom: 0.75rem;
+  }
+  .page-lede {
+    max-width: none;
+  }
   .meta {
     font-family: var(--mono);
     font-size: 11px;
@@ -152,6 +159,7 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
+    padding-top: 0.75rem;
   }
   .filters {
     display: flex;
@@ -177,6 +185,15 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
     color: var(--paper);
     border-color: var(--ink);
   }
+  .filters button.tag--air {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .filters button.tag--air.is-on {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
   .count {
     font-family: var(--mono);
     font-size: 10.5px;
@@ -184,13 +201,16 @@ const withNotes = papers.filter((paper) => noteFor.has(paper.id)).length;
     margin: 0;
   }
 
+  .yearblock {
+    padding-block: 0.85rem;
+  }
   .year {
     font-family: var(--mono);
     font-size: 11.5px;
     letter-spacing: 0.11em;
     color: var(--pencil);
-    margin: 0 0 1.2rem;
-    padding-bottom: 0.45rem;
+    margin: 0 0 0.55rem;
+    padding-bottom: 0.3rem;
     border-bottom: 1px solid var(--rule);
   }
   .yearblock + .yearblock {

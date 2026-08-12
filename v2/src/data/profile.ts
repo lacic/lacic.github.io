@@ -1,7 +1,7 @@
 /**
  * Singleton site data: identity, career, education, funding, links.
  *
- * Lists that grow (publications, talks, projects, service, posts) are content
+ * Lists that grow (publications, talks, service, posts) are content
  * collections instead — see src/content.config.ts. This file is for the things
  * there is exactly one of.
  */
@@ -21,13 +21,16 @@ export const profile = {
 
   /** The hero. Three lines that set, then a quieter fourth. */
   statement: {
-    lines: ['I lead Team AI Research', 'at Infobip, building AI for', 'communication at global scale'],
-    coda: '— and finding out what survives production.',
+    lines: ['AI Research at Infobip,', 'building AI for global communication'],
+    coda: '— and discover what comes up next.',
   },
+
+  /** Portrait used in the hero margin (same asset as v1’s sidebar). */
+  photo: '/images/profile2.jpg',
 
   /** The working note in the hero margin. */
   workingNote:
-    'Most of what we try does not work. This site is where I write down which parts did, and why the difference was rarely the model.',
+    'A working record of research I’m doing now. Findings, open questions, and the direction I expect to push for years ahead.',
 
   /** Research keywords, set like the keyword line of a paper. Six at most. */
   keywords: [

@@ -30,7 +30,6 @@ const Wrapper = link ? 'a' : 'div';
   </Wrapper>
   <figcaption>
     Eight areas, one question: what holds up when it meets real traffic.
-    {link && <a href="/air">How the team works →</a>}
   </figcaption>
 </figure>
 
@@ -58,18 +57,5 @@ const Wrapper = link ? 'a' : 'div';
     font-size: 10.5px;
     letter-spacing: 0.05em;
     color: var(--pencil);
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  figcaption a {
-    color: var(--accent-ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--rule);
-  }
-  figcaption a:hover,
-  figcaption a:focus-visible {
-    border-bottom-color: var(--accent-ink);
   }
 </style>

@@ -23,6 +23,10 @@ career/education/funding/awards. Every PDF keeps its v1 URL.
 
 **Decided during implementation, differing from this plan:**
 
+- `/projects` removed from the public site (2026-08-12). Know-Center software and case studies
+  are no longer a destination; `/projects` and `/projects.html` redirect to `/publications`.
+  RecSys credibility stays in papers, keywords, and career. A future "shipped systems" story
+  belongs under `/air/` only if current Infobip work warrants it.
 - Five selected papers rather than four, all peer-reviewed; the "deployed systems" rows were dropped
   from the landing page in favour of `/projects`.
 - Section numbers on the landing page are counted at render time, so a section with nothing to show
@@ -117,7 +121,7 @@ and the current work, and keeps the archive one click away for the people who ac
 /publications/          All ~33 papers, grouped by year, filterable
 /publications/<slug>/   Optional: one paper, plain-language summary + PDF
 /talks/                 All talks with slides
-/projects/              Portfolio, ~15 industry cases
+                        (/projects/ removed 2026-08-12 — redirects to /publications/)
 /service/               PC membership, reviewing, workshops, editorial
 /cv/                    Readable HTML CV + PDF download
 /feed.xml               RSS — required, given the posting goal

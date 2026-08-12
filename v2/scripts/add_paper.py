@@ -4,11 +4,13 @@ Paper Entry Builder
 
 Reads a paper PDF, extracts its bibliographic metadata with Azure OpenAI via
 Pydantic AI, verifies it against Crossref, and appends a reviewed entry to
-v2/src/data/publications.yml. Optionally writes the plain-language paper note
-by reusing scripts/summarize_papers.py.
+v2/src/data/publications.yml — or, with --update <id>, rewrites an existing
+entry in place while keeping that permanent id. Optionally writes the
+plain-language paper note by reusing scripts/summarize_papers.py.
 
-Nothing is written without confirmation, and every entry lands with
-needsReview: true — the script removes typing, not judgement.
+Nothing is written without confirmation. Entries default to needsReview: false
+(papers are usually already accepted when you add them). Flip it to true if you
+want the on-page marker while you still check author diacritics and venue kind.
 """
 
 import argparse
@@ -63,20 +65,6 @@ VenueKind = Literal[
     "preprint",
 ]
 
-# Closed set, mirrored on the /publications filter UI. Adding one here means
-# adding it to the site's area list too.
-AREA_SLUGS: tuple[str, ...] = (
-    "recommender-systems",
-    "information-retrieval",
-    "fairness-bias",
-    "real-time",
-    "social-networks",
-    "learning-analytics",
-    "evaluation",
-    "health",
-    "generative-ai",
-)
-
 # Dropped when building ids and slugs so "2023-ecir-a-study" never happens.
 STOPWORDS: frozenset[str] = frozenset(
     {
@@ -105,8 +93,8 @@ PUBLICATIONS_HEADER = """\
 # Publications. Single source of truth for the publications page, the landing
 # page's selected work, and the generated BibTeX and APA citations.
 #
-# Appended to by scripts/add_paper.py. Entries arrive with needsReview: true;
-# clear that flag once you have checked the author diacritics and venue kind.
+# Appended to by scripts/add_paper.py. Entries default to needsReview: false;
+# set true if you want the on-page marker while still checking the entry.
 """
 
 
@@ -114,23 +102,71 @@ class PaperEntry(BaseModel):
     """Structured output for bibliographic metadata extracted from a PDF."""
 
     title: str = Field(description="Paper title, in its original capitalisation, without trailing punctuation")
-    authors: list[str] = Field(description="Full author names in publication order, with diacritics preserved")
+    authors: list[str] = Field(
+        description='Author names in publication order as "Surname, I." '
+        '(initial only), with diacritics preserved — e.g. "Lacić, E.", not "Emanuel Lacić"'
+    )
     year: int = Field(description="Four-digit year of publication")
     venue_name: str = Field(description="Short venue name as a peer would say it, e.g. 'ECIR', 'RecSys', 'UMUAI'")
     venue_full: Optional[str] = Field(default=None, description="Full venue name, e.g. '45th European Conference on Information Retrieval'")
     venue_kind: VenueKind = Field(description="What kind of venue this is")
     publisher: Optional[str] = Field(default=None, description="Publisher, e.g. 'ACM', 'Springer', 'Elsevier'")
     doi: Optional[str] = Field(default=None, description="DOI without the https://doi.org/ prefix, or null if the PDF does not state one")
-    areas: list[str] = Field(description="1-3 research area slugs from the allowed list")
+    areas: list[str] = Field(
+        description="0-4 short kebab-case topic slugs from Keywords / Index Terms "
+        "and the paper's central method; prefer specific tags (spam-detection) over "
+        "broad umbrellas; reuse an existing site tag only when it is equally specific"
+    )
 
 
-EXTRACTION_PROMPT = f"""You extract bibliographic metadata from academic papers. \
+def area_tagging_rules(existing_areas: list[str] | None = None) -> str:
+    """Shared rules for open-vocabulary topic tags (add_paper + retag_areas)."""
+    if existing_areas:
+        reuse = (
+            "Existing site tags (reuse ONLY when equally specific): "
+            + ", ".join(existing_areas)
+            + ". "
+        )
+    else:
+        reuse = ""
+
+    return f"""\
+- areas: 0 to 4 short kebab-case topic slugs (lowercase, hyphenated).
+- Primary source: the paper's Keywords / Index Terms. Turn each distinctive \
+keyword into a slug when it names the problem, domain or method \
+(e.g. "Spam" → "spam-detection", "Visual Content Moderation" → \
+"content-moderation", "Real-Time Inference" → "real-time").
+- Also tag the central method or architecture when the abstract/contribution \
+hinges on it (e.g. CLIP / ViT → "vision-transformers"), even if it is not in \
+the keyword list.
+- Prefer specific tags over broad umbrellas. Do not collapse "spam-detection" \
+into "content-moderation", or "vision-transformers" into "generative-ai", just \
+to reuse an existing tag. {reuse}Reuse an existing tag only when it means the \
+same thing at the same specificity; otherwise invent a new concise slug.
+- Skip generic filler keywords (survey, review, benchmark-as-a-word-alone) \
+unless the paper's main claim is that artefact.
+- Do not invent information-retrieval just because the venue is WWW/ECIR/CIKM, \
+or evaluation just because metrics are reported, or recommender-systems because \
+bias is mentioned in passing.
+- Prefer a few sharp tags over a full quota. Leave areas empty rather than guess."""
+
+
+def build_extraction_prompt(existing_areas: list[str]) -> str:
+    """System prompt for metadata extraction.
+
+    Areas are an open vocabulary: the filter UI discovers tags from the data, so
+    new research directions do not need a code change. Existing tags are injected
+    as reuse candidates only when equally specific.
+    """
+    return f"""You extract bibliographic metadata from academic papers. \
 You are reading the first pages of a PDF, so you see the title block, the author \
 list, and usually the venue footer or header.
 
 Rules:
-- Copy the title and author names exactly as printed, including diacritics \
-(e.g. "Lacić", not "Lacic"). Never anglicise or truncate a name.
+- Copy the title exactly as printed. For authors, rewrite each name into \
+"Surname, I." form (family name, comma, given-name initial, period), keeping \
+diacritics (e.g. "Lacić, E.", not "Emanuel Lacić" or "Lacic, E."). Never \
+anglicise a surname.
 - List every author, in the order printed. Do not stop at "et al."
 - venue_name is the short name a researcher would say out loud: "ECIR", "RecSys", \
 "CIKM", "UMUAI". Do not put the year in it.
@@ -140,8 +176,7 @@ late-breaking-results, demo and poster tracks are "demo" or "workshop", not \
 "conference". Use "preprint" only for arXiv-only work.
 - Only report a doi you can actually see in the text. Guessing a DOI is worse than \
 leaving it null.
-- areas must be 1 to 3 slugs chosen from exactly this list: {", ".join(AREA_SLUGS)}. \
-Choose what the paper is about, not what it mentions.
+{area_tagging_rules(existing_areas)}
 
 If a field genuinely is not present in the text, leave it null rather than \
 inventing a plausible value. Everything you produce is reviewed by a human, and a \
@@ -309,7 +344,7 @@ class AzureOpenAIProvider(Provider[AsyncAzureOpenAI]):
         return self.config["AZURE_OPENAI_API_BASE"]
 
 
-def create_extractor_agent(config: dict[str, str]) -> Agent:
+def create_extractor_agent(config: dict[str, str], existing_areas: list[str]) -> Agent:
     """Create Pydantic AI agent configured for Azure OpenAI metadata extraction."""
     provider = AzureOpenAIProvider(config)
 
@@ -321,7 +356,7 @@ def create_extractor_agent(config: dict[str, str]) -> Agent:
     agent = Agent(
         model=model,
         output_type=PaperEntry,
-        system_prompt=EXTRACTION_PROMPT
+        system_prompt=build_extraction_prompt(existing_areas)
     )
 
     return agent
@@ -357,19 +392,70 @@ Extract the bibliographic metadata."""
         return None
 
 
+AREA_SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+INFOBIP_EMAIL_RE = re.compile(r"@infobip\.com\b", re.IGNORECASE)
+INFOBIP_NAME_RE = re.compile(r"\bInfobip\b")
+
+
+def detect_air_affiliation(front_matter: str) -> bool:
+    """True when an author is Infobip-affiliated (email or affiliation line).
+
+    Used to propose publications.yml `air: true` for Team AIR research outcomes.
+    """
+    return bool(INFOBIP_EMAIL_RE.search(front_matter) or INFOBIP_NAME_RE.search(front_matter))
+
+
+def load_existing_areas(publications_file: Path) -> list[str]:
+    """Unique area slugs already on the site, for reuse bias in the prompt."""
+    if not publications_file.is_file():
+        return []
+
+    text = publications_file.read_text(encoding="utf-8")
+    found: list[str] = []
+    seen: set[str] = set()
+    # Match list items under `areas:` without needing a YAML dependency.
+    in_areas = False
+    for line in text.splitlines():
+        if re.match(r"^  areas:\s*$", line):
+            in_areas = True
+            continue
+        if in_areas:
+            item = re.match(r"^    - (.+)$", line)
+            if item:
+                slug = normalise_area_slug(item.group(1).strip().strip("'\""))
+                if slug and slug not in seen:
+                    seen.add(slug)
+                    found.append(slug)
+                continue
+            if re.match(r"^  \w", line) or re.match(r"^- ", line):
+                in_areas = False
+    return sorted(found)
+
+
+def normalise_area_slug(raw: str) -> str:
+    """Lowercase kebab-case; drop junk that would break filters or URLs."""
+    slug = raw.strip().lower().replace("_", "-").replace(" ", "-")
+    slug = re.sub(r"[^a-z0-9-]+", "", slug)
+    slug = re.sub(r"-{2,}", "-", slug).strip("-")
+    return slug
+
+
 def sanitise_areas(areas: list[str]) -> list[str]:
-    """Keep only known area slugs, de-duplicated and capped at three."""
+    """Normalise open-vocabulary area slugs, de-duplicated and capped at four."""
     cleaned: list[str] = []
+    dropped: list[str] = []
     for area in areas:
-        slug = area.strip().lower().replace(" ", "-").replace("_", "-")
-        if slug in AREA_SLUGS and slug not in cleaned:
+        slug = normalise_area_slug(area)
+        if not slug or not AREA_SLUG_RE.match(slug):
+            dropped.append(area)
+            continue
+        if slug not in cleaned:
             cleaned.append(slug)
 
-    dropped = [a for a in areas if a.strip().lower().replace(" ", "-").replace("_", "-") not in AREA_SLUGS]
     if dropped:
-        print(f"⚠️  Warning: dropped area slugs outside the allowed list: {', '.join(dropped)}")
+        print(f"⚠️  Warning: dropped unusable area slugs: {', '.join(dropped)}")
 
-    return cleaned[:3]
+    return cleaned[:4]
 
 
 # ============================================================================
@@ -683,6 +769,11 @@ def build_entry_dict(
     pdf_url: str,
     poster_url: Optional[str],
     venue_extras: dict[str, Optional[str]],
+    air: bool = False,
+    *,
+    selected: bool = False,
+    selected_rank: Optional[int] = None,
+    slides: Optional[str] = None,
 ) -> dict:
     """The entry as plain data, in the order it should appear in the file."""
     venue: dict[str, object] = {"name": entry.venue_name}
@@ -706,12 +797,18 @@ def build_entry_dict(
     }
     if poster_url:
         record["poster"] = poster_url
+    if slides:
+        record["slides"] = slides
     if entry.doi:
         record["doi"] = entry.doi
         record["url"] = f"https://doi.org/{entry.doi}"
-    record["selected"] = False
+    record["selected"] = selected
+    if selected and selected_rank is not None:
+        record["selectedRank"] = selected_rank
     record["areas"] = list(entry.areas)
-    record["needsReview"] = True
+    if air:
+        record["air"] = True
+    record["needsReview"] = False
 
     return record
 
@@ -747,6 +844,116 @@ def render_entry_yaml(record: dict) -> str:
             lines.append(f"{prefix}{key}: {yaml_quote(str(value))}")
 
     return "\n".join(lines) + "\n"
+
+
+ENTRY_START_RE = re.compile(r"^- id: (.+)$", re.MULTILINE)
+
+
+def find_entry_span(text: str, entry_id: str) -> Optional[tuple[int, int, str]]:
+    """Return (start, end, block) for `- id: <entry_id>`, or None."""
+    starts = [(match.start(), match.group(1).strip()) for match in ENTRY_START_RE.finditer(text)]
+    for index, (start, found_id) in enumerate(starts):
+        if found_id != entry_id:
+            continue
+        end = starts[index + 1][0] if index + 1 < len(starts) else len(text)
+        return start, end, text[start:end]
+    return None
+
+
+def parse_preserved_fields(block: str) -> dict[str, object]:
+    """Fields that update mode must not discard: selected shortlist and slides."""
+    preserved: dict[str, object] = {
+        "selected": False,
+        "selectedRank": None,
+        "poster": None,
+        "slides": None,
+    }
+    for line in block.splitlines():
+        if re.match(r"^  selected:\s*true\s*$", line):
+            preserved["selected"] = True
+        elif re.match(r"^  selected:\s*false\s*$", line):
+            preserved["selected"] = False
+        else:
+            rank = re.match(r"^  selectedRank:\s*(\d+)\s*$", line)
+            if rank:
+                preserved["selectedRank"] = int(rank.group(1))
+                continue
+            poster = re.match(r'^  poster:\s*["\']?([^"\']+)["\']?\s*$', line)
+            if poster:
+                preserved["poster"] = poster.group(1).strip()
+                continue
+            slides = re.match(r'^  slides:\s*["\']?([^"\']+)["\']?\s*$', line)
+            if slides:
+                preserved["slides"] = slides.group(1).strip()
+    return preserved
+
+
+def verify_entry_round_trip(candidate_text: str, entry_id: str, record: dict) -> bool:
+    """Parse the candidate file and check the named entry matches the record."""
+    if not HAS_RUAMEL:
+        return True
+
+    try:
+        yaml = YAML(typ="rt")
+        yaml.preserve_quotes = True
+        data = yaml.load(candidate_text)
+    except Exception as e:
+        print(f"❌ Error: the updated entry would not parse as YAML ({e}).")
+        print("   Nothing was written. This is a bug in the entry renderer — check the title for unusual characters.")
+        return False
+
+    if not isinstance(data, (list, CommentedSeq)):
+        print("❌ Error: publications.yml is not a YAML list of entries.")
+        print("   Fix the file by hand and re-run; nothing was written.")
+        return False
+
+    parsed = None
+    for item in data:
+        if isinstance(item, (dict, CommentedMap)) and str(item.get("id")) == entry_id:
+            parsed = item
+            break
+
+    if parsed is None:
+        print(f"❌ Error: after rewrite, id `{entry_id}` was not found in the YAML.")
+        print("   Nothing was written.")
+        return False
+
+    if dict(parsed) != normalise_for_compare(record):
+        print("❌ Error: the updated entry did not survive a YAML round-trip unchanged.")
+        print("   Nothing was written. Edit the entry by hand from the block printed above.")
+        return False
+
+    return True
+
+
+def replace_entry(publications_file: Path, entry_id: str, record: dict) -> bool:
+    """Replace one entry block in place; leave every other byte untouched."""
+    try:
+        existing = publications_file.read_text(encoding="utf-8")
+    except OSError as e:
+        print(f"❌ Error reading {publications_file}: {e}")
+        print("   Check the file permissions, then re-run — nothing has been written.")
+        return False
+
+    span = find_entry_span(existing, entry_id)
+    if span is None:
+        print(f"❌ Error: no entry with id `{entry_id}` in {publications_file.name}.")
+        return False
+
+    start, end, _old = span
+    block = render_entry_yaml(record)
+    candidate = existing[:start] + block + existing[end:]
+    if not verify_entry_round_trip(candidate, entry_id, record):
+        return False
+
+    try:
+        publications_file.write_text(candidate, encoding="utf-8")
+    except OSError as e:
+        print(f"❌ Error writing to {publications_file}: {e}")
+        print("   Check the file permissions, then re-run — nothing has been written.")
+        return False
+
+    return True
 
 
 def verify_round_trip(candidate_text: str, record: dict) -> bool:
@@ -911,19 +1118,50 @@ def confirm(question: str) -> bool:
     return input(f"{question} [y/N]: ").strip().lower() in ("y", "yes")
 
 
-async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
+async def add_paper(
+    raw_pdf_path: str,
+    no_summary: bool,
+    dry_run: bool,
+    update_id: Optional[str] = None,
+) -> int:
     """Run the whole pipeline. Returns a process exit code."""
     paths = SitePaths()
     pdf_path = resolve_pdf_path(raw_pdf_path, paths)
     print(f"📄 Paper: {paths.display(pdf_path)}")
+    if update_id:
+        print(f"♻️  Update mode — will rewrite id `{update_id}` in place")
 
     config = load_and_validate_env()
     print("✅ Azure OpenAI credentials loaded")
     print()
 
+    preserved: dict[str, object] = {
+        "selected": False,
+        "selectedRank": None,
+        "poster": None,
+        "slides": None,
+    }
+    if update_id:
+        if not paths.publications_file.is_file():
+            print(f"❌ Error: {paths.display(paths.publications_file)} not found")
+            return 1
+        existing_text = paths.publications_file.read_text(encoding="utf-8")
+        span = find_entry_span(existing_text, update_id)
+        if span is None:
+            print(f"❌ Error: no entry with id `{update_id}` in publications.yml")
+            known = ", ".join(sorted(read_existing_ids(paths.publications_file))[:8])
+            print(f"   Known ids include: {known}…")
+            return 1
+        preserved = parse_preserved_fields(span[2])
+        print(
+            "   Preserving selected/shortlist and slides from the existing entry; "
+            "re-extracting bibliographic fields from the PDF"
+        )
+        print()
+
     pages = extract_pdf_pages(pdf_path)
     if pages is None:
-        print("   Without text there is nothing to extract. Add the entry to publications.yml by hand.")
+        print("   Without text there is nothing to extract. Edit publications.yml by hand.")
         return 1
 
     front_matter = "\n\n".join(pages[:3])
@@ -931,7 +1169,10 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
     print(f"   Extracted {len(full_text)} characters from {len(pages)} page(s)")
 
     print("🤖 Extracting metadata via Azure OpenAI...")
-    agent = create_extractor_agent(config)
+    existing_areas = load_existing_areas(paths.publications_file)
+    if existing_areas:
+        print(f"   Preferring reuse of {len(existing_areas)} existing area tag(s) when they fit")
+    agent = create_extractor_agent(config, existing_areas)
     entry = await extract_paper_entry(agent, front_matter, pdf_path.name)
     if entry is None:
         return 1
@@ -939,7 +1180,7 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
     if not entry.venue_name.strip():
         print("⚠️  Warning: no short venue name was found. Fill venue.name in by hand — the id will say 'unknown'.")
     if not entry.areas:
-        print(f"⚠️  Warning: no research area matched. Pick one by hand from: {', '.join(AREA_SLUGS)}")
+        print("⚠️  Warning: no research areas extracted. Add kebab-case tags by hand if useful.")
     print(f"   Title: {entry.title}")
     print(f"   Authors: {', '.join(entry.authors)}")
     print()
@@ -965,19 +1206,44 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
 
     poster_path = find_poster(pdf_path.stem, paths, interactive=sys.stdin.isatty() and not dry_run)
     poster_url = site_pdf_url(poster_path, paths) if poster_path else None
+    if poster_url is None and isinstance(preserved.get("poster"), str):
+        poster_url = preserved["poster"]
+        print(f"   Keeping existing poster: {poster_url}")
     print()
 
-    if not dry_run:
-        ensure_publications_file(paths.publications_file, paths)
-    existing_ids = read_existing_ids(paths.publications_file)
-    entry_id = generate_entry_id(entry, existing_ids)
-    print(f"🔖 Entry id: {entry_id}")
+    air = detect_air_affiliation(front_matter)
+    if air:
+        print("🏢 Infobip affiliation detected → air: true (Team AIR research outcome)")
+    else:
+        print("   No Infobip affiliation in the front matter → air left unset")
     print()
 
-    record = build_entry_dict(entry_id, entry, site_pdf_url(pdf_path, paths), poster_url, venue_extras)
+    if update_id:
+        entry_id = update_id
+        print(f"🔖 Entry id (unchanged): {entry_id}")
+    else:
+        if not dry_run:
+            ensure_publications_file(paths.publications_file, paths)
+        existing_ids = read_existing_ids(paths.publications_file)
+        entry_id = generate_entry_id(entry, existing_ids)
+        print(f"🔖 Entry id: {entry_id}")
+    print()
+
+    record = build_entry_dict(
+        entry_id,
+        entry,
+        site_pdf_url(pdf_path, paths),
+        poster_url,
+        venue_extras,
+        air=air,
+        selected=bool(preserved.get("selected")),
+        selected_rank=preserved.get("selectedRank") if isinstance(preserved.get("selectedRank"), int) else None,
+        slides=preserved.get("slides") if isinstance(preserved.get("slides"), str) else None,
+    )
     block = render_entry_yaml(record)
 
-    print(f"Proposed entry for {paths.display(paths.publications_file)}:")
+    action = "update" if update_id else "append"
+    print(f"Proposed entry for {paths.display(paths.publications_file)} ({action}):")
     print("-" * 60)
     print(block, end="")
     print("-" * 60)
@@ -985,16 +1251,23 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
 
     if dry_run:
         print("🔍 Dry run — nothing was written.")
-        print("   Re-run without --dry-run to append this entry.")
+        print(
+            f"   Re-run without --dry-run to {'update this entry' if update_id else 'append this entry'}."
+        )
         return 0
 
-    if not confirm("Append this entry?"):
+    if not confirm(f"{'Update' if update_id else 'Append'} this entry?"):
         print("⏭️  Aborted. No files were changed.")
         return 1
 
-    if not append_entry(paths.publications_file, record):
-        return 1
-    print(f"✅ Appended to {paths.display(paths.publications_file)}")
+    if update_id:
+        if not replace_entry(paths.publications_file, entry_id, record):
+            return 1
+        print(f"✅ Updated {entry_id} in {paths.display(paths.publications_file)}")
+    else:
+        if not append_entry(paths.publications_file, record):
+            return 1
+        print(f"✅ Appended to {paths.display(paths.publications_file)}")
 
     note_path: Optional[Path] = None
     if no_summary:
@@ -1014,10 +1287,10 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
     todos = [
         "Check the author diacritics — your surname is Lacić, not Lacic.",
         f"Check venue.kind is '{entry.venue_kind}' and not a workshop mislabelled as a conference.",
+        "Confirm authors are 'Surname, I.' form (e.g. Lacić, E.).",
     ]
     if not poster_url:
         todos.append("Add a poster: path by hand if a poster exists for this paper.")
-    todos.append(f"Clear needsReview: true on {entry_id} — the build warns until you do.")
 
     print("Before committing:")
     for index, todo in enumerate(todos, start=1):
@@ -1026,10 +1299,11 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
 
     to_stage = [pdf_path, poster_path, paths.publications_file, note_path]
     staged = " ".join(paths.display(p) for p in to_stage if p is not None)
+    commit_verb = "Update" if update_id else "Add"
     print("Then:")
     print("   cd v2 && npm run dev          # preview at http://localhost:4321/publications/")
     print(f"   git add {staged}")
-    print(f'   git commit -m "Add {entry_id}"')
+    print(f'   git commit -m "{commit_verb} {entry_id}"')
     print("   git push")
     print()
 
@@ -1043,12 +1317,14 @@ async def add_paper(raw_pdf_path: str, no_summary: bool, dry_run: bool) -> int:
 def main() -> None:
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Add a paper to publications.yml and write its plain-language note.",
+        description="Add or update a paper in publications.yml and write its plain-language note.",
         epilog=(
-            "Example:\n"
-            "  uv run v2/scripts/add_paper.py documents/2026_RecSys_llm_ranking.pdf\n\n"
-            "The entry is always written with needsReview: true. Clear it after checking\n"
-            "the author diacritics and the venue kind."
+            "Examples:\n"
+            "  uv run scripts/add_paper.py ../documents/2026_RecSys_llm_ranking.pdf\n"
+            "  uv run scripts/add_paper.py ../documents/2025_INTERSPEECH.pdf \\\n"
+            "      --update 2025-arxiv-language-gender\n\n"
+            "Update mode keeps the permanent id (and selected/slides), re-extracts\n"
+            "title, authors, venue, DOI, areas and air from the PDF."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -1058,9 +1334,15 @@ def main() -> None:
         help="Path to the paper PDF, absolute or relative to the cwd, the repo root or documents/"
     )
     parser.add_argument(
+        "--update",
+        metavar="ID",
+        default=None,
+        help="Rewrite an existing publications.yml entry with this permanent id",
+    )
+    parser.add_argument(
         "--no-summary",
         action="store_true",
-        help="Only add the publications.yml entry; do not generate the paper note"
+        help="Only write the publications.yml entry; do not generate/overwrite the paper note"
     )
     parser.add_argument(
         "--dry-run",
@@ -1075,14 +1357,16 @@ def main() -> None:
     print()
 
     if not HAS_RUAMEL:
-        print("ℹ️  ruamel.yaml is not installed, so the appended entry is not YAML-checked before writing.")
+        print("ℹ️  ruamel.yaml is not installed, so the entry is not YAML-checked before writing.")
         print("   Optional: uv add ruamel.yaml")
         print()
 
     try:
-        exit_code = asyncio.run(add_paper(args.pdf, args.no_summary, args.dry_run))
+        exit_code = asyncio.run(
+            add_paper(args.pdf, args.no_summary, args.dry_run, update_id=args.update)
+        )
     except KeyboardInterrupt:
-        print("\n⏭️  Interrupted. Check publications.yml if the append had already started.")
+        print("\n⏭️  Interrupted. Check publications.yml if a write had already started.")
         exit_code = 130
 
     sys.exit(exit_code)

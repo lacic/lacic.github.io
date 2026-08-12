@@ -16,7 +16,6 @@ npm run dev      # http://localhost:4321
 - [Writing a blog post](#writing-a-blog-post)
 - [Adding a paper](#adding-a-paper)
 - [Adding a talk](#adding-a-talk)
-- [Adding a project or case study](#adding-a-project-or-case-study)
 - [Adding academic service](#adding-academic-service)
 - [Career, education, funding, awards, keywords](#career-education-funding-awards-keywords)
 - [The AIR research areas](#the-air-research-areas)
@@ -134,10 +133,25 @@ plain-language note in `src/content/paper-notes/`.
 Add `--dry-run` to see the proposed entry without writing anything, or `--no-summary` to skip
 generating the note.
 
+### Updating an existing paper
+
+When the PDF changes (camera-ready, corrected venue, etc.), re-extract without changing the
+permanent `id`:
+
+```bash
+uv run scripts/add_paper.py ../documents/2025_INTERSPEECH.pdf \
+  --update 2025-arxiv-language-gender
+```
+
+That keeps `id`, `selected` / `selectedRank`, and `slides`, and rewrites title, authors, venue,
+DOI, areas, `air`, and the PDF path from the new file. Use `--no-summary` to leave the paper note
+alone, or omit it to regenerate the note.
+
 ### Then check it, because the entry is machine-extracted
 
-The script sets `needsReview: true`, which renders a visible `needs review` marker next to the paper.
-That marker is there to annoy you into checking. Three things are commonly wrong:
+The script sets `needsReview: false` by default (papers are usually already accepted
+when you add them). Set it to `true` if you want the visible `needs review` marker
+while you are still checking. Three things are commonly wrong:
 
 1. **Your surname.** It must be `Lacić`. Extraction sometimes returns `Lacic`, and the diacritic ends
    up in everyone's bibliography once someone copies the citation.
@@ -145,7 +159,21 @@ That marker is there to annoy you into checking. Three things are commonly wrong
    a workshop, also set `colocatedWith`.
 3. **Author order and initials.** Compare against the PDF's title page.
 
-Clear `needsReview` (delete the line or set it to `false`) once you have checked. Never ship `true`.
+Clear `needsReview` (or leave it `false`) once you have checked. Never ship `true`.
+
+### Re-tagging areas on existing papers
+
+When the tagging rules change (or a batch looks wrong), refresh only the `areas` field:
+
+```bash
+uv run scripts/retag_areas.py --dry-run
+uv run scripts/retag_areas.py --only 2026-www-visual-content
+uv run scripts/retag_areas.py
+```
+
+`--dry-run` proposes tags without writing. Without it, you get one confirm, then only
+`areas:` lines in `publications.yml` are updated. New tags appear on the filter bar
+automatically.
 
 ### The fields
 
@@ -165,6 +193,7 @@ Clear `needsReview` (delete the line or set it to `false`) once you have checked
   poster: /documents/posters/2026_RecSys_llm_ranking_poster.pdf
   doi: 10.1145/1234567.1234568
   areas: [recommender-systems, generative-ai]
+  air: false
   selected: false
   needsReview: false
 ```
@@ -172,12 +201,20 @@ Clear `needsReview` (delete the line or set it to `false`) once you have checked
 `kind` is one of: `conference`, `journal`, `workshop`, `book-chapter`, `demo`, `thesis`,
 `newsletter`, `industry`, `preprint`.
 
-`areas` are the filter tags on `/publications`: `recommender-systems`, `information-retrieval`,
-`fairness-bias`, `real-time`, `social-networks`, `learning-analytics`, `evaluation`, `health`,
-`generative-ai`. Only tag what the paper is actually about — a tag that matches everything filters
-nothing.
+`areas` are open topic tags for filtering on `/publications` (kebab-case, e.g.
+`recommender-systems`, `content-moderation`). The filter bar is built from whatever
+appears in the data, so new research directions do not need a code change. Prefer
+reusing an existing tag when it fits; invent a short new slug from the paper's own
+keywords when it does not. Prefer fewer accurate tags over stretching an old one.
+Leave the list empty rather than guessing.
 
-**`id` is permanent.** It is the paper's URL (`/publications/<id>`) and what paper notes and projects
+`air: true` marks a Team AIR / Infobip research outcome. It is separate from topic
+tags: the publications page shows a distinct **Team AIR** filter chip, and `/air`
+will later list these as research outcomes. `add_paper.py` proposes it when the PDF
+front matter has an `@infobip.com` email or an Infobip affiliation. Omit the field
+(or set `false`) for everything else.
+
+**`id` is permanent.** It is the paper's URL (`/publications/<id>`) and what paper notes
 reference. Renaming it breaks both, so pick it once.
 
 You never write BibTeX or APA. Both are generated from these fields, which is why a corrected venue
@@ -241,38 +278,6 @@ and it stops being a claim at ten items.
 
 Put slide PDFs in `documents/talks/` at the repository root; they are served from
 `/documents/talks/...`. Only `id`, `title`, `event` and `date` are required.
-
----
-
-## Adding a project or case study
-
-`src/data/projects.yml`:
-
-```yaml
-- id: some-system
-  title: Some System
-  kind: case-study           # software | case-study
-  summary: >-
-    ONE concrete sentence: what the system did, in plain terms.
-  detail: >-
-    Optional. One to three sentences of extra detail.
-  years: "2024-2025"
-  partner: Client name
-  image: /images/apps/some_system.png
-  papers: [2026-recsys-llm-ranking]     # optional, links to publications
-  featured: true                         # case studies only: shown first
-```
-
-Use `kind: software` for a named tool or framework, `case-study` for applied work with a partner.
-
-Write `summary` as what the system did, not what it enabled or transformed. The v1 page read as a
-consultancy portfolio; the interesting claim is narrower and stronger — these systems ran in
-production and are why several of the papers exist.
-
-Three case studies migrated from v1 are marked `PLACEHOLDER - needs a real description` in `detail`,
-because v1 had no text for them at all. Either write a real summary or delete the entry.
-
-Images go in `images/apps/` at the repository root.
 
 ---
 

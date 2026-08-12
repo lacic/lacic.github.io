@@ -15,7 +15,8 @@
 #   authors   publication order, "Surname, I." form
 #   pdf/poster site-absolute paths under /documents/
 #   selected  exactly five papers, ranked 1-5
-#   areas     only tags clearly supported by the work itself
+#   areas     open topic tags (kebab-case); prefer reusing existing ones
+#   air       true for Team AIR / Infobip research outcomes
 
 - id: 2023-ecir-uptrendz
   title: "Uptrendz: API-Centric Real-Time Recommendations in Multi-Domain Settings"
@@ -36,7 +37,8 @@
   selected: true
   selectedRank: 1
   areas:
-    - recommender-systems
+    - multi-domain-recommendations
+    - api-centric-recommendations
     - real-time
   needsReview: false
 
@@ -59,9 +61,9 @@
   selected: true
   selectedRank: 2
   areas:
-    - recommender-systems
-    - fairness-bias
-    - evaluation
+    - news-recommendation
+    - popularity-bias
+    - user-interface
   needsReview: false
 
 - id: 2022-bias-popularity
@@ -79,8 +81,10 @@
   pdf: /documents/2022_ECIR_bias.pdf
   selected: false
   areas:
-    - recommender-systems
-    - fairness-bias
+    - popularity-bias
+    - collaborative-filtering
+    - multimedia-recommender-systems
+    - algorithmic-fairness
   needsReview: false
 
 - id: 2022-ecir-industry
@@ -97,8 +101,9 @@
   poster: /documents/posters/2022_ECIR_industry_poster.pdf
   selected: false
   areas:
-    - recommender-systems
+    - multi-domain-recommendations
     - real-time
+    - collaborative-filtering
   needsReview: false
 
 - id: 2021-pharmaceuticals-embeddings
@@ -119,7 +124,11 @@
     pages: "758"
   pdf: /documents/2021_pharmaceuticals.pdf
   selected: false
-  areas: []
+  areas:
+    - cheminformatics
+    - dimensionality-reduction
+    - unsupervised-transfer-learning
+    - molecular-fingerprints
   needsReview: false
 
 - id: 2021-children-asthma
@@ -140,7 +149,10 @@
   pdf: /documents/2021_children.pdf
   selected: false
   areas:
-    - health
+    - childhood-asthma
+    - treatment-outcome-prediction
+    - explainable-machine-learning
+    - precision-medicine
   needsReview: false
 
 - id: 2020-umuai-job-recsys
@@ -162,8 +174,9 @@
   selected: true
   selectedRank: 3
   areas:
-    - recommender-systems
-    - real-time
+    - job-recommendation
+    - session-based-recommendation
+    - autoencoders
   needsReview: false
 
 - id: 2020-ismis-graph-embeddings
@@ -184,8 +197,10 @@
   pdf: /documents/2020ismis_trust.pdf
   selected: false
   areas:
-    - recommender-systems
-    - social-networks
+    - trust-based-recommendation
+    - collaborative-filtering
+    - graph-embeddings
+    - cold-start
   needsReview: false
 
 - id: 2019-recsys-embeddings
@@ -207,8 +222,9 @@
   selected: true
   selectedRank: 4
   areas:
-    - recommender-systems
+    - job-recommendation
     - real-time
+    - item-embeddings
   needsReview: false
 
 - id: 2019-reveal-ebook-tags
@@ -231,8 +247,9 @@
   poster: /documents/posters/2019_RecSys_HGV_Poster.pdf
   selected: false
   areas:
-    - recommender-systems
-    - evaluation
+    - tag-recommendation
+    - ebook-annotation
+    - hybrid-recommendation
   needsReview: false
 
 - id: 2019-reveal-data-markets
@@ -256,8 +273,9 @@
   poster: /documents/posters/2019_RecSys_Data_Markets_Poster.pdf
   selected: false
   areas:
-    - recommender-systems
-    - evaluation
+    - tripartite-recommendation
+    - data-markets
+    - collaborative-filtering
   needsReview: false
 
 - id: 2018-eyre-neighborhood
@@ -275,8 +293,10 @@
   pdf: /documents/2018_CIKM_CF.pdf
   selected: false
   areas:
-    - recommender-systems
+    - user-pre-filtering
+    - collaborative-filtering
     - real-time
+    - apache-solr
   needsReview: false
 
 - id: 2018-sir-afel-rec
@@ -295,8 +315,10 @@
   pdf: /documents/2018_CIKM_AFEL.pdf
   selected: false
   areas:
-    - recommender-systems
-    - learning-analytics
+    - social-learning-environments
+    - learning-resource-recommendation
+    - collaborative-filtering
+    - apache-solr
   needsReview: false
 
 - id: 2018-recsys-trust
@@ -316,8 +338,10 @@
   poster: /documents/posters/RecSys18_Trust_A0_Poster.pdf
   selected: false
   areas:
-    - recommender-systems
-    - social-networks
+    - trust-based-recommendation
+    - collaborative-filtering
+    - cold-start
+    - katz-similarity
   needsReview: false
 
 - id: 2018-it-car-import
@@ -336,7 +360,11 @@
     pages: "219-228"
   pdf: /documents/2018_IT_SI_Journal.pdf
   selected: false
-  areas: []
+  areas:
+    - car-import-forecasting
+    - automotive-industry
+    - lstm-networks
+    - sarima
   needsReview: false
 
 - id: 2018-ifup-job-embeddings
@@ -356,7 +384,10 @@
   pdf: /documents/WSDM2018_IFUP.pdf
   selected: false
   areas:
-    - recommender-systems
+    - item-embeddings
+    - job-recommendation
+    - novelty
+    - diversity
   needsReview: false
 
 - id: 2017-sigweb-real-time
@@ -373,8 +404,10 @@
   pdf: /documents/SigWeb_2017.pdf
   selected: false
   areas:
-    - recommender-systems
     - real-time
+    - multi-domain-recommendations
+    - microservices-architecture
+    - apache-solr
   needsReview: false
 
 - id: 2017-rs-sna-studo-jobs
@@ -392,7 +425,10 @@
   pdf: /documents/RS_BDA_2017.pdf
   selected: false
   areas:
-    - recommender-systems
+    - job-label-prediction
+    - data-enrichment
+    - multi-label-classification
+    - svm-classification
   needsReview: false
 
 - id: 2017-recsysktl-multi-domain
@@ -411,6 +447,9 @@
   selected: false
   areas:
     - recommender-systems
+    - multi-domain-recommendations
+    - microservices-architecture
+    - apache-solr
   needsReview: false
 
 - id: 2016-rsbda-social-care
@@ -430,7 +469,10 @@
   pdf: /documents/RS_BDA_2016.pdf
   selected: false
   areas:
-    - recommender-systems
+    - social-care-recommendation
+    - content-based-recommendation
+    - hybrid-recommendation
+    - apache-solr
   needsReview: false
 
 - id: 2016-ht-doctoral-consortium
@@ -447,8 +489,10 @@
   poster: /documents/posters/ht16_dc_poster.pdf
   selected: false
   areas:
-    - recommender-systems
     - real-time
+    - multi-domain-recommendations
+    - scalability
+    - apache-solr
   needsReview: false
 
 - id: 2016-ht-airline-reviews
@@ -467,7 +511,10 @@
   pdf: /documents/HT_2016_HighEnoguh.pdf
   selected: false
   areas:
-    - social-networks
+    - traveler-satisfaction-prediction
+    - airline-reviews
+    - sentiment-analysis
+    - feature-analysis
   needsReview: false
 
 - id: 2015-iknow-triprebel
@@ -490,8 +537,10 @@
   poster: /documents/posters/iknow15_triprebel_poster.pdf
   selected: false
   areas:
-    - recommender-systems
-    - real-time
+    - hotel-recommendation
+    - apache-solr
+    - collaborative-filtering
+    - hybrid-recommendation
   needsReview: false
 
 - id: 2015-iknow-social-semantic-server
@@ -513,8 +562,10 @@
   pdf: /documents/iKNOW_2015_SSS.pdf
   selected: false
   areas:
-    - learning-analytics
-    - social-networks
+    - social-semantic-technologies
+    - informal-workplace-learning
+    - technology-enhanced-learning
+    - service-oriented-architecture
   needsReview: false
 
 - id: 2015-lsrs-scar
@@ -533,8 +584,10 @@
   pdf: /documents/LSRS_2015_ScaR.pdf
   selected: false
   areas:
-    - recommender-systems
     - real-time
+    - recommender-systems
+    - microservices-architecture
+    - apache-solr
   needsReview: false
 
 - id: 2015-recsys-cold-start
@@ -556,7 +609,9 @@
   poster: /documents/posters/recsys15_cold_start_poster.pdf
   selected: false
   areas:
-    - recommender-systems
+    - cold-start
+    - indoor-positioning-systems
+    - collaborative-filtering
   needsReview: false
 
 - id: 2015-sigweb-tagrec
@@ -575,8 +630,10 @@
   pdf: /documents/TagRec_SigWeb.pdf
   selected: false
   areas:
-    - recommender-systems
-    - evaluation
+    - tag-recommendation
+    - folksonomy
+    - reproducibility
+    - toolkit-development
   needsReview: false
 
 - id: 2015-mmsm-social-location
@@ -599,8 +656,10 @@
   selected: true
   selectedRank: 5
   areas:
-    - recommender-systems
-    - social-networks
+    - online-marketplaces
+    - social-data
+    - location-based-data
+    - collaborative-filtering
   needsReview: false
 
 - id: 2014-sp-tag-time
@@ -621,8 +680,10 @@
   pdf: /documents/HT_2014_SP.pdf
   selected: false
   areas:
-    - recommender-systems
-    - social-networks
+    - collaborative-filtering
+    - social-tagging
+    - item-ranking
+    - base-level-learning
   needsReview: false
 
 - id: 2014-ht-socrecm
@@ -641,8 +702,9 @@
   pdf: /documents/HT_2014_SocRecM.pdf
   selected: false
   areas:
-    - recommender-systems
-    - social-networks
+    - social-recommender-engine
+    - online-marketplaces
+    - apache-solr
   needsReview: false
 
 - id: 2014-ht-tagrec
@@ -661,8 +723,10 @@
   pdf: /documents/HT_2014_TagRec.pdf
   selected: false
   areas:
-    - recommender-systems
-    - evaluation
+    - tag-recommendation
+    - benchmarking-framework
+    - folksonomy
+    - human-memory-models
   needsReview: false
 
 - id: 2014-www-solr
@@ -683,8 +747,10 @@
   pdf: /documents/w12srs11.pdf
   selected: false
   areas:
-    - recommender-systems
-    - social-networks
+    - social-recommender-engine
+    - scalability
+    - online-marketplaces
+    - apache-solr
   needsReview: false
 
 - id: 2013-ectel-lim-app
@@ -704,5 +770,178 @@
   pdf: /documents/ECTEL_2013.pdf
   selected: false
   areas:
-    - learning-analytics
+    - reflective-learning
+    - presentation-skills
+    - audience-feedback
+    - quantified-self
+  needsReview: false
+- id: 2026-www-visual-content
+  title: "Visual Content Moderation in Messaging Systems"
+  authors:
+    - "Ljubičić, M."
+    - "Lacić, E."
+    - "Helic, D."
+  year: 2026
+  venue:
+    name: "WWW"
+    full: "Proceedings of the ACM Web Conference 2026"
+    kind: conference
+    publisher: "ACM"
+    pages: "8241-8249"
+  pdf: "/documents/2026_TheWeb_Spam.pdf"
+  doi: "10.1145/3774904.3792796"
+  url: "https://doi.org/10.1145/3774904.3792796"
+  selected: false
+  areas:
+    - content-moderation
+    - spam-detection
+    - real-time
+    - clip
+  air: true
+  needsReview: false
+- id: 2023-frontiers-in-big-data-beyond-accuracy
+  title: "Beyond-accuracy: a review on diversity, serendipity, and fairness in recommender systems based on graph neural networks"
+  authors:
+    - "Duricic, T."
+    - "Kowald, D."
+    - "Lacić, E."
+    - "Lex, E."
+  year: 2023
+  venue:
+    name: "Frontiers in Big Data"
+    full: "Frontiers in Big Data"
+    kind: journal
+    publisher: "Frontiers Media SA"
+    volume: "6"
+  pdf: "/documents/2023_Frontiers_Beyond-Accuracy.pdf"
+  doi: "10.3389/fdata.2023.1251072"
+  url: "https://doi.org/10.3389/fdata.2023.1251072"
+  selected: false
+  areas:
+    - recommender-systems
+    - graph-neural-networks
+    - diversity
+    - fairness-bias
+  needsReview: false
+- id: 2024-frontiers-in-big-data-editorial-reviews
+  title: "Editorial: Reviews in recommender systems: 2022"
+  authors:
+    - "Kowald, D."
+    - "Yang, D."
+    - "Lacić, E."
+  year: 2024
+  venue:
+    name: "Frontiers in Big Data"
+    full: "Frontiers in Big Data"
+    kind: journal
+    publisher: "Frontiers Media SA"
+    volume: "7"
+  pdf: "/documents/2024_Frontiers_Editorial_Review.pdf"
+  doi: "10.3389/fdata.2024.1384460"
+  url: "https://doi.org/10.3389/fdata.2024.1384460"
+  selected: false
+  areas:
+    - recommender-systems
+    - fairness-bias
+    - privacy
+    - collaborative-filtering
+  needsReview: false
+- id: 2024-arxiv-knowledge-distillation
+  title: "Knowledge Distillation for Real-Time Classification of Early Media in Voice Communications"
+  authors:
+    - "Altwlkany, K."
+    - "Hadžić, H."
+    - "Kurić, A."
+    - "Lacić, E."
+  year: 2024
+  venue:
+    name: "MASCOTS"
+    full: "2024 32nd International Conference on Modeling, Analysis and Simulation of Computer and Telecommunication Systems (MASCOTS)"
+    kind: preprint
+    publisher: "IEEE"
+    pages: "1-4"
+  pdf: "/documents/2024_MASCOTS.pdf"
+  doi: "10.1109/mascots64422.2024.10786538"
+  url: "https://doi.org/10.1109/mascots64422.2024.10786538"
+  selected: false
+  areas:
+    - knowledge-distillation
+    - audio-classification
+    - real-time
+    - voice-communications
+  air: true
+  needsReview: false
+- id: 2025-hypertext-vocalize-lead
+  title: "Vocalize: Lead Acquisition and User Engagement through Gamified Voice Competitions"
+  authors:
+    - "Teskeredzic, E."
+    - "Paric, M."
+    - "Sestic, A."
+    - "Fribert, P."
+    - "Lukac, A."
+    - "Hadzic, H."
+    - "Altwlkany, K."
+    - "Lacic, E."
+  year: 2025
+  venue:
+    name: "Hypertext"
+    full: "Adjunct Proceedings of the 36th ACM Conference on Hypertext and Social Media"
+    kind: demo
+    publisher: "ACM"
+    pages: "35-39"
+  pdf: "/documents/2025_Hypertext_Vocalize.pdf"
+  doi: "10.1145/3720533.3750059"
+  url: "https://doi.org/10.1145/3720533.3750059"
+  selected: false
+  areas:
+    - lead-acquisition
+    - user-engagement
+    - gamified-voice-competitions
+    - speech-processing
+  air: true
+  needsReview: false
+- id: 2025-arxiv-language-gender
+  title: "On the Language and Gender Biases in PSTN, VoIP and Neural Audio Codecs"
+  authors:
+    - "Altwlkany, K."
+    - "Kuric, A."
+    - "Lacić, E."
+  year: 2025
+  venue:
+    name: "Interspeech"
+    full: "Interspeech 2025"
+    kind: conference
+    publisher: "ISCA"
+    pages: "1348-1352"
+  pdf: "/documents/2025_INTERSPEECH.pdf"
+  doi: "10.21437/interspeech.2025-481"
+  url: "https://doi.org/10.21437/interspeech.2025-481"
+  selected: false
+  areas:
+    - audio-codecs
+    - fairness-bias
+    - speech-processing
+  air: true
+  needsReview: false
+- id: 2025-iui-improving-visual
+  title: "Towards Improving Visual Chatbot Builders with Intent-based Copilots"
+  authors:
+    - "Lacic, E."
+    - "Fribert, P."
+    - "Lukac, A."
+    - "Lovric, I."
+  year: 2025
+  venue:
+    name: "IUI"
+    full: "Joint Proceedings of the ACM IUI Workshops 2025, March 24-27, 2025, Cagliari, Italy"
+    kind: workshop
+    publisher: "CEUR"
+  pdf: "/documents/2025_IUI_HAI-GEN.pdf"
+  selected: false
+  areas:
+    - visual-chatbot-building
+    - intent-based-copilots
+    - large-language-models
+    - popularity-bias
+  air: true
   needsReview: false

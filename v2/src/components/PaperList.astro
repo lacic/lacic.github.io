@@ -10,6 +10,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { isSelf, toApa, toBibtex, venueLine } from '../lib/citation';
+import { areaLabel } from '../lib/format';
 import CiteScript from './CiteScript.astro';
 
 interface Props {
@@ -29,14 +30,14 @@ const { papers, noteFor = new Map(), showNotes = true } = Astro.props;
       const p = paper.data;
       const note = noteFor.get(paper.id);
       return (
-        <li class="paper" data-areas={p.areas.join(' ')} data-kind={p.venue.kind}>
+        <li class="paper" data-areas={p.areas.join(' ')} data-kind={p.venue.kind} data-air={p.air ? 'true' : 'false'}>
           <div class="year">{p.year}</div>
           <div class="body">
             <h3 class="title">
               {p.pdf ? (
-                <a href={p.pdf}>{p.title}</a>
+                <a href={p.pdf} target="_blank" rel="noopener noreferrer">{p.title}</a>
               ) : p.url ? (
-                <a href={p.url}>{p.title}</a>
+                <a href={p.url} target="_blank" rel="noopener noreferrer">{p.title}</a>
               ) : (
                 p.title
               )}
@@ -51,12 +52,23 @@ const { papers, noteFor = new Map(), showNotes = true } = Astro.props;
             </p>
             <p class="venue">
               {venueLine(p)}
+              {p.air && <span class="pill pill--accent" title="Team AIR research at Infobip">Team AIR</span>}
               {p.needsReview && <span class="pill pill--accent" title="Machine-extracted metadata, not yet checked">needs review</span>}
             </p>
+            {p.areas.length > 0 && (
+              <p class="topics">
+                {p.areas.map((area, i) => (
+                  <>
+                    {i > 0 && <span class="topics-sep" aria-hidden="true"> · </span>}
+                    <span>{areaLabel(area)}</span>
+                  </>
+                ))}
+              </p>
+            )}
             <p class="acts">
-              {p.pdf && <a class="act" href={p.pdf}>PDF</a>}
-              {p.poster && <a class="act" href={p.poster}>poster</a>}
-              {p.slides && <a class="act" href={p.slides}>slides</a>}
+              {p.pdf && <a class="act" href={p.pdf} target="_blank" rel="noopener noreferrer">PDF</a>}
+              {p.poster && <a class="act" href={p.poster} target="_blank" rel="noopener noreferrer">poster</a>}
+              {p.slides && <a class="act" href={p.slides} target="_blank" rel="noopener noreferrer">slides</a>}
               <button
                 class="act cite"
                 type="button"
@@ -141,6 +153,13 @@ const { papers, noteFor = new Map(), showNotes = true } = Astro.props;
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
+  }
+  .topics {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+    margin: 0.35rem 0 0;
   }
   .acts {
     margin: 0.65rem 0 0;

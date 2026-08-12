@@ -94,8 +94,13 @@ const publications = defineCollection({
     selected: z.boolean().default(false),
     /** Ordering within the selected list; lower comes first. */
     selectedRank: z.number().int().positive().optional(),
-    /** Research areas, for filtering on /publications. */
+    /** Research topics for filtering on /publications. Open vocabulary. */
     areas: z.array(z.string()).default([]),
+    /**
+     * Team AIR / Infobip research outcome. Separate from topic `areas`.
+     * Used by the publications Team AIR filter and (later) the AIR page.
+     */
+    air: z.boolean().default(false),
     /**
      * Set by scripts/add_paper.py when metadata was machine-extracted.
      * The build warns until it is cleared. Never ship a true value.
@@ -119,25 +124,6 @@ const talks = defineCollection({
   }),
 });
 
-const projects = defineCollection({
-  loader: file('src/data/projects.yml', { parser: yamlParser }),
-  schema: z.object({
-    title: z.string(),
-    /** One sentence on what it did, in plain terms. */
-    summary: z.string(),
-    detail: z.string().optional(),
-    kind: z.enum(['software', 'case-study']),
-    years: z.string().optional(),
-    partner: z.string().optional(),
-    url: z.string().url().optional(),
-    repo: z.string().url().optional(),
-    image: z.string().optional(),
-    /** Related publications, so a case study can point at its papers. */
-    papers: z.array(reference('publications')).default([]),
-    featured: z.boolean().default(false),
-  }),
-});
-
 const service = defineCollection({
   loader: file('src/data/service.yml', { parser: yamlParser }),
   schema: z.object({
@@ -157,4 +143,4 @@ const service = defineCollection({
   }),
 });
 
-export const collections = { updates, paperNotes, publications, talks, projects, service };
+export const collections = { updates, paperNotes, publications, talks, service };

@@ -90,9 +90,9 @@ const bibtex = toBibtex(p);
         )}
       </dl>
       <p class="acts">
-        {p.pdf && <a class="act" href={p.pdf}>PDF</a>}
-        {p.poster && <a class="act" href={p.poster}>poster</a>}
-        {p.slides && <a class="act" href={p.slides}>slides</a>}
+        {p.pdf && <a class="act" href={p.pdf} target="_blank" rel="noopener noreferrer">PDF</a>}
+        {p.poster && <a class="act" href={p.poster} target="_blank" rel="noopener noreferrer">poster</a>}
+        {p.slides && <a class="act" href={p.slides} target="_blank" rel="noopener noreferrer">slides</a>}
         <button class="act cite" type="button" aria-haspopup="true" aria-expanded="false" data-bibtex={bibtex} data-apa={apa}>
           cite
         </button>
