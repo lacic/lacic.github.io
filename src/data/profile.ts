@@ -109,6 +109,13 @@ export const airTeam: AirMember[] = [
     url: 'https://dionizijefa.com/',
     scholar: 'https://scholar.google.com/citations?user=bjqVJYkAAAAJ&hl=en',
   },
+  {
+    name: 'Kemal Altwlkany',
+    role: 'Senior AI Software Engineer',
+    photo: '/images/team/kemal-altwlkany.jpg',
+    scholar: 'https://scholar.google.com/citations?user=dVNyCUUAAAAJ&hl=en',
+  },
+
 ];
 
 export type CareerRole = {
