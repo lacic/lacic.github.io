@@ -105,7 +105,15 @@ const airCount = papers.filter((paper) => paper.data.air).length;
       // Hide a year heading once nothing is left under it, so the page does not
       // fill with empty years.
       for (const block of blocks) {
-        block.hidden = !block.querySelector('.paper:not([hidden])');
+        const visible = [...block.querySelectorAll<HTMLElement>('.paper:not([hidden])')];
+        block.hidden = visible.length === 0;
+
+        // :first-child no longer means "the first one you can see", so tell the
+        // list which paper now sits at the top of it.
+        const list = block.querySelector('.papers');
+        list?.classList.toggle('is-filtered', filter !== 'all');
+        for (const paper of block.querySelectorAll('.paper')) paper.classList.remove('is-first');
+        visible[0]?.classList.add('is-first');
       }
 
       for (const button of buttons) {

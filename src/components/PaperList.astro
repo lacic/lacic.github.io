@@ -107,9 +107,21 @@ const { papers, noteFor = new Map(), showNotes = true } = Astro.props;
     padding: 1.15rem 0;
     border-top: 1px dotted var(--rule);
   }
-  .paper:first-child {
+  /* `display: grid` above beats the UA rule for [hidden], so the filter on
+     /publications cannot hide a paper unless this is explicit. */
+  .paper[hidden] {
+    display: none;
+  }
+  /* While a filter is on, ".is-first" marks the first paper still in view, which
+     is not necessarily the first child, so the rule has to move with it. */
+  .paper:first-child,
+  .papers.is-filtered .paper.is-first {
     border-top: 0;
     padding-top: 0;
+  }
+  .papers.is-filtered .paper:first-child:not(.is-first) {
+    border-top: 1px dotted var(--rule);
+    padding-top: 1.15rem;
   }
   .year {
     font-family: var(--mono);
