@@ -30,7 +30,7 @@ export const profile = {
 
   /** The working note in the hero margin. */
   workingNote:
-    'A working record of research I’m doing now. Findings, open questions, and the direction I expect to push for years ahead.',
+    'A working record of research I’m doing now.',
 
   /** Research keywords, set like the keyword line of a paper. Six at most. */
   keywords: [
@@ -109,13 +109,6 @@ export const airTeam: AirMember[] = [
     url: 'https://dionizijefa.com/',
     scholar: 'https://scholar.google.com/citations?user=bjqVJYkAAAAJ&hl=en',
   },
-  {
-    name: 'Kemal Altwlkany',
-    role: 'Senior AI Software Engineer',
-    photo: '/images/team/kemal-altwlkany.jpg',
-    scholar: 'https://scholar.google.com/citations?user=dVNyCUUAAAAJ&hl=en',
-  },
-
 ];
 
 export type CareerRole = {
