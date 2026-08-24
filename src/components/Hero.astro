@@ -50,7 +50,6 @@ const links: {
     </p>
     <h1>
       {profile.statement.lines.map((line) => <span>{line}</span>)}
-      <span class="coda">{profile.statement.coda}</span>
     </h1>
     <p class="keywords">
       {profile.keywords.map((keyword, i) => (
@@ -147,17 +146,6 @@ const links: {
   }
   h1 span {
     display: block;
-  }
-  .coda {
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 0.46em;
-    line-height: 1.5;
-    color: var(--pencil);
-    margin-top: 0.8rem;
-    letter-spacing: 0;
-    max-width: 34ch;
   }
   .keywords {
     margin: 1.9rem 0 0;

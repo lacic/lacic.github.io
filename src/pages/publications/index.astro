@@ -56,14 +56,26 @@ const airCount = papers.filter((paper) => paper.data.air).length;
       <button class="tag is-on" type="button" data-filter="all" aria-pressed="true">all {papers.length}</button>
       {
         airCount > 0 && (
-          <button class="tag tag--air" type="button" data-filter="air" aria-pressed="false">
+          <button
+            class="tag tag--air"
+            type="button"
+            data-filter="air"
+            data-count={airCount}
+            aria-pressed="false"
+          >
             Team AIR {airCount}
           </button>
         )
       }
       {
         areas.map(([area, count]) => (
-          <button class="tag" type="button" data-filter={area} aria-pressed="false">
+          <button
+            class="tag"
+            type="button"
+            data-filter={area}
+            data-count={count}
+            aria-pressed="false"
+          >
             {areaLabel(area)} {count}
           </button>
         ))
@@ -90,6 +102,7 @@ const airCount = papers.filter((paper) => paper.data.air).length;
     const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button[data-filter]')];
     const papers = [...document.querySelectorAll<HTMLElement>('.paper')];
     const blocks = [...document.querySelectorAll<HTMLElement>('.yearblock')];
+    const isShown = (button: HTMLButtonElement) => getComputedStyle(button).display !== 'none';
 
     const apply = (filter: string) => {
       let shown = 0;
@@ -131,9 +144,16 @@ const airCount = papers.filter((paper) => paper.data.air).length;
       if (button?.dataset.filter) apply(button.dataset.filter);
     });
 
-    // Deep-linkable: /publications#air or /publications#fairness-bias
+    // Deep-linkable: /publications#air or /publications#fairness-bias.
+    // Sparse chips are hidden on a phone, so ignore a hash that points at one.
     const initial = location.hash.slice(1);
-    if (initial && buttons.some((button) => button.dataset.filter === initial)) apply(initial);
+    const initialButton = buttons.find((button) => button.dataset.filter === initial);
+    if (initialButton && isShown(initialButton)) apply(initial);
+
+    window.addEventListener('resize', () => {
+      const on = buttons.find((button) => button.classList.contains('is-on'));
+      if (on && !isShown(on)) apply('all');
+    });
   }
 </script>
 
@@ -201,6 +221,13 @@ const airCount = papers.filter((paper) => paper.data.air).length;
     background: var(--accent);
     color: var(--paper);
     border-color: var(--accent);
+  }
+  /* Phone: drop two-paper chips so the sticky bar does not eat the list. */
+  @media (max-width: 760px) {
+    .filters button[data-count='1'],
+    .filters button[data-count='2'] {
+      display: none;
+    }
   }
   .count {
     font-family: var(--mono);
