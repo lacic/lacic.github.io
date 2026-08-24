@@ -19,10 +19,9 @@ export const profile = {
   /** Obfuscated form for display, to keep naive scrapers off it. */
   emailDisplay: 'emanuel [dot] lacic [at] infobip [dot] com',
 
-  /** The hero. Three lines that set, then a quieter fourth. */
+  /** The hero statement. */
   statement: {
     lines: ['AI Research at Infobip,', 'building AI for global communication'],
-    coda: '— and discover what comes up next.',
   },
 
   /** Portrait used in the hero margin (same asset as v1’s sidebar). */
@@ -30,7 +29,7 @@ export const profile = {
 
   /** The working note in the hero margin. */
   workingNote:
-    'A working record of research I’m doing now. Findings, open questions, and the direction I expect to push for years ahead.',
+    'A working record of research I’m doing now.',
 
   /** Research keywords, set like the keyword line of a paper. Six at most. */
   keywords: [
