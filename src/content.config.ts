@@ -18,6 +18,9 @@ const updates = defineCollection({
       title: z.string(),
       // Doubles as the index entry and the social preview. Worth rewriting until good.
       standfirst: z.string(),
+      // Set false to keep the standfirst out of the post page itself, e.g. when the
+      // post repeats it. It still feeds the index, the social preview and the feed.
+      showStandfirst: z.boolean().default(true),
       date: z.coerce.date(),
       // `type` drives layout; `tags` describe subject. If in doubt it is a field note.
       type: z.enum(['field-note', 'deep-dive', 'paper-note']).default('field-note'),

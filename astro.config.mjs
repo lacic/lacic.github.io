@@ -25,6 +25,36 @@ const externalLinksInNewTab = {
   },
 };
 
+/**
+ * Inline code that is a semantic ID, such as `<12><201><7>`, gets one span per
+ * level so each depth keeps the same colour wherever it appears. Level n is
+ * styled by `.sid-ln` in global.css; anything that is not purely `<digits>`
+ * tokens is left as ordinary code.
+ */
+const semanticIdLevels = {
+  name: 'semantic-id-levels',
+  element: {
+    filter: ['code'],
+    /** @param {any} node @param {any} ctx */
+    visit(node, ctx) {
+      const text = ctx.textContent(node);
+      if (!/^(<\d+>)+$/.test(text)) return;
+      const tokens = text.match(/<\d+>/g) ?? [];
+      ctx.setProperty(node, 'className', ['sid']);
+      ctx.setProperty(
+        node,
+        'children',
+        tokens.map((token, i) => ({
+          type: 'element',
+          tagName: 'span',
+          properties: { className: [`sid-l${Math.min(i + 1, 4)}`] },
+          children: [{ type: 'text', value: token }],
+        })),
+      );
+    },
+  },
+};
+
 export default defineConfig({
   site: 'https://elacic.me',
   // No `base`: this is a user site served from the domain root. PDF and image
@@ -59,7 +89,7 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     shikiConfig: { theme: 'github-light', wrap: true },
-    processor: satteri({ hastPlugins: [externalLinksInNewTab] }),
+    processor: satteri({ hastPlugins: [externalLinksInNewTab, semanticIdLevels] }),
   },
   devToolbar: { enabled: false },
 });
