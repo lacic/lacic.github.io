@@ -224,7 +224,7 @@ def create_post(
     print("   3. Flip `draft: true` to `draft: false` when it is ready to publish.")
     print()
     print("Preview:")
-    print("   cd v2 && npm run dev")
+    print("   npm run dev")
     print(f"   {DEV_SERVER_URL}/updates/{folder_name}/")
     print()
 

@@ -74,6 +74,7 @@ draft: true
 | --- | --- |
 | `title` | Plain. It appears in the index, the tab title and the link preview. |
 | `standfirst` | **The field worth rewriting until it is good.** One sentence. It is the index entry, the social preview and the reader's decision to keep reading. |
+| `showStandfirst` | Optional, default `true`. Set `false` to hide the standfirst on the post page only; the index, the social preview and the feed still use it. |
 | `date` | `YYYY-MM-DD`. Controls ordering. |
 | `type` | `field-note`, `deep-dive` or `paper-note`. See below. |
 | `tags` | Free-form. This is where the actual subject lives. Tag `air` to have a post appear on the AIR page. |

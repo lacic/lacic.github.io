@@ -218,6 +218,79 @@ h1, h2, h3, h4 {
   letter-spacing: 0.04em;
   margin-top: -1rem;
 }
+/* Markdown captions: an *italic line* directly under an image, which Markdown
+   puts in the same paragraph. Pulled up to the image and set apart from body. */
+.prose p > img + em,
+.prose p > a:has(> img) + em {
+  display: block;
+  margin-top: -1.05rem;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
+  color: var(--pencil);
+}
+
+/* Pull quote: one sentence the post turns on. */
+.prose .pull {
+  margin: 2.4rem 0;
+  padding: 0.2rem 0 0.2rem 1.15rem;
+  border-left: 2px solid var(--accent);
+}
+.prose .pull p {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.36;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+.prose .pull em {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+
+/* Explainer: background a reader can skip if they already know it. */
+.prose .explainer {
+  margin: 2rem 0;
+  padding: 1.25rem 1.4rem;
+  background: var(--grid);
+  border: 1px solid var(--rule-soft);
+}
+.prose .explainer > :first-child { margin-top: 0; }
+.prose .explainer > :last-child { margin-bottom: 0; }
+.prose .explainer-label {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.11em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.prose .explainer code { background: var(--paper); }
+
+/* Semantic IDs: each level keeps its tint, coarse (strong) to fine (faint),
+   so `<12>` reads as the same thing every time it appears. Spans come from
+   the semantic-id-levels plugin in astro.config.mjs. */
+.prose code.sid {
+  padding: 0;
+  background: none;
+  white-space: nowrap;
+}
+.prose .sid > span { padding: 0.15em 0.2em; }
+/* The explainer's numbered steps each produce one level's code. */
+.prose .sid-l1,
+.prose .explainer ol > li:nth-child(1) > code { background: color-mix(in srgb, var(--accent) 30%, var(--paper)); }
+.prose .sid-l2,
+.prose .explainer ol > li:nth-child(2) > code { background: color-mix(in srgb, var(--accent) 17%, var(--paper)); }
+.prose .sid-l3,
+.prose .explainer ol > li:nth-child(3) > code { background: color-mix(in srgb, var(--accent) 8%, var(--paper)); }
+.prose .sid-l4 {
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
 .prose hr {
   border: 0;
   border-top: 1px dotted var(--rule);

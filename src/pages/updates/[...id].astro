@@ -57,7 +57,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
         {post.data.draft && <span class="pill pill--accent">draft — not published</span>}
       </p>
       <h1>{post.data.title}</h1>
-      <p class="stand">{post.data.standfirst}</p>
+      {post.data.showStandfirst && <p class="stand">{post.data.standfirst}</p>}
       {
         post.data.canonical && (
           <p class="cross">
