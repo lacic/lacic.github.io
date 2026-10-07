@@ -1,6 +1,29 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { satteri } from '@astrojs/markdown-satteri';
+
+/**
+ * External links in Markdown open in a new tab, so a reader following a paper
+ * citation does not lose their place in the post. Done here rather than in the
+ * Markdown so posts stay plain `[text](url)`. Internal links are left alone.
+ *
+ * Written against Sätteri, Astro 7's default Markdown processor; rehype plugins
+ * would need the separate unified pipeline installed.
+ */
+const externalLinksInNewTab = {
+  name: 'external-links-new-tab',
+  element: {
+    filter: ['a'],
+    /** @param {any} node @param {any} ctx */
+    visit(node, ctx) {
+      const href = node.properties?.href;
+      if (typeof href !== 'string' || !/^https?:\/\//.test(href)) return;
+      ctx.setProperty(node, 'target', '_blank');
+      ctx.setProperty(node, 'rel', 'noopener noreferrer');
+    },
+  },
+};
 
 export default defineConfig({
   site: 'https://elacic.me',
@@ -36,6 +59,7 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     shikiConfig: { theme: 'github-light', wrap: true },
+    processor: satteri({ hastPlugins: [externalLinksInNewTab] }),
   },
   devToolbar: { enabled: false },
 });
