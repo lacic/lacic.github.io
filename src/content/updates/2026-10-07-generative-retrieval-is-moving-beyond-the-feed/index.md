@@ -13,7 +13,7 @@ draft: false
 # canonical: https://research.infobip.com/some-post
 ---
 
-The Infobip research team was in Minneapolis for the [20th RecSys](https://recsys.acm.org/recsys26/) conference. We had a sponsor booth, a lot of good conversations, and our paper [Conversational Recommendation over Live E-Commerce Catalogues with Self-Refreshing Retrieval](https://doi.org/10.1145/3773078.3841297). It describes an agentic WhatsApp shopping assistant that recommends from a merchant catalogue while products are added, repriced, restocked and discontinued. The catalogue changes constantly, so keeping product identity separate from product meaning is a practical requirement.
+The Infobip research team was in Minneapolis for the [20th RecSys](https://recsys.acm.org/recsys26/) conference. We had a sponsor booth, a lot of good conversations, and our paper [Conversational Recommendation over Live E-Commerce Catalogues with Self-Refreshing Retrieval](https://doi.org/10.1145/3773078.3841297). It describes an agentic WhatsApp shopping assistant that recommends from a merchant catalogue while products are added, repriced, restocked and discontinued. 
 
 ![Infobip poster and demo session at RecSys 2026 in Minneapolis, with attendees gathered around the poster boards](./demo_booth.jpg)
 *Poster and demo at RecSys 2026.*
